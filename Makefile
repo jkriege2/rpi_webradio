@@ -9,7 +9,7 @@ CC=g++
 CFLAGS =  -Wall -pedantic -std=c++11 `pkg-config --cflags cairo` 
 LDFLAGS = -Wall -pedantic -std=c++11 `pkg-config --libs cairo` 
 
-Release: CFLAGS += -O2 -ffast-math -ftree-vectorize -ftree-vectorizer-verbose=0
+Release: CFLAGS += -O2 #-ffast-math -ftree-vectorize -ftree-vectorizer-verbose=0
 
 Debug: CC += -DDEBUG -g
 
@@ -19,8 +19,9 @@ SRC_FILE= cairo_test.cpp \
           cgwidget.cpp \
           cgframe.cpp \
           cglabel.cpp \
-          cairogui_frame.cpp \
-          rpi_tools.cpp
+          rpi_tools.cpp \
+          cgbasics.cpp \
+          cgscreen.cpp
 
 
 SRC_FILE_O = $(subst .cpp,.o,$(SRC_FILE))

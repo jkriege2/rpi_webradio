@@ -10,7 +10,7 @@ CGWidget::CGWidget(CGWidget *parent)
     m_y=0;
     m_width=1;
     m_height=1;
-    setBackgroundColor(CGColor::transparent());
+    setBackgroundColor(CGColor::ccTransparent);
 }
 
 CGWidget::CGWidget(int x, int y, int width, int height, CGWidget *parent)
@@ -22,7 +22,7 @@ CGWidget::CGWidget(int x, int y, int width, int height, CGWidget *parent)
     m_y=y;
     m_width=width;
     m_height=height;
-    setBackgroundColor(CGColor::transparent());
+    setBackgroundColor(CGColor::ccTransparent);
 }
 
 CGWidget::~CGWidget()
@@ -61,18 +61,50 @@ void CGWidget::setParent(CGWidget *p)
 void CGWidget::paint(cairo_t *c) const
 {
     if (m_backgroundColor.a!=0) {
-        cairo_rectangle(c, absX(), absY(), m_width, m_height);
-        cairo_set_source_rgba(c, m_backgroundColor.rf(), m_backgroundColor.gf(), m_backgroundColor.bf(), m_backgroundColor.af());
+        cairo_rectangle(c, 0, 0, m_width, m_height);
+        cairo_set_source_rgba(c, m_backgroundColor.redf(), m_backgroundColor.greenf(), m_backgroundColor.bluef(), m_backgroundColor.alphaf());
         cairo_fill(c);
     }
+    cairo_save(c);
+        cairo_translate(c, m_border, m_border);
+        cairo_rectangle(c, 0,0, m_width-2.0*m_border, m_height-2.0*m_border);
+        cairo_clip (c);
+            //std::cout<<"CGWidget::paint()\n";
+            for (std::list<CGWidget*>::const_iterator it=m_children.begin(); it!=m_children.end(); ++it) {
+                if (*it) {
+                    cairo_save(c);
+                        cairo_translate(c, (*it)->x(), (*it)->y());
+                        cairo_rectangle(c, 0, 0, (*it)->width(), (*it)->height());
+                        cairo_clip (c);
+                        //std::cout<<"draw child\n";
+                        (*it)->paint(c);
+                    cairo_restore(c);
+                }
+            }
+    cairo_restore(c);
+}
 
-    //std::cout<<"CGWidget::paint()\n";
+void CGWidget::event(CGEvent *e)
+{
     for (std::list<CGWidget*>::const_iterator it=m_children.begin(); it!=m_children.end(); ++it) {
         if (*it) {
             //std::cout<<"draw child\n";
-            (*it)->paint(c);
+            (*it)->event(e);
+            if (e->accepted()) return;
         }
     }
+}
+
+bool CGWidget::isAbsPosInside(int x, int y)
+{
+    const int ax=absX();
+    const int ay=absY();
+    return (x>=ax && y>=ay && x<ax+m_width && y<ay+m_height);
+}
+
+bool CGWidget::isRelPosInside(int x, int y)
+{
+    return isAbsPosInside(absX()+x, absY()+y);
 }
 
 

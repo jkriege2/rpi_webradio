@@ -14,8 +14,8 @@ CGLabel::CGLabel(CGWidget *parent):
     m_fontSize=10;
     m_textOffset=1;
     setFrameWidth(0);
-    setFrameColor(CGColor::transparent());
-    setBackgroundColor(CGColor::transparent());
+    setFrameColor(CGColor::ccTransparent);
+    setBackgroundColor(CGColor::ccTransparent);
 }
 
 CGLabel::CGLabel(int x, int y, int width, int height, const std::string& text, CGWidget *parent):
@@ -30,9 +30,9 @@ CGLabel::CGLabel(int x, int y, int width, int height, const std::string& text, C
     m_fontSize=10;
     m_textOffset=1;
     setFrameWidth(0);
-    setFrameColor(CGColor::transparent());
-    setBackgroundColor(CGColor::transparent());
-    setTextColor(CGColor::black());
+    setFrameColor(CGColor::ccTransparent);
+    setBackgroundColor(CGColor::ccTransparent);
+    setTextColor(CGColor::ccBlack);
     m_text=text;
 }
 
@@ -48,9 +48,9 @@ CGLabel::CGLabel(int x, int y, int width, int height, CGWidget *parent):
     m_fontSize=10;
     m_textOffset=1;
     setFrameWidth(0);
-    setFrameColor(CGColor::transparent());
-    setBackgroundColor(CGColor::transparent());
-    setTextColor(CGColor::black());
+    setFrameColor(CGColor::ccTransparent);
+    setBackgroundColor(CGColor::ccTransparent);
+    setTextColor(CGColor::ccBlack);
 }
 
 CGLabel::CGLabel(const std::string &text, CGWidget *parent):
@@ -65,9 +65,9 @@ CGLabel::CGLabel(const std::string &text, CGWidget *parent):
     m_fontSize=10;
     m_textOffset=1;
     setFrameWidth(0);
-    setFrameColor(CGColor::transparent());
-    setBackgroundColor(CGColor::transparent());
-    setTextColor(CGColor::black());
+    setFrameColor(CGColor::ccTransparent);
+    setBackgroundColor(CGColor::ccTransparent);
+    setTextColor(CGColor::ccBlack);
     m_text=text;
 }
 
@@ -119,23 +119,23 @@ void CGLabel::paint(cairo_t *cr) const
     }
 
 
-    cairo_set_source_rgba(cr, m_textColor.rf(), m_textColor.gf(), m_textColor.bf(), m_textColor.af());
+    cairo_set_source_rgba(cr, m_textColor.redf(), m_textColor.greenf(), m_textColor.bluef(), m_textColor.alphaf());
 
 
-    float y = absY()/*+(float)m_height-(extents.height/2)*/ - extents.y_bearing+m_textOffset;
+    float y = m_border- extents.y_bearing+m_textOffset;
     if (m_verticalAlignment==alBottom) {
-        y = absY()+(m_height-m_frameWidth*2-m_textOffset*2)-sumH - extents.y_bearing;
+        y = (m_border+m_height-m_frameWidth*2-m_textOffset*2)-sumH - extents.y_bearing;
     } else if (m_verticalAlignment==alCenter) {
-        y = absY()+(m_height-m_frameWidth*2-m_textOffset*2)/2-sumH/2 - extents.y_bearing;
+        y = (m_border+m_height-m_frameWidth*2-m_textOffset*2)/2-sumH/2 - extents.y_bearing;
     }
 
     for (std::list<std::string>::const_iterator it=lines.begin(); it!=lines.end(); ++it) {
         cairo_text_extents (cr, (*it).c_str(), &extents);
-        float x = absX()+m_textOffset;//+(float)m_width-(extents.width/2 + extents.x_bearing);
+        float x = m_border+m_textOffset;//+(float)m_width-(extents.width/2 + extents.x_bearing);
         if (m_horizontalAlignment==alRight) {
-            x=absX()+m_width-m_frameWidth*2-m_textOffset*2-extents.width;
+            x=m_border+m_width-m_frameWidth*2-m_textOffset*2-extents.width;
         } else if (m_horizontalAlignment==alCenter) {
-            x=absX()+(m_width-m_frameWidth*2-m_textOffset*2)/2-extents.width/2;
+            x=(m_border+m_width-m_frameWidth*2-m_textOffset*2)/2-extents.width/2;
         }
 
 

@@ -5,61 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <list>
-
-struct CGColor {
-    inline CGColor() {
-        r=g=b=255;
-        a=255;
-    }
-    inline CGColor(unsigned char r, unsigned char g, unsigned char b) {
-        this->r=r;
-        this->g=g;
-        this->b=b;
-        this->a=255;
-    }
-    inline CGColor(unsigned char r, unsigned char g, unsigned char b, unsigned char a) {
-        this->r=r;
-        this->g=g;
-        this->b=b;
-        this->a=a;
-    }
-    inline CGColor(unsigned char gray) {
-        this->r=gray;
-        this->g=gray;
-        this->b=gray;
-        this->a=255;
-    }
-
-    inline float rf() const {
-        return float(r)/255.0;
-    }
-    inline float gf() const {
-        return float(g)/255.0;
-    }
-    inline float bf() const {
-        return float(b)/255.0;
-    }
-    inline float af() const {
-        return float(a)/255.0;
-    }
-
-
-    unsigned char r;
-    unsigned char g;
-    unsigned char b;
-    unsigned char a;
-
-    inline static CGColor transparent() {
-        return CGColor(255,255,255,255);
-    }
-    inline static CGColor black() {
-        return CGColor(0,0,0,255);
-    }
-    inline static CGColor white() {
-        return CGColor(255,255,255,255);
-    }
-
-};
+#include "cgbasics.h"
 
 class CGWidget
 {
@@ -103,6 +49,11 @@ class CGWidget
         virtual void setParent(CGWidget* p);
 
         virtual void paint(cairo_t *c) const;
+
+        virtual void event(CGEvent* e);
+
+        virtual bool isAbsPosInside(int x, int y);
+        virtual bool isRelPosInside(int x, int y);
     protected:
         CGWidget* m_parent;
         std::list<CGWidget*> m_children;

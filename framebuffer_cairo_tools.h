@@ -24,6 +24,8 @@ fbcairo_context* fbcairo_bind(const char* device, int mode=FBC_DIRECT);
 void fbcairo_unbind(fbcairo_context* context);
 void fbcairo_copyDoubleBuffer(fbcairo_context* context);
 int fbcairo_getInfo(fbcairo_context* context, int* xres, int* yres, int* bits_per_pixel=NULL, char* pixelformatRGB=NULL, char* pixelformatRGBX=NULL);
+int fbcairo_getWidth(const fbcairo_context *context);
+int fbcairo_getHeight(const fbcairo_context* context);
 cairo_t* fbcairo_create(fbcairo_context* context);
 cairo_surface_t* fbcairo_getSurface(fbcairo_context* context);
   

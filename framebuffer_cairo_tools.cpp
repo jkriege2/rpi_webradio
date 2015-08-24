@@ -101,6 +101,7 @@ fbcairo_context* fbcairo_bind(int fbfd, int mode) {
 			free(res);
 			return NULL;
 		}
+
 		
 		// calculate screen size
 		res->screensize = res->vinfo.xres * res->vinfo.yres * res->vinfo.bits_per_pixel / 8;
@@ -209,4 +210,22 @@ void fbcairo_copyDoubleBuffer(fbcairo_context *context)
         fprintf(stderr, "fbcairo_copyDoubleBuffer(): no valid context\n");
         return  ;
     }
+}
+
+
+int fbcairo_getWidth(const fbcairo_context *context)
+{
+    if (context) {
+        return context->vinfo.xres;
+    }
+    return 0;
+}
+
+
+int fbcairo_getHeight(const fbcairo_context *context)
+{
+    if (context) {
+        return context->vinfo.yres;
+    }
+    return 0;
 }

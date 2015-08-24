@@ -28,11 +28,13 @@
 #include "cgframe.h"
 #include "cglabel.h"
 #include "rpi_tools.h"
+#include "cgscreen.h"
+
 
 
 fbcairo_context* context;
 
-CGWidget* mainFrame=NULL;
+CGScreen* mainFrame=NULL;
 CGLabel* lab1=NULL;
 
 float cputemp=0;
@@ -51,8 +53,8 @@ void cpuTempThread() {
 
 void setupGUI() {
 
-    mainFrame=new CGWidget(0,0,SIZEX,SIZEY);
-    mainFrame->setBackgroundColor(CGColor::black());
+    mainFrame=new CGScreen(context);
+    mainFrame->setBackgroundColor(CGColor::ccBlack);
 
     CGFrame* innerframe=new CGFrame(2,2,100,20, mainFrame);
     innerframe->setBackgroundColor(CGColor(50));
@@ -60,21 +62,22 @@ void setupGUI() {
     CGFrame* innerframe2=new CGFrame(2,2,50,10, innerframe);
     innerframe2->setBackgroundColor(CGColor(128));
     innerframe2->setFrameColor(CGColor(0,255,0));
-    CGFrame* innerframe3=new CGFrame(110,30,100,30, mainFrame);
+    CGFrame* innerframe3=new CGFrame(110,30,100,35, mainFrame);
     innerframe3->setBackgroundColor(CGColor(200));
     innerframe3->setFrameColor(CGColor(0,0,128));
-    lab1=new CGLabel(0,0,80,16, "text", innerframe3);
+    lab1=new CGLabel(0,0,80,50, "text", innerframe3);
     //lab1->setBackgroundColor(CGColor(200));
     //lab1->setFrameColor(CGColor(0,0,128));
     lab1->setTextColor(CGColor(0,0,255));
     lab1->setBold(true);
+    lab1->setFontFace("serif");
 
     for (int y=0; y<3; y++) {
         for (int x=0; x<3; x++) {
             CGLabel* lab=new CGLabel(2+x*105,100+y*35,100,30, "text\ntext2!!!", mainFrame);
-            lab->setBackgroundColor(CGColor(50));
-            lab->setFrameColor(CGColor(0,0,128));
-            lab->setFontSize(8);
+            lab->setBackgroundColor(CGColor::ccGray25);
+            lab->setFrameColor(CGColor::ccDarkblue);
+            lab->setFontSize(9);
             lab->setTextColor(CGColor(255,0,0));
             if (x==0) lab->setHorizontalAlignment(CGLabel::alLeft);
             else if (x==1) lab->setHorizontalAlignment(CGLabel::alCenter);
@@ -82,7 +85,7 @@ void setupGUI() {
             if (y==0) lab->setVerticalAlignment(CGLabel::alLeft);
             else if (y==1) lab->setVerticalAlignment(CGLabel::alCenter);
             else if (y==2) lab->setVerticalAlignment(CGLabel::alRight);
-            lab->setFrameWidth(1.5);
+            lab->setFrameWidth(3);
         }
     }
 
@@ -96,31 +99,11 @@ void destroyGUI() {
 void paintGUI(cairo_t *c, float fps=0) {
     char txt[1024];
     cputempmutex.lock();
-    sprintf(txt, "%4.2f fps\n%3.1f degC", fps, cputemp);
+    sprintf(txt, "%4.2f fps\n%3.1f degC\nXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", fps, cputemp);
     cputempmutex.unlock();
     //std::cout<<txt<<std::endl;
     lab1->setText(txt);
     mainFrame->paint(c);
-}
-
-void paint(cairo_t *c, float textpos=10, float fps=0)
-{
-	cairo_rectangle(c, 0.0, 0.0, SIZEX, SIZEY);
-	cairo_set_source_rgb(c, 0.0, 0.0, 0.5);
-	cairo_fill(c);
-
-	cairo_move_to(c, 10.0, textpos);
-	cairo_set_source_rgb(c, 1.0, 1.0, 0.0);
-	cairo_show_text(c, "Hello World!");
-	cairo_move_to(c, 150, 10);
-	cairo_set_source_rgb(c, 1.0, 0.0, 0.0);
-	char txt[1024];
-	sprintf(txt, "%f fps", fps);
-	cairo_show_text(c, txt);
-	
-	cairo_show_page(c);
-
-	
 }
 
 
@@ -137,7 +120,6 @@ void startMainLoop() {
 	
 	// get cairo surface to draw onto
     cairo_surface_t* cs=fbcairo_getSurface(context);
-	cairo_t *c=cairo_create(cs);
 
 
 	std::chrono::steady_clock::time_point tlastpaint = std::chrono::steady_clock::now();
@@ -153,9 +135,11 @@ void startMainLoop() {
 		if (timespan_since_last_paint.count()>1.0/double(MAX_FRAMERATE_FPS)) {
 			std::chrono::duration<double> timespan_since_start = std::chrono::duration_cast<std::chrono::duration<double>>(t - tstart);
 			fcnt++;
+            cairo_t *c=cairo_create(cs);
             paintGUI(c, fcnt/timespan_since_start.count());
+            cairo_destroy(c);
             fbcairo_copyDoubleBuffer(context);
-			tlastpaint = std::chrono::steady_clock::now();
+            tlastpaint = std::chrono::steady_clock::now();
 			if (fcnt>0xFFFFFF) {
 				fcnt=0;
 				tstart = std::chrono::steady_clock::now();
@@ -171,7 +155,6 @@ void startMainLoop() {
 		// sleep a bit, so not 100% processor time are used ...
 		std::this_thread::sleep_for (std::chrono::milliseconds(MAINLOOP_DELAY_MS));
 	}
-	cairo_destroy(c);
 }
 
 void print_usage() {
