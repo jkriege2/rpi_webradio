@@ -5,6 +5,7 @@
 #include <cmath>
 #include <stdarg.h>
 #include <stdint.h>
+#include <list>
 
 #ifdef rgb
 #  undef rgb
@@ -459,4 +460,62 @@ bool cgOnlySpace(const std::string& text) {
       if (text[i]>32) return false;
   }
   return true;
+}
+
+
+void cgDrawText(cairo_t* cr, int xx, int yy, int m_width, int m_height, const std::string& m_text, const std::string& m_fontFace, float m_fontSize, bool m_italic, bool m_bold, CGColor m_textColor, float m_lineSpacing, cgAlignment m_horizontalAlignment, cgAlignment m_verticalAlignment)
+{
+    cairo_text_extents_t extents;
+    cairo_select_font_face (cr, m_fontFace.c_str(), (m_italic)?CAIRO_FONT_SLANT_ITALIC:CAIRO_FONT_SLANT_NORMAL, (m_bold)?CAIRO_FONT_WEIGHT_BOLD:CAIRO_FONT_WEIGHT_NORMAL);
+    cairo_set_font_size (cr, m_fontSize);
+
+    std::list<std::string> lines;
+    std::string l;
+    float maxH=0, maxW=0, sumH=0;
+    for (size_t i=0; i<m_text.size(); i++) {
+        if (m_text[i]!='\n') {
+            l.push_back(m_text[i]);
+        } else {
+            lines.push_back(l);
+            cairo_text_extents(cr, l.c_str(), &extents);
+            if (extents.width>maxW) maxW=extents.width;
+            if (extents.height>maxH) maxH=extents.height;
+            sumH=sumH+extents.height;
+            l.clear();
+        }
+    }
+    if (l.size()>0) {
+        cairo_text_extents(cr, l.c_str(), &extents);
+        if (extents.width>maxW) maxW=extents.width;
+        if (extents.height>maxH) maxH=extents.height;
+        sumH=sumH+extents.height*m_lineSpacing;
+
+        lines.push_back(l);
+    }
+
+
+    cairo_set_source_rgba(cr, m_textColor.redf(), m_textColor.greenf(), m_textColor.bluef(), m_textColor.alphaf());
+
+
+    float y = yy- extents.y_bearing;
+    if (m_verticalAlignment==cgalBottom) {
+        y = (yy+m_height)-sumH - extents.y_bearing;
+    } else if (m_verticalAlignment==cgalCenter) {
+        y = (yy+m_height)/2-sumH/2 - extents.y_bearing;
+    }
+
+    for (std::list<std::string>::const_iterator it=lines.begin(); it!=lines.end(); ++it) {
+        cairo_text_extents (cr, (*it).c_str(), &extents);
+        float x = xx;
+        if (m_horizontalAlignment==cgalRight) {
+            x=xx+m_width-extents.width;
+        } else if (m_horizontalAlignment==cgalCenter) {
+            x=(xx+m_width)/2-extents.width/2;
+        }
+
+
+        cairo_move_to (cr, x,y);
+        cairo_show_text (cr, (*it).c_str());
+        y=y+extents.height*m_lineSpacing;
+    }
 }

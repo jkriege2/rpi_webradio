@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
+#include <cmath>
 #include <fcntl.h>
 #include <linux/fb.h>
 #include <sys/mman.h>
@@ -17,6 +17,8 @@
 
 #include<cairo.h>
 
+#include <wiringPi.h>
+
 
 #define SIZEX 320
 #define SIZEY 240
@@ -27,27 +29,20 @@
 #include "cgwidget.h"
 #include "cgframe.h"
 #include "cglabel.h"
+#include "cgprogressbar.h"
 #include "rpi_tools.h"
 #include "cgscreen.h"
-
+#include "cglistwidget.h"
 
 
 fbcairo_context* context;
 
 CGScreen* mainFrame=NULL;
 CGLabel* lab1=NULL;
+CGProgressBar* prog1=NULL;
+CGProgressBar* prog2=NULL;
+CGListWidget* lst=NULL;
 
-float cputemp=0;
-std::thread* cputempthread=NULL;
-std::mutex cputempmutex;
-void cpuTempThread() {
-    while(true) {
-        cputempmutex.lock();
-        cputemp=rpit_readCPUTemperatur();
-        cputempmutex.unlock();
-        std::this_thread::sleep_for (std::chrono::milliseconds(500));
-    }
-}
 
 
 
@@ -62,7 +57,7 @@ void setupGUI() {
     CGFrame* innerframe2=new CGFrame(2,2,50,10, innerframe);
     innerframe2->setBackgroundColor(CGColor(128));
     innerframe2->setFrameColor(CGColor(0,255,0));
-    CGFrame* innerframe3=new CGFrame(110,30,100,35, mainFrame);
+    CGFrame* innerframe3=new CGFrame(10,30,100,35, mainFrame);
     innerframe3->setBackgroundColor(CGColor(200));
     innerframe3->setFrameColor(CGColor(0,0,128));
     lab1=new CGLabel(0,0,80,50, "text", innerframe3);
@@ -72,19 +67,29 @@ void setupGUI() {
     lab1->setBold(true);
     lab1->setFontFace("serif");
 
+    prog1=new CGProgressBar(10,70,300,20,mainFrame);
+    prog1->setRange(-1,1);
+    prog1->setShowText(true);
+
+    prog2=new CGProgressBar(10,92,300,20,mainFrame);
+    prog2->setRange(-1,1);
+    prog2->setShowText(false);
+
+    lst=new CGListWidget(120,2,180,65,mainFrame);
+
     for (int y=0; y<3; y++) {
         for (int x=0; x<3; x++) {
-            CGLabel* lab=new CGLabel(2+x*105,100+y*35,100,30, "text\ntext2!!!", mainFrame);
+            CGLabel* lab=new CGLabel(2+x*105,125+y*35,100,30, "text\ntext2!!!", mainFrame);
             lab->setBackgroundColor(CGColor::ccGray25);
             lab->setFrameColor(CGColor::ccDarkblue);
             lab->setFontSize(9);
             lab->setTextColor(CGColor(255,0,0));
-            if (x==0) lab->setHorizontalAlignment(CGLabel::alLeft);
-            else if (x==1) lab->setHorizontalAlignment(CGLabel::alCenter);
-            else if (x==2) lab->setHorizontalAlignment(CGLabel::alRight);
-            if (y==0) lab->setVerticalAlignment(CGLabel::alLeft);
-            else if (y==1) lab->setVerticalAlignment(CGLabel::alCenter);
-            else if (y==2) lab->setVerticalAlignment(CGLabel::alRight);
+            if (x==0) lab->setHorizontalAlignment(cgalLeft);
+            else if (x==1) lab->setHorizontalAlignment(cgalCenter);
+            else if (x==2) lab->setHorizontalAlignment(cgalRight);
+            if (y==0) lab->setVerticalAlignment(cgalLeft);
+            else if (y==1) lab->setVerticalAlignment(cgalCenter);
+            else if (y==2) lab->setVerticalAlignment(cgalRight);
             lab->setFrameWidth(3);
         }
     }
@@ -98,21 +103,34 @@ void destroyGUI() {
 
 void paintGUI(cairo_t *c, float fps=0) {
     char txt[1024];
-    cputempmutex.lock();
-    sprintf(txt, "%4.2f fps\n%3.1f degC\nXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", fps, cputemp);
-    cputempmutex.unlock();
-    //std::cout<<txt<<std::endl;
+    static float txtBackgroundI=0;
+    static float txtBackgroundInc=1;
+    sprintf(txt, "%4.2f fps\n%3.1f degC\nXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", fps, rpitemp_getCurrentCPUTemperature());
     lab1->setText(txt);
     mainFrame->paint(c);
+    //pitft22hat_setBackgroundIntensity(((1.0+sin(2.0*M_PI*txtBackgroundI/50.0))/2.0)*900.0+100.0);
+    //printf("%f\n", ((1.0+sin(2.0*M_PI*txtBackgroundI/50.0))/4.0+0.5)*1024.0);
+    prog1->setValue(sin(2.0*M_PI*txtBackgroundI/50.0));
+    prog2->setValue(cos(2.0*M_PI*txtBackgroundI/50.0));
+    txtBackgroundI+=txtBackgroundInc;
+    //if (txtBackgroundI>100.0 || txtBackgroundI<0.0) txtBackgroundInc*=-1.0;
+
 }
 
 
 void prepareForMainloop() {
-    cputempthread=new std::thread(cpuTempThread);
+    if (!getuid()) {
+        printf("running with root priviledges!\n");
+        wiringPiSetupGpio();
+    } else {
+        printf("running in user mode!\n");
+        wiringPiSetupSys ();
+    }
+    rpitemp_init();
 }
 
 void cleanupAfterMainloop() {
-    delete cputempthread;
+    rpitemp_deinit();
 }
 
 void startMainLoop() {
@@ -171,7 +189,7 @@ int main(int argc, char *argv[])
 	int opt= 0;
 	
 	char fbname[1024]="/dev/fb1";
-	strcpy(fbname, getenv("FRAMEBUFFER"));
+    if (getenv("FRAMEBUFFER")) strcpy(fbname, getenv("FRAMEBUFFER"));
 	if (strlen(fbname)<=0) strcpy(fbname, "/div/fb0");
     int mode=FBC_DOUBLEBUFFER;
 	

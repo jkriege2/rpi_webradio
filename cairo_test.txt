@@ -42,7 +42,6 @@ Download pre-packaged RASPIAN BIN from:
   http://adafruit-download.s3.amazonaws.com/2015-02-16-raspbian-pitft22_150312.zip
 and burn it to the SD-card
   
-
   
   
 ##########################################  
@@ -67,3 +66,4 @@ RUN:
 	 This installs:
 	   - gcc-4.8
 	   - libcairo
+	   - wiringPi

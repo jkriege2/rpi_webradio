@@ -11,7 +11,11 @@ SOURCES += \
     cglabel.cpp \
     rpi_tools.cpp \
     cgbasics.cpp \
-    cgscreen.cpp
+    cgscreen.cpp \
+    cgeventqueue.cpp \
+    cgprogressbar.cpp \
+    cglistwidget.cpp \
+    cgfontprops.cpp
 
 HEADERS += \
     framebuffer_cairo_tools.h \
@@ -20,7 +24,11 @@ HEADERS += \
     cglabel.h \
     rpi_tools.h \
     cgbasics.h \
-    cgscreen.h
+    cgscreen.h \
+    cgeventqueue.h \
+    cgprogressbar.h \
+    cglistwidget.h \
+    cgfontprops.h
 
 DISTFILES += \
     Makefile

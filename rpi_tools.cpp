@@ -4,6 +4,10 @@
 #include <stdio.h>
 #include <regex>
 #include <iostream>
+#include <thread>
+#include <mutex>
+#include <chrono>
+#include <wiringPi.h>
 
 std::string rpit_readlineFromCommand(const char *command)
 {
@@ -105,5 +109,82 @@ float rpit_readCPUTemperatur()
 //     }
 
 //    return -1;
+
+}
+
+
+float rpi_temperature_cputemptemperature=0;
+bool rpi_temperature_stop_thread=false;
+std::thread* rpi_temperature_cputempthread=NULL;
+std::mutex rpi_temperature_cputempmutex;
+
+void rpi_temperature_cpuTempThread() {
+    bool done=false;
+    while(!done) {
+        // read temperature every 500ms
+        rpi_temperature_cputempmutex.lock();
+        rpi_temperature_cputemptemperature=rpit_readCPUTemperatur();
+        rpi_temperature_cputempmutex.unlock();
+
+        // check for DONE-signal every 50ms
+        for (int i=0; i<10; i++) {
+            std::this_thread::sleep_for (std::chrono::milliseconds(50));
+            rpi_temperature_cputempmutex.lock();
+            if (rpi_temperature_stop_thread) done=true;
+            rpi_temperature_cputempmutex.unlock();
+            if (done) break;
+        }
+    }
+}
+
+
+void rpitemp_init()
+{
+    if (!rpi_temperature_cputempthread) {
+        rpi_temperature_cputemptemperature=rpit_readCPUTemperatur();
+        rpi_temperature_cputempthread=new std::thread(rpi_temperature_cpuTempThread);
+    }
+}
+
+
+float rpitemp_getCurrentCPUTemperature()
+{
+    if (!rpi_temperature_cputempthread) rpitemp_init();
+    rpi_temperature_cputempmutex.lock();
+    float res=rpi_temperature_cputemptemperature;
+    rpi_temperature_cputempmutex.unlock();
+    return res;
+}
+
+
+void rpitemp_deinit()
+{
+    if (rpi_temperature_cputempthread) {
+        rpi_temperature_cputempmutex.lock();
+        rpi_temperature_stop_thread=true;
+        rpi_temperature_cputempmutex.unlock();
+        rpi_temperature_cputempthread->join();
+        delete rpi_temperature_cputempthread;
+        rpi_temperature_cputempthread=NULL;
+        rpi_temperature_cputemptemperature=0.0f;
+    }
+}
+
+
+void pitft22hat_setBackgroundIntensity(float intensity_percent)
+{
+    float I=intensity_percent;
+    if (I<0.0) I=0.0;
+    if (I>100.0) I=100.0;
+    if (I==0.0) {
+        pinMode(18, OUTPUT);
+        digitalWrite(18, 0);
+    } else if (I==100.0) {
+        pinMode(18, OUTPUT);
+        digitalWrite(18, 1);
+    } else {
+        pinMode(18, PWM_OUTPUT);
+        pwmWrite(18, round(I/100.0*1024.0));
+    }
 
 }

@@ -7,11 +7,13 @@ CC=g++
 
 
 CFLAGS =  -Wall -pedantic -std=c++11 `pkg-config --cflags cairo` 
-LDFLAGS = -Wall -pedantic -std=c++11 `pkg-config --libs cairo` 
+LDFLAGS = -Wall -pedantic -std=c++11 `pkg-config --libs cairo` -lwiringPi
 
 Release: CFLAGS += -O2 #-ffast-math -ftree-vectorize -ftree-vectorizer-verbose=0
+Release: LDFLAGS += -s
 
-Debug: CC += -DDEBUG -g
+Debug: CC += -g -DDEBUG
+Debug: CC += -g -DDEBUG
 
 EXECUTABLE=cairo_test
 SRC_FILE= cairo_test.cpp \
@@ -21,7 +23,11 @@ SRC_FILE= cairo_test.cpp \
           cglabel.cpp \
           rpi_tools.cpp \
           cgbasics.cpp \
-          cgscreen.cpp
+          cgscreen.cpp \
+          cgeventqueue.cpp \
+          cgprogressbar.cpp \
+          cglistwidget.cpp \
+          cgfontprops.cpp
 
 
 SRC_FILE_O = $(subst .cpp,.o,$(SRC_FILE))
@@ -37,8 +43,8 @@ ${EXECUTABLE}: ${SRC_FILE_O}
 	$(CC) $(CFLAGS) -o $(EXECUTABLE) ${SRC_FILE_O} $(LDFLAGS)
 
 %.o: %.cpp
-	gcc -c $(CFLAGS) $*.cpp -o $*.o
-	gcc -MM $(CFLAGS) $*.cpp > $*.d
+	$(CC) -c $(CFLAGS) $*.cpp -o $*.o
+	@$(CC) -MM $(CFLAGS) $*.cpp > $*.d
 	@mv -f $*.d $*.d.tmp
 	@sed -e 's|.*:|$*.o:|' < $*.d.tmp > $*.d
 	@sed -e 's/.*://' -e 's/\\$$//' < $*.d.tmp | fmt -1 | \

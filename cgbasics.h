@@ -167,6 +167,18 @@ class cgKeyEvent: public CGEvent {
         bool m_alt;
 };
 
+enum cgAlignment {
+    cgalCenter,
+    cgalStart,
+    cgalEnd,
+    cgalLeft=cgalStart,
+    cgalRight=cgalEnd,
+    cgalTop=cgalStart,
+    cgalBottom=cgalEnd,
+
+};
+void cgDrawText(cairo_t* cr, int xx, int yy, int m_width, int m_height, const std::string& m_text, const std::string& m_fontFace=std::string("sans"), float m_fontSize=10.0, bool m_italic=false, bool m_bold=false, CGColor m_textColor=CGColor::ccBlack, float m_lineSpacing=1.2, cgAlignment m_horizontalAlignment=cgalCenter, cgAlignment m_verticalAlignment=cgalCenter);
+
 
 /** \brief convert a long integer to a C++ string */
 std::string cgIntToStr(long data);
