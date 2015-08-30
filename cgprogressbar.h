@@ -4,7 +4,7 @@
 #include "cgframe.h"
 #include "cgfontprops.h"
 
-/** \brief a progress bar */
+/** \brief a progress bar with 0..100% number */
 class CGProgressBar : public CGFrame, public CGFontProps
 {
     public:
@@ -58,5 +58,6 @@ class CGProgressBar : public CGFrame, public CGFontProps
         CGColor m_progressColor;
         bool m_showText;
 };
+
 
 #endif // CGPROGRESSBAR_H

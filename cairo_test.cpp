@@ -76,6 +76,23 @@ void setupGUI() {
     prog2->setShowText(false);
 
     lst=new CGListWidget(120,2,180,65,mainFrame);
+    lst->setBackgroundColor(CGColor::ccBlack);
+    lst->setFrameWidth(3);
+    lst->setFrameColor(CGColor::ccRed);
+    lst->setTextColor(CGColor::ccWhite);
+    lst->setSelectedColor(CGColor::ccGray75);
+    lst->setSelectedTextColor(CGColor::ccBlack);
+    lst->addItem("item 1");
+    lst->addItem("item 2");
+    lst->addItem("item 3");
+    lst->addItem("item 4");
+    lst->addItem("item 5");
+    lst->addItem("item 6");
+    lst->addItem("item 7");
+    lst->addItem("item 8");
+    lst->setCurrentItem(0);
+    lst->setFontFace("serif");
+    lst->setFontSize(12);
 
     for (int y=0; y<3; y++) {
         for (int x=0; x<3; x++) {
@@ -104,7 +121,8 @@ void destroyGUI() {
 void paintGUI(cairo_t *c, float fps=0) {
     char txt[1024];
     static float txtBackgroundI=0;
-    static float txtBackgroundInc=1;
+    static int cur=0;
+    static int curInc=1;
     sprintf(txt, "%4.2f fps\n%3.1f degC\nXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", fps, rpitemp_getCurrentCPUTemperature());
     lab1->setText(txt);
     mainFrame->paint(c);
@@ -112,9 +130,12 @@ void paintGUI(cairo_t *c, float fps=0) {
     //printf("%f\n", ((1.0+sin(2.0*M_PI*txtBackgroundI/50.0))/4.0+0.5)*1024.0);
     prog1->setValue(sin(2.0*M_PI*txtBackgroundI/50.0));
     prog2->setValue(cos(2.0*M_PI*txtBackgroundI/50.0));
-    txtBackgroundI+=txtBackgroundInc;
-    //if (txtBackgroundI>100.0 || txtBackgroundI<0.0) txtBackgroundInc*=-1.0;
+    txtBackgroundI+=1;
 
+    lst->setCurrentItem(cur/5);
+
+    cur+=curInc;
+    if (cur>=(int)lst->count()*5-1 || cur<=0) curInc*=-1;
 }
 
 
@@ -127,6 +148,8 @@ void prepareForMainloop() {
         wiringPiSetupSys ();
     }
     rpitemp_init();
+
+    //std::cout<<"COLOR TEST:\n  ccBlack "<<CGColor(CGColor::ccBlack)<<"\n  ccWhite "<<CGColor(CGColor::ccWhite)<<"\n  ccRed "<<CGColor(CGColor::ccRed)<<"\n  ccGreen "<<CGColor(CGColor::ccGreen)<<"\n  ccBlue "<<CGColor(CGColor::ccBlue);
 }
 
 void cleanupAfterMainloop() {

@@ -11,7 +11,7 @@ CGLabel::CGLabel(CGWidget *parent):
     setFrameWidth(0);
     setFrameColor(CGColor::ccTransparent);
     setBackgroundColor(CGColor::ccTransparent);
-    etTextColor(CGColor::ccBlack);
+    setTextColor(CGColor::ccBlack);
 }
 
 CGLabel::CGLabel(int x, int y, int width, int height, const std::string& text, CGWidget *parent):
@@ -77,10 +77,6 @@ void CGLabel::setText(const std::string &text)
     m_text=text;
 }
 
-void CGLabel::setTextColor(CGColor col)
-{
-    m_textColor=col;
-}
 
 void CGLabel::paint(cairo_t *cr) const
 {
@@ -90,6 +86,7 @@ void CGLabel::paint(cairo_t *cr) const
     float offy=m_textOffset;
     if (m_horizontalAlignment!=cgalLeft) offx=0;
     if (m_verticalAlignment!=cgalTop) offy=0;
+    //drawText(cr, m_border+offx, m_border+offy, m_width-m_frameWidth*2-offx*2, m_height-m_frameWidth*2-offy*2, m_text);
     cgDrawText(cr, m_border+offx, m_border+offy, m_width-m_frameWidth*2-offx*2, m_height-m_frameWidth*2-offy*2, m_text, m_fontFace, m_fontSize, m_italic, m_bold, m_textColor, m_lineSpacing, m_horizontalAlignment, m_verticalAlignment);
 
 }

@@ -22,6 +22,7 @@ static const struct RGBData {
     const char *name;
     uint32_t  value;
 } CGColorRGBTbl[] = {
+    { CGColor::ccInvalid, "invalidblack", rgb(0, 0, 0) },
     { CGColor::ccTransparent, "transparent", rgba(255,255,255,0) },
     { CGColor::ccInvalid, "aliceblue", rgb(240, 248, 255) },
     { CGColor::ccInvalid, "antiquewhite", rgb(250, 235, 215) },
@@ -80,6 +81,8 @@ static const struct RGBData {
     { CGColor::ccInvalid, "green", rgb( 0, 128, 0) },
     { CGColor::ccInvalid, "greenyellow", rgb(173, 255, 47) },
     { CGColor::ccGrey50, "grey", rgb(128, 128, 128) },
+    { CGColor::ccGrey10, "grey10", rgb(26,26,26) },
+    { CGColor::ccGray10, "gray10", rgb(26,26,26) },
     { CGColor::ccGrey25, "grey25", rgb(64,64,64) },
     { CGColor::ccGrey25, "gray25", rgb(64,64,64) },
     { CGColor::ccInvalid, "honeydew", rgb(240, 255, 240) },
@@ -195,13 +198,15 @@ CGColor::CGColor(CGColor::ColorConstants color)
 {
     r=g=b=0;
     a=255;
-    for (int i=0; i<CGColorRGBTblSize; i++) {
-        if (CGColorRGBTbl[i].colorConst==color) {
-            r=rgbR(CGColorRGBTbl[i].value);
-            g=rgbG(CGColorRGBTbl[i].value);
-            b=rgbB(CGColorRGBTbl[i].value);
-            a=rgbA(CGColorRGBTbl[i].value);
-            break;
+    if (color!=ccInvalid) {
+        for (int i=0; i<CGColorRGBTblSize; i++) {
+            if (CGColorRGBTbl[i].colorConst==color) {
+                r=rgbR(CGColorRGBTbl[i].value);
+                g=rgbG(CGColorRGBTbl[i].value);
+                b=rgbB(CGColorRGBTbl[i].value);
+                a=rgbA(CGColorRGBTbl[i].value);
+                break;
+            }
         }
     }
 }
@@ -225,13 +230,15 @@ CGColor &CGColor::operator=(CGColor::ColorConstants color)
 {
     r=g=b=0;
     a=255;
-    for (int i=0; i<CGColorRGBTblSize; i++) {
-        if (CGColorRGBTbl[i].colorConst==color) {
-            r=rgbR(CGColorRGBTbl[i].value);
-            g=rgbG(CGColorRGBTbl[i].value);
-            b=rgbB(CGColorRGBTbl[i].value);
-            a=rgbA(CGColorRGBTbl[i].value);
-            break;
+    if (color!=ccInvalid) {
+        for (int i=0; i<CGColorRGBTblSize; i++) {
+            if (CGColorRGBTbl[i].colorConst==color) {
+                r=rgbR(CGColorRGBTbl[i].value);
+                g=rgbG(CGColorRGBTbl[i].value);
+                b=rgbB(CGColorRGBTbl[i].value);
+                a=rgbA(CGColorRGBTbl[i].value);
+                break;
+            }
         }
     }
     return *this;
@@ -518,4 +525,11 @@ void cgDrawText(cairo_t* cr, int xx, int yy, int m_width, int m_height, const st
         cairo_show_text (cr, (*it).c_str());
         y=y+extents.height*m_lineSpacing;
     }
+}
+
+
+std::ostream &operator<<(std::ostream &stream, const CGColor &matrix)
+{
+    stream<<matrix.toString()<<"["<<(int)matrix.r<<", "<<(int)matrix.g<<", "<<(int)matrix.b<<", "<<(int)matrix.a<<"]";
+    return stream;
 }

@@ -43,7 +43,8 @@ void CGProgressBar::paint(cairo_t *c) const
     cairo_fill(c);
 
     if (m_showText) {
-        cgDrawText(c, 0, 0, m_width, m_height, progressText(), m_fontFace, m_fontSize, m_italic, m_bold, m_textColor);
+        drawAlignedText(c, 0, 0, m_width, m_height, progressText(), cgalCenter, cgalCenter);
+        //cgDrawText(c, 0, 0, m_width, m_height, progressText(), m_fontFace, m_fontSize, m_italic, m_bold, m_textColor);
     }
 }
 
@@ -51,5 +52,4 @@ std::string CGProgressBar::progressText() const
 {
     float w=(m_value-m_min)/(m_max-m_min);
     return cgFormat("%.0f %%", w*100.0);
-
 }

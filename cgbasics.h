@@ -15,6 +15,7 @@ struct CGColor {
         ccTransparent=0,
         ccBlack,
         ccWhite,
+        ccGrey10,
         ccGrey25,
         ccGrey50,
         ccGrey75,
@@ -32,13 +33,14 @@ struct CGColor {
         ccDarkcyan,
         ccDarkorange,
         ccSilver=ccGrey75,
+        ccGray10=ccGrey10,
         ccGray25=ccGrey25,
         ccGray75=ccGrey75,
         ccGray50=ccGrey50,
         ccDarkgrey=ccGray25,
         ccDarkgray=ccGray25,
 
-        ccInvalid=ccBlack,
+        ccInvalid,
     };
      CGColor(ColorConstants color=ccBlack);
     inline  CGColor(const CGColor& other) {
@@ -98,6 +100,8 @@ struct CGColor {
 
     std::string toString() const;
 };
+
+std::ostream& operator<< (std::ostream& stream, const CGColor& matrix);
 
 
 class CGEvent {

@@ -4,8 +4,9 @@
 #include "cgframe.h"
 #include <vector>
 #include <string>
+#include "cgfontprops.h"
 
-class CGListWidget: public CGFrame
+class CGListWidget: public CGFrame, public CGFontProps
 {
     public:
         explicit CGListWidget(CGWidget* parent=NULL);
@@ -18,26 +19,31 @@ class CGListWidget: public CGFrame
         }
         inline void setCurrentItem(int v) {
             m_currentItem=v;
+            updateState();
         }
-        inline void nextItem() {
-            m_currentItem++;
-            if (m_currentItem>=m_items.size()) m_currentItem=m_items.size()-1;
+        inline void nextItem(int inc=1) {
+            m_currentItem+=inc;
+            updateState();
         }
-        inline void prevItem() {
-            m_currentItem--;
-            if (m_currentItem<=0) m_currentItem=0;
-            if (m_items.size()<=0) m_currentItem=0;
+        inline void prevItem(int inc=1) {
+            m_currentItem-=inc;
+            updateState();
         }
-        inline void scrollDown() {
-            m_startVisible++;
-            if (m_startVisible>=m_items.size()) m_startVisible=m_items.size()-1;
+        inline void scrollDown(int inc=1) {
+            m_startVisible+=inc;
+            updateState();
         }
-        inline void scrollUp() {
-            m_startVisible--;
-            if (m_startVisible<=0) m_startVisible=0;
-            if (m_items.size()<=0) m_startVisible=0;
+        inline void scrollUp(int inc=1) {
+            m_startVisible-=inc;
+            updateState();
         }
 
+        inline int scrollbarWidth() const {
+            return m_scrollbarWidth;
+        }
+        inline void setScrollbarWidth(int v) {
+            m_scrollbarWidth=v;
+        }
 
         inline CGColor selectedColor() const {
             return m_selectedColor;
@@ -46,16 +52,54 @@ class CGListWidget: public CGFrame
             m_selectedColor=v;
         }
 
+
+        inline CGColor selectedTextColor() const {
+            return m_selectedTextColor;
+        }
+        inline void setSelectedTextColor(CGColor v) {
+            m_selectedTextColor=v;
+        }
+
+        inline CGColor scrollbarColor() const {
+            return m_scrollbarColor;
+        }
+        inline void SetScrollbarColor(CGColor v) {
+            m_scrollbarColor=v;
+        }
+
+        inline CGColor scrollbarBackgroundColor() const {
+            return m_scrollbarBackgroundColor;
+        }
+        inline void setScrollbarBackgroundColor(CGColor v) {
+            m_scrollbarBackgroundColor=v;
+        }
+
+        inline bool showScrollbar() const {
+            return m_showScrollbar;
+        }
+        inline void setShowScrollbar(bool v) {
+            m_showScrollbar=v;
+        }
+
         void addItem(const std::string& item);
         void addItems(const std::vector<std::string>& items);
         void clear();
+        size_t count() const;
         std::string item(int i, const std::string& defaultItem=std::string()) const;
 
+
     protected:
+        void updateState();
+        float itemHeight() const;
         std::vector<std::string> m_items;
         int m_currentItem;
         int m_startVisible;
         CGColor m_selectedColor;
+        CGColor m_selectedTextColor;
+        CGColor m_scrollbarColor;
+        CGColor m_scrollbarBackgroundColor;
+        int m_scrollbarWidth;
+        bool m_showScrollbar;
 };
 
 #endif // CGLISTWIDGET_H
