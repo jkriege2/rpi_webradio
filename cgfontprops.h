@@ -15,7 +15,7 @@ class CGFontProps
             m_fontFace="sans";
             m_fontSize=10;
             m_lineSpacing=1.2;
-            setTextColor(CGColor::ccBlack);
+            setTextColor(CGColor::ccWhite);
         }
 
         virtual ~CGFontProps() {}

@@ -4,6 +4,7 @@
 CGListWidget::CGListWidget(CGWidget *parent):
     CGFrame(parent)
 {
+    m_textColor=CGColor::ccGray50;
     m_selectedColor=CGColor::ccGray25;
     m_selectedTextColor=CGColor::ccWhite;
     m_scrollbarColor=CGColor::ccGray25;
@@ -18,6 +19,7 @@ CGListWidget::CGListWidget(CGWidget *parent):
 CGListWidget::CGListWidget(int x, int y, int width, int height, CGWidget *parent):
     CGFrame(x,y,width,height,parent)
 {
+    m_textColor=CGColor::ccGray50;
     m_selectedColor=CGColor::ccGray25;
     m_selectedTextColor=CGColor::ccWhite;
     m_scrollbarColor=CGColor::ccGray25;

@@ -27,7 +27,9 @@ SRC_FILE= cairo_test.cpp \
           cgeventqueue.cpp \
           cgprogressbar.cpp \
           cglistwidget.cpp \
-          cgfontprops.cpp
+          cgfontprops.cpp \
+          cgtreewidget.cpp \
+          cgmultiscreens.cpp
 
 
 SRC_FILE_O = $(subst .cpp,.o,$(SRC_FILE))

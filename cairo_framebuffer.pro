@@ -15,7 +15,9 @@ SOURCES += \
     cgeventqueue.cpp \
     cgprogressbar.cpp \
     cglistwidget.cpp \
-    cgfontprops.cpp
+    cgfontprops.cpp \
+    cgtreewidget.cpp \
+    cgmultiscreens.cpp
 
 HEADERS += \
     framebuffer_cairo_tools.h \
@@ -28,7 +30,9 @@ HEADERS += \
     cgeventqueue.h \
     cgprogressbar.h \
     cglistwidget.h \
-    cgfontprops.h
+    cgfontprops.h \
+    cgtreewidget.h \
+    cgmultiscreens.h
 
 DISTFILES += \
     Makefile

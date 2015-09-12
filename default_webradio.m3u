@@ -1,0 +1,18 @@
+#EXTM3U
+
+
+#EXTINF:-1:webradio/Deutschlandfunk
+http://stream.dradio.de/7/249/142684/v1/gnl.akacast.akamaistream.net/dradio_mp3_dlf_m
+
+#EXTINF:-1:webradio/Deutschlandfunk Kultur 
+http://stream.dradio.de/7/530/142684/v1/gnl.akacast.akamaistream.net/dradio_mp3_dkultur_m
+
+#EXTINF:-1:webradio/Deutschlandfunk Wissen 
+http://stream.dradio.de/7/728/142684/v1/gnl.akacast.akamaistream.net/dradio_mp3_dwissen_m
+
+#EXTINF:-1,SWR2
+http://swr-mp3-m-swr2.akacast.akamaistream.net/7/721/137135/v1/gnl.akacast.akamaistream.net/swr-mp3-m-swr2
+
+#EXTINF:-1:webradio/SWR3
+http://swr-mp3-m-swr3.akacast.akamaistream.net/7/720/137136/v1/gnl.akacast.akamaistream.net/swr-mp3-m-swr3
+
