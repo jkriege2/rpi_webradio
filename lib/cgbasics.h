@@ -15,30 +15,33 @@ struct CGColor {
         ccTransparent=0,
         ccBlack,
         ccWhite,
+        ccGray,
+        ccGray10,
+        ccGray25,
+        ccGray75,
+        ccGray50,
+        ccGrey,
         ccGrey10,
         ccGrey25,
         ccGrey50,
         ccGrey75,
+        ccSilver,
+        ccDarkgrey,
+        ccDarkgray,
         ccRed,
         ccDarkred,
         ccGreen,
         ccDarkgreen,
         ccBlue,
         ccDarkblue,
-        ccMagenty,
+        ccMagenta,
         ccDarkmagenta,
         ccYellow,
         ccOrange,
         ccCyan,
         ccDarkcyan,
         ccDarkorange,
-        ccSilver=ccGrey75,
-        ccGray10=ccGrey10,
-        ccGray25=ccGrey25,
-        ccGray75=ccGrey75,
-        ccGray50=ccGrey50,
-        ccDarkgrey=ccGray25,
-        ccDarkgray=ccGray25,
+        ccNavy,
 
         ccInvalid,
     };
@@ -97,8 +100,23 @@ struct CGColor {
     unsigned char b;
     unsigned char a;
 
+    inline bool isTransparent() const {
+        return a==0;
+    }
+
 
     std::string toString() const;
+    inline void cairo_set_source(cairo_t* c) const {
+        cairo_set_source_rgba(c, redf(), greenf(), bluef(), alphaf());
+    }
+
+    static CGColor colorLinear(float v, CGColor col1, CGColor col2);
+    inline CGColor colorLinearTo(float v, CGColor col2) const {
+        return colorLinear(v, *this, col2);
+    }
+    inline CGColor colorLinearFrom(float v, CGColor col1) const {
+        return colorLinear(v, col1, *this);
+    }
 };
 
 std::ostream& operator<< (std::ostream& stream, const CGColor& matrix);

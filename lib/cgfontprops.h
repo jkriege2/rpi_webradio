@@ -5,6 +5,7 @@
 #include <string>
 #include <list>
 #include <vector>
+#include "cgpalette.h"
 
 class CGFontProps
 {
@@ -59,6 +60,15 @@ class CGFontProps
         inline void setLineSpacing(float size) {
             m_lineSpacing=size;
         }
+
+        virtual inline void setFontPropsFromPalette(CGPalette *palette)
+        {
+            if (palette) {
+                setFontFace(palette->fontName);
+                setFontSize(palette->fontSize);
+                setTextColor(palette->textColor);
+            }
+        }
     protected:
         virtual void setFontProps(cairo_t *c) const;
         virtual void setFontProps(cairo_t *c, CGColor color) const;
@@ -66,6 +76,7 @@ class CGFontProps
         virtual void drawColoredText(cairo_t* cr, float xx, float yy, float m_width, float m_height, const std::string& m_text, CGColor color) const;
         virtual void drawAlignedText(cairo_t* cr, float xx, float yy, float m_width, float m_height, const std::string& m_text, cgAlignment m_horizontalAlignment, cgAlignment m_verticalAlignment) const;
         virtual void drawAlignedColoredText(cairo_t* cr, float xx, float yy, float m_width, float m_height, const std::string& m_text, CGColor color, cgAlignment m_horizontalAlignment, cgAlignment m_verticalAlignment) const;
+        virtual void drawAlignedColoredTextFillBackground(cairo_t* cr, float xx, float yy, float m_width, float m_height, const std::string& m_text, CGColor color, CGColor colorBack, cgAlignment m_horizontalAlignment, cgAlignment m_verticalAlignment) const;
         virtual std::list<std::string> splitTextIntoLines(cairo_t *cr, const std::string m_text, float* p_maxH=NULL, float* p_maxW=NULL, float* p_sumH=NULL) const;
         CGColor m_textColor;
         float m_fontSize;
@@ -76,14 +87,14 @@ class CGFontProps
 
 };
 
-class CGFontPropsWithAlignment: public CGFontProps {
+class CGPropsAlignment  {
     public:
-        inline CGFontPropsWithAlignment() {
+        inline CGPropsAlignment() {
             m_verticalAlignment=cgalLeft;
             m_horizontalAlignment=cgalTop;
         }
 
-        virtual ~CGFontPropsWithAlignment() {}
+        virtual ~CGPropsAlignment() {}
 
         inline cgAlignment verticalAlignment() const {
             return m_verticalAlignment;
@@ -98,11 +109,19 @@ class CGFontPropsWithAlignment: public CGFontProps {
             m_horizontalAlignment=val;
         }
     protected:
-
-        virtual void drawColoredText(cairo_t* cr, float xx, float yy, float m_width, float m_height, const std::string& m_text, CGColor color) const;
         cgAlignment m_verticalAlignment;
         cgAlignment m_horizontalAlignment;
 
+
+};
+
+
+class CGFontPropsWithAlignment: public CGFontProps, public CGPropsAlignment {
+    public:
+        inline CGFontPropsWithAlignment(): CGFontProps(), CGPropsAlignment() {}
+        virtual inline ~CGFontPropsWithAlignment() {}
+    protected:
+        virtual void drawColoredText(cairo_t* cr, float xx, float yy, float m_width, float m_height, const std::string& m_text, CGColor color) const;
 
 };
 

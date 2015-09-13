@@ -7,13 +7,12 @@ CGListWidget::CGListWidget(CGWidget *parent):
     m_textColor=CGColor::ccGray50;
     m_selectedColor=CGColor::ccGray25;
     m_selectedTextColor=CGColor::ccWhite;
-    m_scrollbarColor=CGColor::ccGray25;
-    m_scrollbarBackgroundColor=CGColor::ccGray10;
     m_showScrollbar=true;
     m_currentItem=0;
     m_items.clear();
     m_startVisible=0;
     m_scrollbarWidth=10;
+    setPropsFromDefaultPalette();
 }
 
 CGListWidget::CGListWidget(int x, int y, int width, int height, CGWidget *parent):
@@ -22,13 +21,12 @@ CGListWidget::CGListWidget(int x, int y, int width, int height, CGWidget *parent
     m_textColor=CGColor::ccGray50;
     m_selectedColor=CGColor::ccGray25;
     m_selectedTextColor=CGColor::ccWhite;
-    m_scrollbarColor=CGColor::ccGray25;
-    m_scrollbarBackgroundColor=CGColor::ccGray10;
     m_showScrollbar=true;
     m_currentItem=0;
     m_items.clear();
     m_startVisible=0;
-    m_scrollbarWidth=7;
+    m_scrollbarWidth=10;
+    setPropsFromDefaultPalette();
 }
 
 CGListWidget::~CGListWidget()
@@ -62,7 +60,7 @@ void CGListWidget::paint(cairo_t *c) const
                 CGColor col=m_textColor;
                 if (m_currentItem==i) {
                     cairo_rectangle(c, x, y, w, lh);
-                    cairo_set_source_rgba(c, m_selectedColor.redf(), m_selectedColor.greenf(), m_selectedColor.bluef(), m_selectedColor.alphaf());
+                    m_selectedColor.cairo_set_source(c);
                     cairo_fill(c);
 
                     col=m_selectedTextColor;
@@ -81,19 +79,20 @@ void CGListWidget::paint(cairo_t *c) const
     //std::cout<<"-----------------------\n";
     cairo_restore(c);
     if (m_showScrollbar) {
+        paintScrollbar(c, w+1,m_frameWidth+2,m_scrollbarWidth,m_height-2.0*m_frameWidth-2, 0, count(), ifirst, ilast-ifirst);
 
-        float sbh=float(m_height-2.0*m_frameWidth)-3.0;
-        float sh=std::max(float(m_scrollbarWidth), sbh*float(ilast-ifirst)/float(count()-1));
-        float sh_start=(sbh-sh)*float(ifirst)/float(count()-1);
-        //std::cout<<"cur="<<m_currentItem<<" start="<<m_startVisible<<" sbh="<<sbh<<" sh="<<sh<<" sh_start="<<sh_start<<" w="<<w<<"\n";
+//        float sbh=float(m_height-2.0*m_frameWidth)-3.0;
+//        float sh=std::max(float(m_scrollbarWidth), sbh*float(ilast-ifirst)/float(count()-1));
+//        float sh_start=(sbh-sh)*float(ifirst)/float(count()-1);
+//        //std::cout<<"cur="<<m_currentItem<<" start="<<m_startVisible<<" sbh="<<sbh<<" sh="<<sh<<" sh_start="<<sh_start<<" w="<<w<<"\n";
 
-        cairo_rectangle(c, w+1, m_frameWidth+2, m_scrollbarWidth, sbh);
-        cairo_set_source_rgba(c, m_scrollbarBackgroundColor.redf(), m_scrollbarBackgroundColor.greenf(), m_scrollbarBackgroundColor.bluef(), m_scrollbarBackgroundColor.alphaf());
-        cairo_fill(c);
+//        cairo_rectangle(c, w+1, m_frameWidth+2, m_scrollbarWidth, sbh);
+//        m_scrollbarBackgroundColor.cairo_set_source(c);
+//        cairo_fill(c);
 
-        cairo_rectangle(c, w+1, m_frameWidth+2+sh_start, m_scrollbarWidth, sh);
-        cairo_set_source_rgba(c, m_scrollbarColor.redf(), m_scrollbarColor.greenf(), m_scrollbarColor.bluef(), m_scrollbarColor.alphaf());
-        cairo_fill(c);
+//        cairo_rectangle(c, w+1, m_frameWidth+2+sh_start, m_scrollbarWidth, sh);
+//        m_scrollbarColor.cairo_set_source(c);
+//        cairo_fill(c);
     }
 }
 
@@ -114,7 +113,7 @@ void CGListWidget::clear()
     m_items.clear();
 }
 
-size_t CGListWidget::count() const
+int CGListWidget::count() const
 {
     return m_items.size();
 }
@@ -166,4 +165,15 @@ void CGListWidget::updateState()
 float CGListWidget::itemHeight() const
 {
     return m_fontSize*1.3;
+}
+
+void CGListWidget::setPropsFromPalette(CGPalette *palette)
+{
+    CGFrame::setPropsFromPalette(palette);
+    if (palette) {
+        setFontPropsFromPalette(palette);
+        setScrollbarPropsFromPalette(palette);
+        setSelectedColor(palette->selectionColor);
+        setSelectedTextColor(palette->selectedIconOrTextColor);
+    }
 }

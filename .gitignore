@@ -30,3 +30,4 @@
 /test.sh
 
 wiringPi
+/cgimage.cpp

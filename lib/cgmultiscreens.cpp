@@ -5,18 +5,21 @@ CGMultiScreens::CGMultiScreens(CGWidget *parent):
     CGScreen(parent)
 {
     m_currentScreen=0;
+    setPropsFromDefaultPalette();
 }
 
 CGMultiScreens::CGMultiScreens(const fbcairo_context *context, CGWidget *parent):
     CGScreen(context, parent)
 {
     m_currentScreen=0;
+    setPropsFromDefaultPalette();
 }
 
 CGMultiScreens::CGMultiScreens(int width, int height, CGWidget *parent):
     CGScreen(width, height, parent)
 {
     m_currentScreen=0;
+    setPropsFromDefaultPalette();
 }
 
 CGMultiScreens::~CGMultiScreens()
@@ -113,3 +116,12 @@ CGScreen *CGMultiScreens::screen(int i)
     return NULL;
 }
 
+void CGMultiScreens::setPropsFromPalette(CGPalette *palette)
+{
+    CGScreen::setPropsFromPalette(palette);
+    for (size_t i=0; i<m_screens.size(); i++) {
+        if (m_screens[i]) {
+            m_screens[i]->setPropsFromPalette(palette);
+        }
+    }
+}

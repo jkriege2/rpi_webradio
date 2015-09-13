@@ -51,6 +51,7 @@ class CGProgressBar : public CGFrame, public CGFontProps
         virtual void paint(cairo_t *c) const;
         virtual std::string progressText() const;
 
+        void setPropsFromPalette(CGPalette *palette);
     protected:
         float m_min;
         float m_max;

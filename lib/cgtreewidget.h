@@ -5,8 +5,9 @@
 #include <vector>
 #include <string>
 #include "cgfontprops.h"
+#include "cgscrollbar.h"
 
-class CGTreeWidget: public CGFrame, public CGFontProps
+class CGTreeWidget: public CGFrame, public CGFontProps, public CGScrollBarMixin
 {
     public:
         struct TreeItem {
@@ -35,6 +36,7 @@ class CGTreeWidget: public CGFrame, public CGFontProps
             inline bool hasChildern() const {
                 return count()>0;
             }
+            int level() const;
         };
 
         explicit CGTreeWidget(CGWidget* parent=NULL);
@@ -55,6 +57,12 @@ class CGTreeWidget: public CGFrame, public CGFontProps
             updateState();
         }
 
+        inline TreeItem* currentTreeItemParent() const {
+            if (currentTreeItem()) {
+                return currentTreeItem()->parent;
+            }
+            return NULL;
+        }
         inline TreeItem* currentTreeItem() const {
             if (m_root) {
                 return m_root->child(m_currentItem);
@@ -104,6 +112,13 @@ class CGTreeWidget: public CGFrame, public CGFontProps
             m_subindicatorWidth=v;
         }
 
+        inline int treeIndent() const {
+            return m_treeIndent;
+        }
+        inline void setTreeIndent(int v) {
+            m_treeIndent=v;
+        }
+
         inline CGColor selectedColor() const {
             return m_selectedColor;
         }
@@ -140,9 +155,16 @@ class CGTreeWidget: public CGFrame, public CGFontProps
             m_showScrollbar=v;
         }
 
+        inline bool showUpperLevels() const {
+            return m_showUpperLevels;
+        }
+        inline void setShowUpperLevels(bool v) {
+            m_showUpperLevels=v;
+        }
+
         CGTreeWidget::TreeItem * addItem(const std::string & name, const std::string& data=std::string(), int id=-1);
         void clear();
-        size_t count() const;
+        int count() const;
         std::string itemName(int i, const std::string& defaultItem=std::string()) const;
         std::string itemData(int i, const std::string& defaultItem=std::string()) const;
         int itemID(int i, int defaultItem=-1) const;
@@ -156,9 +178,14 @@ class CGTreeWidget: public CGFrame, public CGFontProps
         }
 
 
+        void setPropsFromPalette(CGPalette *palette);
     protected:
         void updateState();
         float itemHeight() const;
+        int currentLevel() const;
+        void drawIndicator(cairo_t* c, float x, float y, float lh, CGColor col) const ;
+
+
         TreeItem* m_root;
         int m_currentItem;
         int m_startVisible;
@@ -169,8 +196,10 @@ class CGTreeWidget: public CGFrame, public CGFontProps
         CGColor m_scrollbarBackgroundColor;
         int m_scrollbarWidth;
         bool m_showScrollbar;
+        bool m_showUpperLevels;
 
         int m_subindicatorWidth;
+        int m_treeIndent;
 };
 
 #endif // CGTreeWidget_H

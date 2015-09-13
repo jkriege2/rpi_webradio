@@ -35,18 +35,21 @@
 #include "cglistwidget.h"
 #include "cgmultiscreens.h"
 #include "cgtreewidget.h"
+#include "cgimage.h"
 
 
 fbcairo_context* context;
 
 CGScreen* mainFrame=NULL;
 CGScreen* mainFrame2=NULL;
+CGScreen* mainFrame3=NULL;
 CGLabel* lab1=NULL;
 CGProgressBar* prog1=NULL;
 CGProgressBar* prog2=NULL;
 CGListWidget* lst=NULL;
 CGMultiScreens* multi;
 CGTreeWidget* tree;
+CGImage* imgs[8];
 
 
 
@@ -57,7 +60,7 @@ void setupGUI() {
 
     {
         mainFrame=multi->addScreen();//new CGScreen(context);
-        mainFrame->setBackgroundColor(CGColor::ccBlack);
+        //mainFrame->setBackgroundColor(CGColor::ccBlack);
 
         CGFrame* innerframe=new CGFrame(2,2,100,20, mainFrame);
         innerframe->setBackgroundColor(CGColor(50));
@@ -84,12 +87,12 @@ void setupGUI() {
         prog2->setShowText(false);
 
         lst=new CGListWidget(120,2,180,65,mainFrame);
-        lst->setBackgroundColor(CGColor::ccBlack);
+        //lst->setBackgroundColor(CGColor::ccBlack);
         lst->setFrameWidth(3);
-        lst->setFrameColor(CGColor::ccRed);
-        lst->setTextColor(CGColor::ccWhite);
-        lst->setSelectedColor(CGColor::ccGray75);
-        lst->setSelectedTextColor(CGColor::ccBlack);
+        //lst->setFrameColor(CGColor::ccRed);
+        //lst->setTextColor(CGColor::ccWhite);
+        //lst->setSelectedColor(CGColor::ccGray75);
+        //lst->setSelectedTextColor(CGColor::ccBlack);
         lst->addItem("item 1");
         lst->addItem("item 2");
         lst->addItem("item 3");
@@ -121,45 +124,68 @@ void setupGUI() {
     }
     {
         mainFrame2=multi->addScreen();//new CGScreen(context);
-        tree=new CGTreeWidget(10,10,mainFrame2->width()-20, mainFrame2->height()-20, mainFrame2);
+        tree=new CGTreeWidget(10,10,mainFrame2->width()-20, mainFrame2->height()-50, mainFrame2);
         tree->setFontSize(15);
-        tree->addItem("item 1");
-        tree->lastItem()->addChild("item 1.1");
-        tree->lastItem()->lastChild()->addChild("item 1.1.1");
-        tree->lastItem()->lastChild()->addChild("item 1.1.2");
-        tree->lastItem()->lastChild()->addChild("item 1.1.3");
-        tree->lastItem()->lastChild()->addChild("item 1.1.4");
-        tree->lastItem()->lastChild()->addChild("item 1.1.5");
-        tree->lastItem()->lastChild()->addChild("item 1.1.6");
-        tree->lastItem()->addChild("item 1.2");
-        tree->lastItem()->addChild("item 1.3");
-        tree->lastItem()->lastChild()->addChild("item 1.3.1");
-        tree->lastItem()->lastChild()->addChild("item 1.3.2");
-        tree->lastItem()->lastChild()->addChild("item 1.3.3");
-        tree->lastItem()->lastChild()->addChild("item 1.3.4");
-        tree->lastItem()->lastChild()->addChild("item 1.3.5");
-        tree->lastItem()->lastChild()->addChild("item 1.3.6");
-        tree->addItem("item 2");
-        tree->addItem("item 3");
-        tree->lastItem()->addChild("item 3.1");
-        tree->lastItem()->lastChild()->addChild("item 3.1.1");
-        tree->lastItem()->lastChild()->addChild("item 3.1.2");
-        tree->lastItem()->lastChild()->addChild("item 3.1.3");
-        tree->lastItem()->lastChild()->addChild("item 3.1.4");
-        tree->lastItem()->lastChild()->addChild("item 3.1.5");
-        tree->lastItem()->lastChild()->addChild("item 3.1.6");
-        tree->lastItem()->addChild("item 3.2");
-        tree->lastItem()->addChild("item 3.3");
-        tree->lastItem()->lastChild()->addChild("item 3.3.1");
-        tree->lastItem()->lastChild()->addChild("item 3.3.2");
-        tree->lastItem()->lastChild()->addChild("item 3.3.3");
-        tree->lastItem()->lastChild()->addChild("item 3.3.4");
-        tree->lastItem()->lastChild()->addChild("item 3.3.5");
-        tree->lastItem()->lastChild()->addChild("item 3.3.6");
-        tree->addItem("item 4");
+
+
+        for (int i=0; i<20; i++) {
+            tree->addItem(cgFormat("item %d",i));
+            if (i%4<3) {
+                for (int j=0; j<10; j++) {
+                    if (j%4<2) {
+                        tree->lastItem()->addChild(cgFormat("subitem %d.%d",i,j));
+                        for (int k=0; k<15; k++) {
+                            tree->lastItem()->lastChild()->addChild(cgFormat("subsubitem %d.%d.%d",i,j,k));
+                            for (int l=0; l<15; l++) {
+                                tree->lastItem()->lastChild()->lastChild()->addChild(cgFormat("subsubsubitem %d.%d.%d.%d",i,j,k,l));
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
 
     }
+    {
+        mainFrame3=multi->addScreen();
+        int ww=(mainFrame2->width()-20)/2.0;
+        int hh=(mainFrame2->height()-40)/4.0;
+        int cnt=0;
+        imgs[cnt]=new CGImage(10,10+hh*(cnt/2), ww, hh, mainFrame3);
+        imgs[cnt]->setImagePNG("../images/lena.png");
+        cnt++;
+        imgs[cnt]=new CGImage(10+ww,10+hh*(cnt/2), ww, hh, mainFrame3);
+        imgs[cnt]->setImagePNG("../images/lena.png");
+        imgs[cnt]->setImageScaled(CGImage::smOriginal);
+        cnt++;
+        imgs[cnt]=new CGImage(10,10+hh*(cnt/2), ww, hh, mainFrame3);
+        imgs[cnt]->setImagePNG("../images/lena.png");
+        imgs[cnt]->setImageScaled(CGImage::smShrinkOnly);
+        cnt++;
+        imgs[cnt]=new CGImage(10+ww,10+hh*(cnt/2), ww, hh, mainFrame3);
+        imgs[cnt]->setImagePNG("../images/lena.png");
+        imgs[cnt]->setImageScaled(CGImage::smExpandOnly);
+        cnt++;
 
+
+        imgs[cnt]=new CGImage(10,10+hh*(cnt/2), ww, hh, mainFrame3);
+        imgs[cnt]->setImagePNG("../images/icon.png");
+        imgs[cnt]->setImageScaled(CGImage::smOriginal);
+        cnt++;
+        imgs[cnt]=new CGImage(10+ww,10+hh*(cnt/2), ww, hh, mainFrame3);
+        imgs[cnt]->setImagePNG("../images/icon.png");
+        imgs[cnt]->setImageScaled(CGImage::smOriginal);
+        cnt++;
+        imgs[cnt]=new CGImage(10,10+hh*(cnt/2), ww, hh, mainFrame3);
+        imgs[cnt]->setImagePNG("../images/icon.png");
+        imgs[cnt]->setImageScaled(CGImage::smShrinkOnly);
+        cnt++;
+        imgs[cnt]=new CGImage(10+ww,10+hh*(cnt/2), ww, hh, mainFrame3);
+        imgs[cnt]->setImagePNG("../images/icon.png");
+        imgs[cnt]->setImageScaled(CGImage::smExpandOnly);
+        cnt++;
+    }
 }
 void destroyGUI() {
     delete multi;
@@ -170,7 +196,7 @@ void destroyGUI() {
 void paintGUI(cairo_t *c, float fps=0) {
     char txt[1024];
     static float txtBackgroundI=0;
-    static int globcnt=0;
+    static int globcnt=400;
     static int cur=0;
     static int curInc=1;
     sprintf(txt, "%4.2f fps\n%3.1f degC\n%dXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", fps, rpitemp_getCurrentCPUTemperature(), globcnt);
@@ -189,24 +215,31 @@ void paintGUI(cairo_t *c, float fps=0) {
 
     globcnt++;
     multi->setCurrentScreen(0);
-    if (globcnt>100) {
+
+    if (globcnt<=100) {
+    } else if (globcnt>100 && globcnt<=400) {
         multi->setCurrentScreen(1);
         if (globcnt%5==0) {
-            if (globcnt%10==0) {
+            int rng=rand()%10;
+            if (rng==0) {
+                tree->upLevel();
+            } else if (rng==9) {
+                tree->downLevel();
+            } else if (rng>=5) {
                 tree->nextItem();
             } else {
                 tree->prevItem();
             }
-        } else if (globcnt%13==0) {
-            if (globcnt%26==0) {
-                tree->upLevel();
-            } else {
-                tree->downLevel();
-            }
         }
-    } else if (globcnt>200) {
+    } else if (globcnt>400 && globcnt<=450) {
+        multi->setCurrentScreen(2);
+
+    } else {
         globcnt=0;
     }
+    mainFrame->setTitle(cgFormat("screen %d/%d: %d", multi->currentScreenID()+1, multi->count(), globcnt));
+    mainFrame2->setTitle(cgFormat("screen %d/%d: %d", multi->currentScreenID()+1, multi->count(), globcnt));
+
 }
 
 

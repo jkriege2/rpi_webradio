@@ -2,10 +2,11 @@ all: Release
 debug: Debug
 release: Release
 
+LIB=../../../LIB/trunk
 CC=g++
 
 
-CFLAGS =  -Wall -pedantic -std=c++11 -I./lib `pkg-config --cflags cairo`
+CFLAGS =  -Wall -pedantic -std=c++11 -I../lib `pkg-config --cflags cairo`
 LDFLAGS = -Wall -pedantic -std=c++11 `pkg-config --libs cairo` -lwiringPi
 
 Release: CFLAGS += -O2
@@ -16,22 +17,22 @@ Debug: CC += -g -DDEBUG
 
 EXECUTABLE=cairo_test
 SRC_FILE= cairo_test.cpp \
-          ./lib/framebuffer_cairo_tools.cpp \
-          ./lib/cgwidget.cpp \
-          ./lib/cgframe.cpp \
-          ./lib/cglabel.cpp \
-          ./lib/rpi_tools.cpp \
-          ./lib/cgbasics.cpp \
-          ./lib/cgscreen.cpp \
-          ./lib/cgeventqueue.cpp \
-          ./lib/cgprogressbar.cpp \
-          ./lib/cglistwidget.cpp \
-          ./lib/cgfontprops.cpp \
-          ./lib/cgtreewidget.cpp \
-          ./lib/cgmultiscreens.cpp \
-          ./lib/cgscrollbar.cpp \
-          ./lib/cgpalette.cpp \
-          ./lib/cgimage.cpp
+          ../lib/framebuffer_cairo_tools.cpp \
+          ../lib/cgwidget.cpp \
+          ../lib/cgframe.cpp \
+          ../lib/cglabel.cpp \
+          ../lib/rpi_tools.cpp \
+          ../lib/cgbasics.cpp \
+          ../lib/cgscreen.cpp \
+          ../lib/cgeventqueue.cpp \
+          ../lib/cgprogressbar.cpp \
+          ../lib/cglistwidget.cpp \
+          ../lib/cgfontprops.cpp \
+          ../lib/cgtreewidget.cpp \
+          ../lib/cgmultiscreens.cpp \
+          ../lib/cgscrollbar.cpp \
+          ../lib/cgpalette.cpp \
+          ../lib/cgimage.cpp
 
 
 SRC_FILE_O = $(subst .cpp,.o,$(SRC_FILE))

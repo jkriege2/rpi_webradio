@@ -9,6 +9,7 @@ class CGFrame: public CGWidget {
         explicit CGFrame(int x, int y, int width, int height, CGWidget* parent=NULL);
         virtual ~CGFrame();
 
+        virtual void setPropsFromPalette(CGPalette* palette);
 
         inline CGColor frameColor() const {
             return m_frameColor;

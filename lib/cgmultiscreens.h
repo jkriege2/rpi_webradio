@@ -33,6 +33,7 @@ class CGMultiScreens : public CGScreen
         inline int count() const {
             return m_screens.size();
         }
+        void setPropsFromPalette(CGPalette *palette);
     protected:
         std::vector<CGScreen*> m_screens;
         int m_currentScreen;

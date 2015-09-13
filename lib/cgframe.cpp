@@ -7,8 +7,8 @@ CGFrame::CGFrame(CGWidget *parent):
     m_frameWidth(1),
     m_frameColor(255)
 {
-    setBackgroundColor(CGColor(0));
     m_border=m_frameWidth+1;
+    setPropsFromDefaultPalette();
 }
 
 CGFrame::CGFrame(int x, int y, int width, int height, CGWidget *parent):
@@ -19,11 +19,21 @@ CGFrame::CGFrame(int x, int y, int width, int height, CGWidget *parent):
 {
     setBackgroundColor(CGColor(0));
     m_border=m_frameWidth+1;
+    setPropsFromDefaultPalette();
 }
 
 CGFrame::~CGFrame()
 {
 
+}
+
+void CGFrame::setPropsFromPalette(CGPalette *palette)
+{
+    CGWidget::setPropsFromPalette(palette);
+    if (palette) {
+        setFrameWidth(palette->frameWidth);
+        setFrameColor(palette->frameColor);
+    }
 }
 
 
@@ -42,8 +52,10 @@ void CGFrame::paint(cairo_t *c) const
 {
     //std::cout<<"draw frame ("<<m_x<<", "<<m_y<<"; "<<m_width<<"x"<<m_height<<") -> abs: ("<<absX()<<", "<<absY()<<"; "<<m_width<<"x"<<m_height<<")\n";
     CGWidget::paint(c);
-    cairo_rectangle(c, m_frameWidth/2.0, m_frameWidth/2.0, m_width-m_frameWidth, m_height-m_frameWidth);
-    cairo_set_line_width(c, m_frameWidth);
-    cairo_set_source_rgba(c, m_frameColor.redf(), m_frameColor.greenf(), m_frameColor.bluef(), m_frameColor.alphaf());
-    cairo_stroke(c);
+    if (m_frameWidth>0 && !m_frameColor.isTransparent()) {
+        cairo_rectangle(c, m_frameWidth/2.0, m_frameWidth/2.0, m_width-m_frameWidth, m_height-m_frameWidth);
+        cairo_set_line_width(c, m_frameWidth);
+        m_frameColor.cairo_set_source(c);
+        cairo_stroke(c);
+    }
 }

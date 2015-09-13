@@ -13,6 +13,7 @@ CGProgressBar::CGProgressBar(CGWidget *parent):
     m_showText=true;
     setProgressColor(CGColor::ccRed);
     setTextColor(CGColor::ccGrey75);
+    setPropsFromDefaultPalette();
 }
 
 CGProgressBar::CGProgressBar(int x, int y, int width, int height, CGWidget *parent):
@@ -25,6 +26,7 @@ CGProgressBar::CGProgressBar(int x, int y, int width, int height, CGWidget *pare
     m_showText=true;
     setProgressColor(CGColor::ccRed);
     setTextColor(CGColor::ccGrey75);
+    setPropsFromDefaultPalette();
 }
 
 CGProgressBar::~CGProgressBar()
@@ -39,7 +41,7 @@ void CGProgressBar::paint(cairo_t *c) const
     float ww=m_width-2.0*m_border;
 
     cairo_rectangle(c, m_border,m_border,w*ww,m_height-2.0*m_border);
-    cairo_set_source_rgba(c, m_progressColor.redf(), m_progressColor.greenf(), m_progressColor.bluef(), m_progressColor.alphaf());
+    m_progressColor.cairo_set_source(c);
     cairo_fill(c);
 
     if (m_showText) {
@@ -52,4 +54,14 @@ std::string CGProgressBar::progressText() const
 {
     float w=(m_value-m_min)/(m_max-m_min);
     return cgFormat("%.0f %%", w*100.0);
+}
+
+void CGProgressBar::setPropsFromPalette(CGPalette *palette)
+{
+    CGFrame::setPropsFromPalette(palette);
+    if (palette) {
+        setFontPropsFromPalette(palette);
+        setProgressColor(palette->highlightColor);
+        setTextColor(palette->textOnHighlightColor);
+    }
 }

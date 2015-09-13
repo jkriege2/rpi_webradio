@@ -11,6 +11,7 @@ CGWidget::CGWidget(CGWidget *parent)
     m_width=1;
     m_height=1;
     setBackgroundColor(CGColor::ccTransparent);
+    setPropsFromDefaultPalette();
 }
 
 CGWidget::CGWidget(int x, int y, int width, int height, CGWidget *parent)
@@ -23,6 +24,7 @@ CGWidget::CGWidget(int x, int y, int width, int height, CGWidget *parent)
     m_width=width;
     m_height=height;
     setBackgroundColor(CGColor::ccTransparent);
+    setPropsFromDefaultPalette();
 }
 
 CGWidget::~CGWidget()
@@ -60,9 +62,9 @@ void CGWidget::setParent(CGWidget *p)
 
 void CGWidget::paint(cairo_t *c) const
 {
-    if (m_backgroundColor.a!=0) {
+    if (!m_backgroundColor.isTransparent()) {
         cairo_rectangle(c, 0, 0, m_width, m_height);
-        cairo_set_source_rgba(c, m_backgroundColor.redf(), m_backgroundColor.greenf(), m_backgroundColor.bluef(), m_backgroundColor.alphaf());
+        m_backgroundColor.cairo_set_source(c);
         cairo_fill(c);
     }
     cairo_save(c);
@@ -105,6 +107,24 @@ bool CGWidget::isAbsPosInside(int x, int y)
 bool CGWidget::isRelPosInside(int x, int y)
 {
     return isAbsPosInside(absX()+x, absY()+y);
+}
+
+void CGWidget::setPropsFromPalette(CGPalette *palette)
+{
+    if (palette) {
+        m_backgroundColor=palette->backgroundColor;
+    }
+    for (std::list<CGWidget*>::const_iterator it=m_children.begin(); it!=m_children.end(); ++it) {
+        if (*it) {
+            setPropsFromPalette(palette);
+        }
+    }
+}
+
+void CGWidget::setPropsFromDefaultPalette()
+{
+    setPropsFromPalette(CGPalette::defaultPalette());
+
 }
 
 

@@ -6,6 +6,7 @@
 #include <string.h>
 #include <list>
 #include "cgbasics.h"
+#include "cgpalette.h"
 
 class CGWidget
 {
@@ -54,6 +55,9 @@ class CGWidget
 
         virtual bool isAbsPosInside(int x, int y);
         virtual bool isRelPosInside(int x, int y);
+
+        virtual void setPropsFromPalette(CGPalette* palette);
+        void setPropsFromDefaultPalette();
     protected:
         CGWidget* m_parent;
         std::list<CGWidget*> m_children;

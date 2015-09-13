@@ -22,7 +22,7 @@ static const struct RGBData {
     const char *name;
     uint32_t  value;
 } CGColorRGBTbl[] = {
-    { CGColor::ccInvalid, "invalidblack", rgb(0, 0, 0) },
+    { CGColor::ccInvalid, "invalid", rgb(0, 0, 0) },
     { CGColor::ccTransparent, "transparent", rgba(255,255,255,0) },
     { CGColor::ccInvalid, "aliceblue", rgb(240, 248, 255) },
     { CGColor::ccInvalid, "antiquewhite", rgb(250, 235, 215) },
@@ -50,9 +50,10 @@ static const struct RGBData {
     { CGColor::ccInvalid, "darkgoldenrod", rgb(184, 134, 11) },
     { CGColor::ccInvalid, "darkgray", rgb(169, 169, 169) },
     { CGColor::ccDarkgreen, "darkgreen", rgb( 0, 100, 0) },
-    { CGColor::ccInvalid, "darkgrey", rgb(169, 169, 169) },
+    { CGColor::ccDarkgrey, "darkgrey", rgb(169, 169, 169) },
+    { CGColor::ccDarkgray, "darkgray", rgb(169, 169, 169) },
     { CGColor::ccInvalid, "darkkhaki", rgb(189, 183, 107) },
-    { CGColor::ccInvalid, "darkmagenta", rgb(139, 0, 139) },
+    { CGColor::ccDarkmagenta, "darkmagenta", rgb(139, 0, 139) },
     { CGColor::ccInvalid, "darkolivegreen", rgb( 85, 107, 47) },
     { CGColor::ccDarkorange, "darkorange", rgb(255, 140, 0) },
     { CGColor::ccInvalid, "darkorchid", rgb(153, 50, 204) },
@@ -77,14 +78,18 @@ static const struct RGBData {
     { CGColor::ccInvalid, "ghostwhite", rgb(248, 248, 255) },
     { CGColor::ccInvalid, "gold", rgb(255, 215, 0) },
     { CGColor::ccInvalid, "goldenrod", rgb(218, 165, 32) },
-    { CGColor::ccGrey50, "gray", rgb(128, 128, 128) },
-    { CGColor::ccInvalid, "green", rgb( 0, 128, 0) },
+    { CGColor::ccGreen, "green", rgb( 0, 128, 0) },
     { CGColor::ccInvalid, "greenyellow", rgb(173, 255, 47) },
-    { CGColor::ccGrey50, "grey", rgb(128, 128, 128) },
-    { CGColor::ccGrey10, "grey10", rgb(26,26,26) },
-    { CGColor::ccGray10, "gray10", rgb(26,26,26) },
-    { CGColor::ccGrey25, "grey25", rgb(64,64,64) },
-    { CGColor::ccGrey25, "gray25", rgb(64,64,64) },
+    { CGColor::ccGray,    "gray", rgb(128, 128, 128) },
+    { CGColor::ccGrey,    "grey", rgb(128, 128, 128) },
+    { CGColor::ccGrey50,  "grey50", rgb(128, 128, 128) },
+    { CGColor::ccGray50,  "gray50", rgb(128, 128, 128) },
+    { CGColor::ccGrey75,  "grey75", rgb(192, 192, 192) },
+    { CGColor::ccGray75,  "gray75", rgb(192, 192, 192) },
+    { CGColor::ccGrey10,  "grey10", rgb(26,26,26) },
+    { CGColor::ccGray10,  "gray10", rgb(26,26,26) },
+    { CGColor::ccGrey25,  "grey25", rgb(64,64,64) },
+    { CGColor::ccGray25,  "gray25", rgb(64,64,64) },
     { CGColor::ccInvalid, "honeydew", rgb(240, 255, 240) },
     { CGColor::ccInvalid, "hotpink", rgb(255, 105, 180) },
     { CGColor::ccInvalid, "indianred", rgb(205, 92, 92) },
@@ -113,7 +118,7 @@ static const struct RGBData {
     { CGColor::ccInvalid, "lime", rgb( 0, 255, 0) },
     { CGColor::ccInvalid, "limegreen", rgb( 50, 205, 50) },
     { CGColor::ccInvalid, "linen", rgb(250, 240, 230) },
-    { CGColor::ccInvalid, "magenta", rgb(255, 0, 255) },
+    { CGColor::ccMagenta, "magenta", rgb(255, 0, 255) },
     { CGColor::ccInvalid, "maroon", rgb(128, 0, 0) },
     { CGColor::ccInvalid, "mediumaquamarine", rgb(102, 205, 170) },
     { CGColor::ccInvalid, "mediumblue", rgb( 0, 0, 205) },
@@ -129,7 +134,8 @@ static const struct RGBData {
     { CGColor::ccInvalid, "mistyrose", rgb(255, 228, 225) },
     { CGColor::ccInvalid, "moccasin", rgb(255, 228, 181) },
     { CGColor::ccInvalid, "navajowhite", rgb(255, 222, 173) },
-    { CGColor::ccInvalid, "navy", rgb( 0, 0, 128) },
+    { CGColor::ccNavy, "navy", rgb( 0, 0, 128) },
+    { CGColor::ccInvalid, "navy(16)", rgb( 0, 0, 128) },
     { CGColor::ccInvalid, "oldlace", rgb(253, 245, 230) },
     { CGColor::ccInvalid, "olive", rgb(128, 128, 0) },
     { CGColor::ccInvalid, "olivedrab", rgb(107, 142, 35) },
@@ -156,7 +162,7 @@ static const struct RGBData {
     { CGColor::ccInvalid, "seagreen", rgb( 46, 139, 87) },
     { CGColor::ccInvalid, "seashell", rgb(255, 245, 238) },
     { CGColor::ccInvalid, "sienna", rgb(160, 82, 45) },
-    { CGColor::ccGrey75, "silver", rgb(192, 192, 192) },
+    { CGColor::ccSilver, "silver", rgb(192, 192, 192) },
     { CGColor::ccInvalid, "skyblue", rgb(135, 206, 235) },
     { CGColor::ccInvalid, "slateblue", rgb(106, 90, 205) },
     { CGColor::ccInvalid, "slategray", rgb(112, 128, 144) },
@@ -191,6 +197,16 @@ std::string CGColor::toString() const {
     }
     // if we reach this, we have an unnamed transparent color
     return cgFormat("#%02X%02X%02X%02X", (int)r, (int)g, (int)b, (int)a);
+}
+
+CGColor CGColor::colorLinear(float v, CGColor col1, CGColor col2)
+{
+    CGColor c;
+    c.r=col1.r+round(v*float(col2.r-col1.r));
+    c.g=col1.g+round(v*float(col2.g-col1.g));
+    c.b=col1.b+round(v*float(col2.b-col1.b));
+    c.a=col1.a+round(v*float(col2.a-col1.a));
+    return c;
 }
 
 
@@ -486,6 +502,7 @@ void cgDrawText(cairo_t* cr, int xx, int yy, int m_width, int m_height, const st
             lines.push_back(l);
             cairo_text_extents(cr, l.c_str(), &extents);
             if (extents.width>maxW) maxW=extents.width;
+            cairo_text_extents(cr, std::string(l+"Aq").c_str(), &extents);
             if (extents.height>maxH) maxH=extents.height;
             sumH=sumH+extents.height;
             l.clear();
@@ -494,6 +511,7 @@ void cgDrawText(cairo_t* cr, int xx, int yy, int m_width, int m_height, const st
     if (l.size()>0) {
         cairo_text_extents(cr, l.c_str(), &extents);
         if (extents.width>maxW) maxW=extents.width;
+        cairo_text_extents(cr, std::string(l+"Aq").c_str(), &extents);
         if (extents.height>maxH) maxH=extents.height;
         sumH=sumH+extents.height*m_lineSpacing;
 
@@ -501,7 +519,7 @@ void cgDrawText(cairo_t* cr, int xx, int yy, int m_width, int m_height, const st
     }
 
 
-    cairo_set_source_rgba(cr, m_textColor.redf(), m_textColor.greenf(), m_textColor.bluef(), m_textColor.alphaf());
+
 
 
     float y = yy- extents.y_bearing;
@@ -521,6 +539,7 @@ void cgDrawText(cairo_t* cr, int xx, int yy, int m_width, int m_height, const st
         }
 
 
+        m_textColor.cairo_set_source(cr);
         cairo_move_to (cr, x,y);
         cairo_show_text (cr, (*it).c_str());
         y=y+extents.height*m_lineSpacing;
