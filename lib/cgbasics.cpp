@@ -400,60 +400,6 @@ double cgStrToFloat(const std::string & data) {
 }
 
 
-cgClickEvent::cgClickEvent(int x, int y, cgClickEvent::Button button)
-{
-    this->m_x=x;
-    this->m_y=y;
-    this->m_button=button;
-}
-
-std::string cgClickEvent::toString()
-{
-    return cgFormat("cgClickEvent(x=%d, y=%d, button=#%d)", m_x,m_y,(int)m_button);
-}
-
-
-CGEvent::CGEvent()
-{
-    m_accepted=false;
-}
-
-std::string CGEvent::toString()
-{
-    return std::string("cgEvent()");
-}
-
-void CGEvent::accept()
-{
-    m_accepted=true;
-}
-
-
-cgButtonEvent::cgButtonEvent(int button)
-{
-    this->m_button=button;
-}
-
-std::string cgButtonEvent::toString()
-{
-    return cgFormat("cgButtonEvent(button #%d)", m_button);
-}
-
-
-cgKeyEvent::cgKeyEvent(int key, bool shift, bool ctrl, bool alt)
-{
-    this->m_key=key;
-    this->m_shift=shift;
-    this->m_ctrl=ctrl;
-    this->m_alt=alt;
-}
-
-std::string cgKeyEvent::toString()
-{
-    return cgFormat("cgKeyEvent(key #%d, shift=%s, ctrl=%s, alt=%s)", m_key, cgBoolToStr(m_shift).c_str(), cgBoolToStr(m_ctrl).c_str(), cgBoolToStr(m_alt).c_str());
-}
-
-
 std::string cgToLower(const std::string& s){
   std::string d;
   d="";

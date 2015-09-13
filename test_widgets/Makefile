@@ -32,7 +32,9 @@ SRC_FILE= cairo_test.cpp \
           ../lib/cgmultiscreens.cpp \
           ../lib/cgscrollbar.cpp \
           ../lib/cgpalette.cpp \
-          ../lib/cgimage.cpp
+          ../lib/cgimage.cpp \
+          ../lib/rpi_cgevents.cpp \
+          ../lib/cgevents.cpp
 
 
 SRC_FILE_O = $(subst .cpp,.o,$(SRC_FILE))

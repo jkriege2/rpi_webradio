@@ -17,7 +17,6 @@
 
 #include<cairo.h>
 
-#include <wiringPi.h>
 
 
 #define SIZEX 320
@@ -36,7 +35,8 @@
 #include "cgmultiscreens.h"
 #include "cgtreewidget.h"
 #include "cgimage.h"
-
+#include "rpi_cgevents.h"
+#include "cgeventqueue.h"
 
 fbcairo_context* context;
 
@@ -188,6 +188,7 @@ void setupGUI() {
     }
 }
 void destroyGUI() {
+
     delete multi;
 }
 
@@ -237,26 +238,27 @@ void paintGUI(cairo_t *c, float fps=0) {
     } else {
         globcnt=0;
     }
-    mainFrame->setTitle(cgFormat("screen %d/%d: %d", multi->currentScreenID()+1, multi->count(), globcnt));
-    mainFrame2->setTitle(cgFormat("screen %d/%d: %d", multi->currentScreenID()+1, multi->count(), globcnt));
+    mainFrame->setTitle(cgFormat("screen %d/%d: %d  %4.2f fps", multi->currentScreenID()+1, multi->count(), globcnt, fps));
+    mainFrame2->setTitle(cgFormat("screen %d/%d: %d  %4.2f fps", multi->currentScreenID()+1, multi->count(), globcnt, fps));
+    mainFrame3->setTitle(cgFormat("screen %d/%d: %d  %4.2f fps", multi->currentScreenID()+1, multi->count(), globcnt, fps));
 
 }
 
 
 void prepareForMainloop() {
-    if (!getuid()) {
-        printf("running with root priviledges!\n");
-        wiringPiSetupGpio();
-    } else {
-        printf("running in user mode!\n");
-        wiringPiSetupSys ();
-    }
+
     rpitemp_init();
+    rpievents_init();
+    rpievents_registerinput_statechange(17, 17);
+    rpievents_registerinput_buttonclick(22, 22, false);
+    rpievents_registerinput_buttonclick(23, 23);
+    rpievents_registerinput_buttonclick(27, 27, true, false);
 
     //std::cout<<"COLOR TEST:\n  ccBlack "<<CGColor(CGColor::ccBlack)<<"\n  ccWhite "<<CGColor(CGColor::ccWhite)<<"\n  ccRed "<<CGColor(CGColor::ccRed)<<"\n  ccGreen "<<CGColor(CGColor::ccGreen)<<"\n  ccBlue "<<CGColor(CGColor::ccBlue);
 }
 
 void cleanupAfterMainloop() {
+    rpievents_deinit();
     rpitemp_deinit();
 }
 
@@ -274,6 +276,10 @@ void startMainLoop() {
 	
 	    // get current time
 		std::chrono::steady_clock::time_point t = std::chrono::steady_clock::now();
+
+        // deploy events
+        CGEventQueue::deployEnevents();
+
 	
 	    // paint the screen
 		std::chrono::duration<double> timespan_since_last_paint = std::chrono::duration_cast<std::chrono::duration<double>>(t - tlastpaint);

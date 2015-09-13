@@ -3,6 +3,8 @@ CONFIG += console
 CONFIG -= app_bundle
 CONFIG -= qt
 
+INCLUDEPATH += ../lib/
+
 SOURCES += cairo_test.cpp \
     ../lib/framebuffer_cairo_tools.cpp \
     ../lib/cgwidget.cpp \
@@ -19,7 +21,9 @@ SOURCES += cairo_test.cpp \
     ../lib/cgmultiscreens.cpp \
     ../lib/cgpalette.cpp \
     ../lib/cgscrollbar.cpp \
-    ../lib/cgimage.cpp
+    ../lib/cgimage.cpp \
+    ../lib/cgevents.cpp \
+    ../lib/rpi_cgevents.cpp
 
 HEADERS += \
     ../lib/framebuffer_cairo_tools.h \
@@ -37,7 +41,9 @@ HEADERS += \
     ../lib/cgmultiscreens.h \
     ../lib/cgpalette.h \
     ../lib/cgscrollbar.h \
-    ../lib/cgimage.h
+    ../lib/cgimage.h \
+    ../lib/cgevents.h \
+    ../lib/rpi_cgevents.h
 
 DISTFILES += Makefile
 

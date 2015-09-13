@@ -188,3 +188,20 @@ void pitft22hat_setBackgroundIntensity(float intensity_percent)
     }
 
 }
+
+
+bool rpit_readDigital(int pin, rpit_pullresistor_mode pull_updown)
+{
+    pinMode(pin, INPUT);
+    if (pull_updown==rpitprNONE) pullUpDnControl(pin, PUD_OFF);
+    else if (pull_updown==rpitprUP) pullUpDnControl(pin, PUD_UP);
+    else if (pull_updown==rpitprDOWN) pullUpDnControl(pin, PUD_DOWN);
+    return (digitalRead(pin)!=0);
+}
+
+
+void rpit_writeDigital(int pin, bool state)
+{
+    pinMode(pin, OUTPUT);
+    digitalWrite(pin, state?HIGH:LOW);
+}

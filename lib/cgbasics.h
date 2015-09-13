@@ -10,6 +10,8 @@
 #include <fstream>
 #include <sstream>
 
+
+/** \brief represents a color in RGBA */
 struct CGColor {
     enum ColorConstants {
         ccTransparent=0,
@@ -122,73 +124,7 @@ struct CGColor {
 std::ostream& operator<< (std::ostream& stream, const CGColor& matrix);
 
 
-class CGEvent {
-     public:
-        explicit CGEvent();
-        virtual ~CGEvent() {}
-        virtual std::string toString();
-        void accept();
-        inline bool accepted() const {
-            return m_accepted;
-        }
-    protected:
-        bool m_accepted;
-};
-
-class cgClickEvent: public CGEvent {
-     public:
-        enum Button {
-            Button1=1,
-            Button2=2,
-
-            ButtonDefault=Button1,
-            ButtonLeft=Button1,
-            ButtonRight=Button2
-        };
-
-        explicit cgClickEvent(int x, int y, Button button=ButtonDefault);
-        virtual ~cgClickEvent() {}
-        virtual std::string toString();
-
-        inline int x() const { return m_x; }
-        inline int y() const { return m_y; }
-        inline Button button() const { return m_button; }
-
-    protected:
-        Button m_button;
-        int m_x;
-        int m_y;
-};
-
-class cgButtonEvent: public CGEvent {
-     public:
-
-        explicit cgButtonEvent(int button);
-        virtual ~cgButtonEvent() {}
-        virtual std::string toString();
-        inline int button() const { return m_button; }
-    protected:
-        int m_button;
-};
-
-class cgKeyEvent: public CGEvent {
-     public:
-
-        explicit cgKeyEvent(int key, bool shift=false, bool ctrl=false, bool alt=false);
-        virtual ~cgKeyEvent() {}
-        virtual std::string toString();
-
-        inline int key() const { return m_key; }
-        inline bool shift() const { return m_shift; }
-        inline bool ctrl() const { return m_ctrl; }
-        inline bool alt() const { return m_alt; }
-    protected:
-        int m_key;
-        bool m_shift;
-        bool m_ctrl;
-        bool m_alt;
-};
-
+/** \brief alignment constants */
 enum cgAlignment {
     cgalCenter,
     cgalStart,
@@ -199,6 +135,8 @@ enum cgAlignment {
     cgalBottom=cgalEnd,
 
 };
+
+/** \brief draw the given text using cairo */
 void cgDrawText(cairo_t* cr, int xx, int yy, int m_width, int m_height, const std::string& m_text, const std::string& m_fontFace=std::string("sans"), float m_fontSize=10.0, bool m_italic=false, bool m_bold=false, CGColor m_textColor=CGColor::ccBlack, float m_lineSpacing=1.2, cgAlignment m_horizontalAlignment=cgalCenter, cgAlignment m_verticalAlignment=cgalCenter);
 
 
@@ -247,7 +185,7 @@ std::string cgToLower(const std::string & s);
 
 /** \brief convert a string to all upper case letters */
 std::string cgToUpper(const std::string & s);
-
+/** \brief returns \c true, if the string consists of whitepsaces only */
 bool cgOnlySpace(const std::string& text);
 
 #endif // CGBASICS_H

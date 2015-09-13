@@ -7,6 +7,7 @@
 #include <list>
 #include "cgbasics.h"
 #include "cgpalette.h"
+#include "cgevents.h"
 
 class CGWidget
 {

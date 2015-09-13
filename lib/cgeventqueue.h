@@ -4,12 +4,14 @@
 #include <queue>
 #include <mutex>
 #include "cgbasics.h"
+#include "cgwidget.h"
+#include "cgevents.h"
 
-/** \brief thread-safe queue for CGEvent s */
+/** \brief thread-safe (mutex-locked) queue for CGEvent s */
 class CGEventQueue
 {
     public:
-        CGEventQueue();
+        explicit CGEventQueue();
         ~CGEventQueue();
 
         bool hasEvents() const;
@@ -17,9 +19,16 @@ class CGEventQueue
         CGEvent popEvent();
         CGEvent peekEvent();
         void clear();
+        static CGEventQueue* instance();
+        void registerMainWidget(CGWidget* main);
+        static void deployEvents();
+
     protected:
+        void thisDeployEvents();
         std::queue<CGEvent> m_events;
         mutable std::mutex m_mutex;
+        static CGEventQueue* inst;
+        CGWidget* m_mainWidget;
 };
 
 #endif // CGMESSAGEQUEUE_H
