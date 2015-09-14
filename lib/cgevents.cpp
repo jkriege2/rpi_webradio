@@ -58,11 +58,29 @@ std::string CGKeyEvent::toString() const
 
 CGInputStateChanged::CGInputStateChanged(int input, bool state)
 {
-    m_input=input;
+    m_id=input;
     m_state=state;
 }
 
 std::string CGInputStateChanged::toString() const
 {
-    return cgFormat("CGInputStateChanged(input #%d, state=%s)", m_input, cgBoolToStr(m_state).c_str());
+    return cgFormat("CGInputStateChanged(id #%d, state=%s)", m_id, cgBoolToStr(m_state).c_str());
+}
+
+
+CGInputScroll::CGInputScroll(int id, int inc)
+{
+    m_id=id;
+    m_inc=inc;
+}
+
+std::string CGInputScroll::toString() const
+{
+    return cgFormat("CGInputScroll(id #%d, inc=%d)", m_id, m_inc);
+}
+
+
+std::string CGButtonDoubleClickedEvent::toString() const
+{
+    return cgFormat("CGButtonDoubleClickedEvent(button #%d)", m_button);
 }

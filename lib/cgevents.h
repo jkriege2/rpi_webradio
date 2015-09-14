@@ -52,22 +52,46 @@ class CGButtonClickedEvent: public CGEvent {
         virtual ~CGButtonClickedEvent() {}
         virtual std::string toString() const;
         inline int button() const { return m_button; }
+        inline int id() const { return m_button; }
     protected:
         int m_button;
 };
 
-/** \brief a button-pushed event */
+/** \brief a button double-clicked event */
+class CGButtonDoubleClickedEvent: public CGButtonClickedEvent {
+     public:
+
+        explicit CGButtonDoubleClickedEvent(int button): CGButtonClickedEvent(button) {}
+        virtual ~CGButtonDoubleClickedEvent() {}
+        virtual std::string toString() const;
+};
+
+/** \brief a input state changed event, the state() is the current state! */
 class CGInputStateChanged: public CGEvent {
      public:
 
-        explicit CGInputStateChanged(int input, bool m_state);
+        explicit CGInputStateChanged(int id, bool m_state);
         virtual ~CGInputStateChanged() {}
         virtual std::string toString() const;
-        inline int input() const { return m_input; }
+        inline int id() const { return m_id; }
         inline bool state() const { return m_state; }
     protected:
-        int m_input;
+        int m_id;
         bool m_state;
+};
+
+/** \brief a scroll-event from e.g. a rotary encoder */
+class CGInputScroll: public CGEvent {
+     public:
+
+        explicit CGInputScroll(int id, int inc);
+        virtual ~CGInputScroll() {}
+        virtual std::string toString() const;
+        inline int id() const { return m_id; }
+        inline bool inc() const { return m_inc; }
+    protected:
+        int m_id;
+        int m_inc;
 };
 
 /** \brief a key-pressed event */

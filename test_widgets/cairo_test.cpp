@@ -186,6 +186,7 @@ void setupGUI() {
         imgs[cnt]->setImageScaled(CGImage::smExpandOnly);
         cnt++;
     }
+    CGEventQueue::registerMainWidget(multi);
 }
 void destroyGUI() {
 
@@ -241,20 +242,18 @@ void paintGUI(cairo_t *c, float fps=0) {
     mainFrame->setTitle(cgFormat("screen %d/%d: %d  %4.2f fps", multi->currentScreenID()+1, multi->count(), globcnt, fps));
     mainFrame2->setTitle(cgFormat("screen %d/%d: %d  %4.2f fps", multi->currentScreenID()+1, multi->count(), globcnt, fps));
     mainFrame3->setTitle(cgFormat("screen %d/%d: %d  %4.2f fps", multi->currentScreenID()+1, multi->count(), globcnt, fps));
-
 }
 
 
 void prepareForMainloop() {
-
+    rpit_initIO();
     rpitemp_init();
     rpievents_init();
     rpievents_registerinput_statechange(17, 17);
-    rpievents_registerinput_buttonclick(22, 22, false);
+    rpievents_registerinput_buttonclick(22, 22, false, true);
     rpievents_registerinput_buttonclick(23, 23);
-    rpievents_registerinput_buttonclick(27, 27, true, false);
-
-    //std::cout<<"COLOR TEST:\n  ccBlack "<<CGColor(CGColor::ccBlack)<<"\n  ccWhite "<<CGColor(CGColor::ccWhite)<<"\n  ccRed "<<CGColor(CGColor::ccRed)<<"\n  ccGreen "<<CGColor(CGColor::ccGreen)<<"\n  ccBlue "<<CGColor(CGColor::ccBlue);
+    rpievents_registerinput_buttonclick(27, 27, true, false, false);
+    rpievents_registerinput_rotaryscroll(5,6,1);
 }
 
 void cleanupAfterMainloop() {
@@ -278,7 +277,7 @@ void startMainLoop() {
 		std::chrono::steady_clock::time_point t = std::chrono::steady_clock::now();
 
         // deploy events
-        CGEventQueue::deployEnevents();
+        CGEventQueue::deployEvents();
 
 	
 	    // paint the screen

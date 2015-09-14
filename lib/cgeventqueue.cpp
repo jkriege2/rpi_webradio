@@ -60,6 +60,13 @@ CGEventQueue *CGEventQueue::instance()
 
 void CGEventQueue::registerMainWidget(CGWidget *main)
 {
+    if (instance()) {
+        instance()->thisRegisterMainWidget(main);
+    }
+}
+
+void CGEventQueue::thisRegisterMainWidget(CGWidget *main)
+{
     m_mutex.lock();
     m_mainWidget=main;
     m_mutex.unlock();
@@ -74,7 +81,7 @@ void CGEventQueue::deployEvents()
 
 void CGEventQueue::thisDeployEvents()
 {
-    while (hasEvents()) {
+    while (hasEvents() && m_mainWidget) {
         CGEvent e=popEvent();
         m_mainWidget->event(&e);
     }

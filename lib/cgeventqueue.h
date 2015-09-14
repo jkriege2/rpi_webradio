@@ -20,10 +20,11 @@ class CGEventQueue
         CGEvent peekEvent();
         void clear();
         static CGEventQueue* instance();
-        void registerMainWidget(CGWidget* main);
+        static void registerMainWidget(CGWidget* main);
         static void deployEvents();
 
     protected:
+        void thisRegisterMainWidget(CGWidget* main);
         void thisDeployEvents();
         std::queue<CGEvent> m_events;
         mutable std::mutex m_mutex;

@@ -7,6 +7,7 @@
 #include <thread>
 #include <mutex>
 #include <chrono>
+#include <unistd.h>
 #include <wiringPi.h>
 
 std::string rpit_readlineFromCommand(const char *command)
@@ -200,8 +201,73 @@ bool rpit_readDigital(int pin, rpit_pullresistor_mode pull_updown)
 }
 
 
+
+
+
+void rpit_setPullUpDownResistor(int pin, rpit_pullresistor_mode pull_updown)
+{
+    if (pull_updown==rpitprNONE) pullUpDnControl(pin, PUD_OFF);
+    else if (pull_updown==rpitprUP) pullUpDnControl(pin, PUD_UP);
+    else if (pull_updown==rpitprDOWN) pullUpDnControl(pin, PUD_DOWN);
+}
+
+
+void rpit_setPinMode(int pin, rpit_pin_mode mode)
+{
+    if (mode==rpitpmDigitalInput) pinMode(pin, INPUT);
+    else if (mode==rpitpmDigitalOutput) {
+        pullUpDnControl(pin, PUD_OFF);
+        pinMode(pin, OUTPUT);
+    }
+}
+
+
+void rpit_setPinMode(int pin, rpit_pin_mode mode, rpit_pullresistor_mode pull_updown)
+{
+    if (mode==rpitpmDigitalInput) pinMode(pin, INPUT);
+    else if (mode==rpitpmDigitalOutput) pinMode(pin, OUTPUT);
+    if (mode==rpitpmDigitalInput) {
+        if (pull_updown==rpitprNONE) pullUpDnControl(pin, PUD_OFF);
+        else if (pull_updown==rpitprUP) pullUpDnControl(pin, PUD_UP);
+        else if (pull_updown==rpitprDOWN) pullUpDnControl(pin, PUD_DOWN);
+    }
+
+}
+
+
+int rpit_readDigitalI(int pin)
+{
+    return digitalRead(pin);
+}
+
+
+bool rpit_readDigital(int pin)
+{
+    return (digitalRead(pin)==1);
+}
+
+
 void rpit_writeDigital(int pin, bool state)
+{
+    digitalWrite(pin, state?HIGH:LOW);
+}
+
+
+
+void rpit_writeDigitalSetMode(int pin, bool state)
 {
     pinMode(pin, OUTPUT);
     digitalWrite(pin, state?HIGH:LOW);
+}
+
+
+void rpit_initIO()
+{
+    if (!getuid()) {
+        printf("running WiringLIB with root priviledges!\n");
+        wiringPiSetupGpio();
+    } else {
+        printf("running WiringLIB in user mode!\n");
+        wiringPiSetupSys ();
+    }
 }
