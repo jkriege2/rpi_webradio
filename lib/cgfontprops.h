@@ -64,9 +64,9 @@ class CGFontProps
         virtual inline void setFontPropsFromPalette(CGPalette *palette)
         {
             if (palette) {
-                setFontFace(palette->fontName);
-                setFontSize(palette->fontSize);
-                setTextColor(palette->textColor);
+                setFontFace(palette->name(CGPalette::nrFontName));
+                setFontSize(palette->size(CGPalette::srFontSize));
+                setTextColor(palette->color(CGPalette::crText));
             }
         }
     protected:

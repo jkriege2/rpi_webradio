@@ -2,11 +2,12 @@
 
 CGPalette* CGPalette::defInstance=NULL;
 
-CGPalette::CGPalette()
+CGPalette::CGPalette():
 {
     fontSize=10;
     fontName="sans";
     frameWidth=1;
+    focusedFrameWidth=1;
 
     backgroundColor=CGColor::ccBlack;
     textColor=CGColor::ccWhite;
@@ -25,6 +26,7 @@ CGPalette::CGPalette()
     textOnHighlightColor=CGColor::ccWhite;
 
     frameColor=CGColor("navy(16)");
+    focusedFrameColor=CGColor("limegreen");
 
     titleBackgroundColor=dimColor;
     titleTextColor=CGColor::ccBlack;
@@ -60,5 +62,70 @@ CGPalette *CGPalette::defaultPalette()
 {
     if (!defInstance) defInstance=new CGPalette();
     return defInstance;
+}
+
+CGColor CGPalette::color(CGPalette::ColorRoles role) const
+{
+    switch (role) {
+        case crBackground:
+            return backgroundColor;
+        case crText:
+            return textColor;
+        case crBright:
+            return brightColor;
+        case crDim:
+            return dimColor;
+        case crDark:
+            return darkColor;
+        case crButton:
+            return buttonColor;
+        case crButtonIconOrText:
+            return buttonIconOrTextColor;
+        case crSelection:
+            return selectionColor;
+        case crSelectionIconOrText:
+            return selectedIconOrTextColor;
+        case crFrame:
+            return frameColor;
+        case crHighlight:
+            return highlightColor;
+        case crTextOnHighlight:
+            return textOnHighlightColor;
+        case crTitleBackground:
+            return titleBackgroundColor;
+        case crTitleText:
+            return titleTextColor;
+        case crFocusedFrame:
+            return focusedFrameColor;
+        default:
+            return CGColor::ccBlack;
+    }
+    return CGColor::ccBlack;
+}
+
+float CGPalette::size(CGPalette::SizeRoles role) const
+{
+    switch (role) {
+        case srFrameWidth:
+            return frameWidth;
+        case srFocusedFrameWidth:
+            return focusedFrameWidth;
+        case srFontSize:
+            return fontSize;
+        default:
+            return 0;
+    }
+    return 0;
+}
+
+std::string CGPalette::names(CGPalette::NameRoles role) const
+{
+    switch (role) {
+        case nrFontName:
+            return fontName;
+        default:
+            return std::string();
+    }
+    return std::string();
 }
 

@@ -69,7 +69,7 @@ void CGScreen::setPropsFromPalette(CGPalette *palette)
     CGWidget::setPropsFromPalette(palette);
     setFontPropsFromPalette(palette);
     if (palette) {
-        setTitleBackgroundColor(palette->titleBackgroundColor);
-        setTextColor(palette->titleTextColor);
+        setTitleBackgroundColor(palette->color(CGPalette::crTitleBackground));
+        setTextColor(palette->color(CGPalette::crTitleText));
     }
 }

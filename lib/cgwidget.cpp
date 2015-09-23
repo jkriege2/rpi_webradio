@@ -4,7 +4,9 @@
 CGWidget::CGWidget(CGWidget *parent)
 {
     m_border=0;
+    m_hasFocus=false;
     m_parent=NULL;
+    m_mayReceiveFocus=false;
     setParent(parent);
     m_x=0;
     m_y=0;
@@ -17,7 +19,9 @@ CGWidget::CGWidget(CGWidget *parent)
 CGWidget::CGWidget(int x, int y, int width, int height, CGWidget *parent)
 {
     m_border=0;
+    m_hasFocus=false;
     m_parent=NULL;
+    m_mayReceiveFocus=false;
     setParent(parent);
     m_x=x;
     m_y=y;
@@ -112,7 +116,7 @@ bool CGWidget::isRelPosInside(int x, int y)
 void CGWidget::setPropsFromPalette(CGPalette *palette)
 {
     if (palette) {
-        m_backgroundColor=palette->backgroundColor;
+        m_backgroundColor=palette->color(CGPalette::crBackground);
     }
     for (std::list<CGWidget*>::const_iterator it=m_children.begin(); it!=m_children.end(); ++it) {
         if (*it) {
@@ -125,6 +129,84 @@ void CGWidget::setPropsFromDefaultPalette()
 {
     setPropsFromPalette(CGPalette::defaultPalette());
 
+}
+
+void CGWidget::setMayReceiveFocus(bool en)
+{
+    m_mayReceiveFocus=en;
+}
+
+CGWidget *CGWidget::getNextFocusChild() const
+{
+    CGWidget* first=NULL;
+    bool foundFocus=false;
+    for (std::list<CGWidget*>::const_iterator it=m_children.begin(); it!=m_children.end(); ++it) {
+        if (*it) {
+            if ((*it)->mayReceiveFocus()) {
+                if (!first) first=*it;
+                if ((*it)->hasFocus() && !foundFocus) {
+                    foundFocus=true;
+                } else if (foundFocus) {
+                    return (*it);
+                }
+            }
+        }
+    }
+    return first;
+}
+
+CGWidget *CGWidget::getFirstFocusChild() const
+{
+    for (std::list<CGWidget*>::const_iterator it=m_children.begin(); it!=m_children.end(); ++it) {
+        if (*it) {
+            if ((*it)->mayReceiveFocus()) {
+                return *it;
+            }
+        }
+    }
+    return NULL;
+}
+
+void CGWidget::setFocus()
+{
+    if (!m_hasFocus && m_mayReceiveFocus) {
+        CGWidget* wf=getFirstFocusChild();
+        if (wf) wf->setFocus();
+        else m_hasFocus=true;
+    }
+}
+
+void CGWidget::focusNext()
+{
+    CGWidget* wf=getNextFocusChild();
+    if (wf) {
+        wf->setFocus();
+        return;
+    } else {
+        if (m_parent) {
+            bool found=false;
+            for (std::list<CGWidget*>::const_iterator it=m_parent->m_children.begin(); it!=m_parent->m_children.end(); ++it) {
+                if (*it) {
+                    if (*it==this) {
+                        found=true;
+                    } else if (found) {
+                        if ((*it)->mayReceiveFocus() && (! (*it)->hasFocus())) {
+                            (*it)->setFocus();
+                            return;
+                        }
+                    }
+                }
+            }
+        }
+
+    }
+    setFocus();
+    return;
+}
+
+bool CGWidget::hasFocus() const
+{
+    return m_hasFocus && m_mayReceiveFocus;
 }
 
 

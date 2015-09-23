@@ -3,6 +3,7 @@
 
 #include "cgbasics.h"
 #include <string>
+
 class CGPalette
 {
     public:
@@ -10,6 +11,43 @@ class CGPalette
         ~CGPalette();
 
         static CGPalette* defaultPalette();
+
+        enum ColorRoles {
+            crBackground,
+            crText,
+            crBright,
+            crDim,
+            crDark,
+            crButton,
+            crButtonIconOrText,
+            crSelection,
+            crSelectionIconOrText,
+            crFrame,
+            crFocusedFrame,
+            crHighlight,
+            crTextOnHighlight,
+            crTitleBackground,
+            crTitleText,
+        };
+
+        enum SizeRoles {
+            srFrameWidth,
+            srFocusedFrameWidth,
+            srFontSize
+        };
+
+        enum NameRoles {
+            nrFontName
+        };
+
+        CGColor color(ColorRoles role) const;
+        float size(SizeRoles role) const;
+        std::string names(NameRoles role) const;
+
+
+
+    protected:
+        static CGPalette* defInstance;
 
         CGColor backgroundColor;
         CGColor textColor;
@@ -21,6 +59,7 @@ class CGPalette
         CGColor selectionColor;
         CGColor selectedIconOrTextColor;
         CGColor frameColor;
+        CGColor focusedFrameColor;
         CGColor highlightColor;
         CGColor textOnHighlightColor;
 
@@ -28,11 +67,9 @@ class CGPalette
         CGColor titleTextColor;
 
         float frameWidth;
+        float focusedFrameWidth;
         float fontSize;
         std::string fontName;
-
-    protected:
-        static CGPalette* defInstance;
 };
 
 #endif // CGPALETTE_H

@@ -59,6 +59,23 @@ class CGWidget
 
         virtual void setPropsFromPalette(CGPalette* palette);
         void setPropsFromDefaultPalette();
+
+        /** \brief returns \c true, if this widget may receive the input focus */
+        inline bool mayReceiveFocus() const {
+            return m_mayReceiveFocus;
+        }
+        /** \brief set, whether thios widget may receive the input focus */
+        void setMayReceiveFocus(bool en);
+
+        /** \brief get next child that may receive the focus */
+        CGWidget* getNextFocusChild() const;
+        /** \brief get first child that may receive the focus */
+        CGWidget* getFirstFocusChild() const;
+
+        virtual void setFocus();
+        virtual void focusNext();
+        virtual bool hasFocus() const;
+
     protected:
         CGWidget* m_parent;
         std::list<CGWidget*> m_children;
@@ -68,6 +85,8 @@ class CGWidget
         int m_height;
         float m_border;
         CGColor m_backgroundColor;
+        bool m_mayReceiveFocus;
+        bool m_hasFocus;
 };
 
 

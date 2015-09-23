@@ -453,7 +453,7 @@ void CGTreeWidget::setPropsFromPalette(CGPalette *palette)
     if (palette) {
         setFontPropsFromPalette(palette);
         setScrollbarPropsFromPalette(palette);
-        setSelectedColor(palette->selectionColor);
-        setSelectedTextColor(palette->selectedIconOrTextColor);
+        setSelectedColor(palette->color(CGPalette::crSelection));
+        setSelectedTextColor(palette->color(CGPalette::crSelectionIconOrText));
     }
 }

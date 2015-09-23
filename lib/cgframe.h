@@ -15,15 +15,26 @@ class CGFrame: public CGWidget {
             return m_frameColor;
         }
         void setFrameColor(CGColor col);
-        inline float framewidth() const {
+        inline float frameWidth() const {
             return m_frameWidth;
         }
         void setFrameWidth(float width);
+
+        inline CGColor focusedFrameColor() const {
+            return m_focusedFrameColor;
+        }
+        void setFocusedFrameColor(CGColor col);
+        inline float focusedFrameWidth() const {
+            return m_focusedFrameWidth;
+        }
+        void setFocusedFrameWidth(float width);
 
         virtual void paint(cairo_t *c) const;
     protected:
         float m_frameWidth;
         CGColor m_frameColor;
+        float m_focusedFrameWidth;
+        CGColor m_focusedFrameColor;
 };
   
 #endif // CAIROGUI_FRAME_H

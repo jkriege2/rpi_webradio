@@ -87,10 +87,10 @@ void CGScrollBarMixin::paintScrollbar(cairo_t *c, int x, int y, int width, int h
 void CGScrollBarMixin::setScrollbarPropsFromPalette(CGPalette *palette)
 {
     if (palette) {
-        setScrollbarBackgroundColor(palette->darkColor);
-        setScrollbarButtonColor(palette->buttonColor);
-        setScrollbarButtonIconColor(palette->buttonIconOrTextColor);
-        SetScrollbarColor(palette->buttonColor);
+        setScrollbarBackgroundColor(palette->palette->color(CGPalette::crDark);
+        setScrollbarButtonColor(palette->color(CGPalette::crButton);
+        setScrollbarButtonIconColor(palette->palette->color(CGPalette::crButtonIconOrText);
+        SetScrollbarColor(palette->palette->color(CGPalette::crButton);
 
     }
 }

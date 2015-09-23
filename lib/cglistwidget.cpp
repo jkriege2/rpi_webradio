@@ -173,7 +173,7 @@ void CGListWidget::setPropsFromPalette(CGPalette *palette)
     if (palette) {
         setFontPropsFromPalette(palette);
         setScrollbarPropsFromPalette(palette);
-        setSelectedColor(palette->selectionColor);
-        setSelectedTextColor(palette->selectedIconOrTextColor);
+        setSelectedColor(palette->palette->color(CGPalette::crSelection));
+        setSelectedTextColor(palette->color(CGPalette::crSelectionIconOrText));
     }
 }
