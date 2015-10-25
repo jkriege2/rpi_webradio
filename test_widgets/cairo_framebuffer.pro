@@ -19,11 +19,13 @@ SOURCES += cairo_test.cpp \
     ../lib/cgfontprops.cpp \
     ../lib/cgtreewidget.cpp \
     ../lib/cgmultiscreens.cpp \
+    ../lib/cgtabbedmultiscreens.cpp \
     ../lib/cgpalette.cpp \
     ../lib/cgscrollbar.cpp \
     ../lib/cgimage.cpp \
     ../lib/cgevents.cpp \
-    ../lib/rpi_cgevents.cpp
+    ../lib/rpi_cgevents.cpp \
+    ../lib/cgtabmixin.cpp
 
 HEADERS += \
     ../lib/framebuffer_cairo_tools.h \
@@ -39,11 +41,13 @@ HEADERS += \
     ../lib/cgfontprops.h \
     ../lib/cgtreewidget.h \
     ../lib/cgmultiscreens.h \
+    ../lib/cgtabbedmultiscreens.h \
     ../lib/cgpalette.h \
     ../lib/cgscrollbar.h \
     ../lib/cgimage.h \
     ../lib/cgevents.h \
-    ../lib/rpi_cgevents.h
+    ../lib/rpi_cgevents.h \
+    ../lib/cgtabmixin.h
 
 DISTFILES += Makefile
 

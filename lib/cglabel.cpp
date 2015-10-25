@@ -3,7 +3,7 @@
 
 
 CGLabel::CGLabel(CGWidget *parent):
-    CGFrame(parent)
+    CGFrame(parent), CGFontPropsWithAlignment(this)
 {
     m_verticalAlignment=cgalLeft;
     m_horizontalAlignment=cgalTop;
@@ -16,7 +16,7 @@ CGLabel::CGLabel(CGWidget *parent):
 }
 
 CGLabel::CGLabel(int x, int y, int width, int height, const std::string& text, CGWidget *parent):
-    CGFrame(x,y,width,height,parent)
+    CGFrame(x,y,width,height,parent), CGFontPropsWithAlignment(this)
 {
     m_verticalAlignment=cgalLeft;
     m_horizontalAlignment=cgalTop;
@@ -35,7 +35,7 @@ CGLabel::CGLabel(int x, int y, int width, int height, const std::string& text, C
 }
 
 CGLabel::CGLabel(int x, int y, int width, int height, CGWidget *parent):
-    CGFrame(x,y,width,height,parent)
+    CGFrame(x,y,width,height,parent), CGFontPropsWithAlignment(this)
 {
     m_verticalAlignment=cgalLeft;
     m_horizontalAlignment=cgalTop;
@@ -53,7 +53,7 @@ CGLabel::CGLabel(int x, int y, int width, int height, CGWidget *parent):
 }
 
 CGLabel::CGLabel(const std::string &text, CGWidget *parent):
-    CGFrame(parent)
+    CGFrame(parent), CGFontPropsWithAlignment(this)
 {
     m_verticalAlignment=cgalLeft;
     m_horizontalAlignment=cgalTop;
@@ -99,7 +99,6 @@ void CGLabel::setPropsFromPalette(CGPalette *palette)
 {
     CGFrame::setPropsFromPalette(palette);
     if (palette) {
-        setFontPropsFromPalette(palette);
         setFrameWidth(0);
         setBackgroundColor(CGColor::ccTransparent);
 

@@ -1,12 +1,14 @@
 #include "cgwidget.h"
 #include <iostream>
 
-CGWidget::CGWidget(CGWidget *parent)
+CGWidget::CGWidget(CGWidget *parent):
+    CGFontProps()
 {
     m_border=0;
     m_hasFocus=false;
     m_parent=NULL;
     m_mayReceiveFocus=false;
+    m_eventsOnlyIfFocused=false;
     setParent(parent);
     m_x=0;
     m_y=0;
@@ -16,12 +18,14 @@ CGWidget::CGWidget(CGWidget *parent)
     setPropsFromDefaultPalette();
 }
 
-CGWidget::CGWidget(int x, int y, int width, int height, CGWidget *parent)
+CGWidget::CGWidget(int x, int y, int width, int height, CGWidget *parent):
+    CGFontProps()
 {
     m_border=0;
     m_hasFocus=false;
     m_parent=NULL;
     m_mayReceiveFocus=false;
+    m_eventsOnlyIfFocused=false;
     setParent(parent);
     m_x=x;
     m_y=y;
@@ -115,6 +119,7 @@ bool CGWidget::isRelPosInside(int x, int y)
 
 void CGWidget::setPropsFromPalette(CGPalette *palette)
 {
+    setFontPropsFromPalette(palette);
     if (palette) {
         m_backgroundColor=palette->color(CGPalette::crBackground);
     }
@@ -134,6 +139,11 @@ void CGWidget::setPropsFromDefaultPalette()
 void CGWidget::setMayReceiveFocus(bool en)
 {
     m_mayReceiveFocus=en;
+}
+
+void CGWidget::setEventsOnlyIfFocused(bool en)
+{
+    m_eventsOnlyIfFocused=en;
 }
 
 CGWidget *CGWidget::getNextFocusChild() const
@@ -207,6 +217,13 @@ void CGWidget::focusNext()
 bool CGWidget::hasFocus() const
 {
     return m_hasFocus && m_mayReceiveFocus;
+}
+
+void CGWidget::postEvent(CGEvent *e)
+{
+    if (!m_eventsOnlyIfFocused || (m_eventsOnlyIfFocused&&hasFocus())) {
+        if (e && !e->accepted()) event(e);
+    }
 }
 
 

@@ -5,7 +5,7 @@
 #include "cgfontprops.h"
 
 /** \brief a progress bar with 0..100% number */
-class CGProgressBar : public CGFrame, public CGFontProps
+class CGProgressBar : public CGFrame
 {
     public:
         explicit CGProgressBar(CGWidget* parent=NULL);

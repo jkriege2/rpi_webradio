@@ -83,7 +83,7 @@ void CGEventQueue::thisDeployEvents()
 {
     while (hasEvents() && m_mainWidget) {
         CGEvent e=popEvent();
-        m_mainWidget->event(&e);
+        m_mainWidget->postEvent(&e);
     }
 }
 

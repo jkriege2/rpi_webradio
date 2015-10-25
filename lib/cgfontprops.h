@@ -69,7 +69,6 @@ class CGFontProps
                 setTextColor(palette->color(CGPalette::crText));
             }
         }
-    protected:
         virtual void setFontProps(cairo_t *c) const;
         virtual void setFontProps(cairo_t *c, CGColor color) const;
         virtual void drawText(cairo_t* cr, float xx, float yy, float m_width, float m_height, const std::string& m_text) const;
@@ -78,6 +77,13 @@ class CGFontProps
         virtual void drawAlignedColoredText(cairo_t* cr, float xx, float yy, float m_width, float m_height, const std::string& m_text, CGColor color, cgAlignment m_horizontalAlignment, cgAlignment m_verticalAlignment) const;
         virtual void drawAlignedColoredTextFillBackground(cairo_t* cr, float xx, float yy, float m_width, float m_height, const std::string& m_text, CGColor color, CGColor colorBack, cgAlignment m_horizontalAlignment, cgAlignment m_verticalAlignment) const;
         virtual std::list<std::string> splitTextIntoLines(cairo_t *cr, const std::string m_text, float* p_maxH=NULL, float* p_maxW=NULL, float* p_sumH=NULL) const;
+        virtual int getTextWidth(cairo_t *cr, const std::string& text) const;
+        virtual int getTextHeight(cairo_t *cr, const std::string& text) const;
+        virtual int getTextXBearing(cairo_t *cr, const std::string& text) const;
+        virtual int getTextYBearing(cairo_t *cr, const std::string& text) const;
+        virtual int getTextXAdvance(cairo_t *cr, const std::string& text) const;
+        virtual int getTextYAdvance(cairo_t *cr, const std::string& text) const;
+    protected:
         CGColor m_textColor;
         float m_fontSize;
         bool m_bold;
@@ -116,12 +122,14 @@ class CGPropsAlignment  {
 };
 
 
-class CGFontPropsWithAlignment: public CGFontProps, public CGPropsAlignment {
+class CGFontPropsWithAlignment: public CGPropsAlignment {
     public:
-        inline CGFontPropsWithAlignment(): CGFontProps(), CGPropsAlignment() {}
+        inline CGFontPropsWithAlignment(CGFontProps* fp): CGPropsAlignment() { this->m_fontprops=fp; }
         virtual inline ~CGFontPropsWithAlignment() {}
     protected:
         virtual void drawColoredText(cairo_t* cr, float xx, float yy, float m_width, float m_height, const std::string& m_text, CGColor color) const;
+    private:
+        CGFontProps* m_fontprops;
 
 };
 

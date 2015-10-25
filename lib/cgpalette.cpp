@@ -2,7 +2,7 @@
 
 CGPalette* CGPalette::defInstance=NULL;
 
-CGPalette::CGPalette():
+CGPalette::CGPalette()
 {
     fontSize=10;
     fontName="sans";
@@ -16,8 +16,13 @@ CGPalette::CGPalette():
     dimColor=CGColor("gray50");
     darkColor=CGColor::ccGrey25;
 
-    buttonColor=CGColor::ccGrey50;
+    buttonColor=dimColor;
     buttonIconOrTextColor=CGColor::ccGray10;
+    buttonFrameColor=buttonIconOrTextColor;
+
+    inactiveButtonColor=darkColor;
+    inactiveButtonIconOrTextColor=dimColor;
+    inactiveButtonFrameColor=inactiveButtonIconOrTextColor;
 
     selectionColor=CGColor("powderblue");
     selectedIconOrTextColor=CGColor("darkblue");
@@ -31,25 +36,6 @@ CGPalette::CGPalette():
     titleBackgroundColor=dimColor;
     titleTextColor=CGColor::ccBlack;
 
-
-//    std::cout<<"default-palette:\n";
-//    std::cout<<"   fontSize = "<<fontSize<<"\n";
-//    std::cout<<"   fontName = "<<fontName<<"\n";
-//    std::cout<<"   frameWidth = "<<frameWidth<<"\n";
-//    std::cout<<"   backgroundColor = "<<backgroundColor<<"\n";
-//    std::cout<<"   textColor = "<<textColor<<"\n";
-//    std::cout<<"   brightColor = "<<brightColor<<"\n";
-//    std::cout<<"   dimColor = "<<dimColor<<"\n";
-//    std::cout<<"   darkColor = "<<darkColor<<"\n";
-//    std::cout<<"   buttonColor = "<<buttonColor<<"\n";
-//    std::cout<<"   buttonIconOrTextColor = "<<buttonIconOrTextColor<<"\n";
-//    std::cout<<"   selectionColor = "<<selectionColor<<"\n";
-//    std::cout<<"   selectedIconOrTextColor = "<<selectedIconOrTextColor<<"\n";
-//    std::cout<<"   highlightColor = "<<highlightColor<<"\n";
-//    std::cout<<"   textOnHighlightColor = "<<textOnHighlightColor<<"\n";
-//    std::cout<<"   frameColor = "<<frameColor<<"\n";
-//    std::cout<<"   titleBackgroundColor = "<<titleBackgroundColor<<"\n";
-//    std::cout<<"   titleTextColor = "<<titleTextColor<<"\n";
 
 }
 
@@ -81,6 +67,14 @@ CGColor CGPalette::color(CGPalette::ColorRoles role) const
             return buttonColor;
         case crButtonIconOrText:
             return buttonIconOrTextColor;
+        case crButtonFrame:
+            return buttonFrameColor;
+        case crInactiveButton:
+            return inactiveButtonColor;
+        case crInactiveButtonFrame:
+            return inactiveButtonFrameColor;
+        case crInactiveButtonIconOrText:
+            return inactiveButtonIconOrTextColor;
         case crSelection:
             return selectionColor;
         case crSelectionIconOrText:
@@ -118,7 +112,7 @@ float CGPalette::size(CGPalette::SizeRoles role) const
     return 0;
 }
 
-std::string CGPalette::names(CGPalette::NameRoles role) const
+std::string CGPalette::name(CGPalette::NameRoles role) const
 {
     switch (role) {
         case nrFontName:

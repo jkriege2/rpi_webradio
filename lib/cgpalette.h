@@ -20,6 +20,10 @@ class CGPalette
             crDark,
             crButton,
             crButtonIconOrText,
+            crButtonFrame,
+            crInactiveButton,
+            crInactiveButtonIconOrText,
+            crInactiveButtonFrame,
             crSelection,
             crSelectionIconOrText,
             crFrame,
@@ -42,7 +46,7 @@ class CGPalette
 
         CGColor color(ColorRoles role) const;
         float size(SizeRoles role) const;
-        std::string names(NameRoles role) const;
+        std::string name(NameRoles role) const;
 
 
 
@@ -55,7 +59,11 @@ class CGPalette
         CGColor dimColor;
         CGColor darkColor;
         CGColor buttonColor;
+        CGColor buttonFrameColor;
         CGColor buttonIconOrTextColor;
+        CGColor inactiveButtonColor;
+        CGColor inactiveButtonFrameColor;
+        CGColor inactiveButtonIconOrTextColor;
         CGColor selectionColor;
         CGColor selectedIconOrTextColor;
         CGColor frameColor;

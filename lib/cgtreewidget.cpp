@@ -451,7 +451,6 @@ void CGTreeWidget::setPropsFromPalette(CGPalette *palette)
 {
     CGFrame::setPropsFromPalette(palette);
     if (palette) {
-        setFontPropsFromPalette(palette);
         setScrollbarPropsFromPalette(palette);
         setSelectedColor(palette->color(CGPalette::crSelection));
         setSelectedTextColor(palette->color(CGPalette::crSelectionIconOrText));

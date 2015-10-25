@@ -7,7 +7,7 @@
 #include "cgfontprops.h"
 #include "cgscrollbar.h"
 
-class CGTreeWidget: public CGFrame, public CGFontProps, public CGScrollBarMixin
+class CGTreeWidget: public CGFrame, public CGScrollBarMixin
 {
     public:
         struct TreeItem {

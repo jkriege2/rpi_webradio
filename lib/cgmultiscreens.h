@@ -17,7 +17,7 @@ class CGMultiScreens : public CGScreen
 
         virtual void resize(int width, int height);
 
-        void clear();
+        virtual void clear();
         CGScreen* currentScreen() const;
         inline int currentScreenID() const {
             return m_currentScreen;
@@ -27,13 +27,13 @@ class CGMultiScreens : public CGScreen
         void setCurrentScreen(int i);
         void setCurrentScreen(CGScreen* s);
         int indexOf(CGScreen* s) const;
-        void addScreen(CGScreen* screen);
-        CGScreen* addScreen();
+        virtual void addScreen(CGScreen* screen);
+        virtual CGScreen* addScreen();
         CGScreen* screen(int idx);
         inline int count() const {
             return m_screens.size();
         }
-        void setPropsFromPalette(CGPalette *palette);
+        virtual void setPropsFromPalette(CGPalette *palette);
     protected:
         std::vector<CGScreen*> m_screens;
         int m_currentScreen;

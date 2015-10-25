@@ -121,6 +121,7 @@ struct CGColor {
     }
 };
 
+/** \brief implement \c operator<<() for CGColor output into streams. */
 std::ostream& operator<< (std::ostream& stream, const CGColor& matrix);
 
 
@@ -136,8 +137,84 @@ enum cgAlignment {
 
 };
 
+/** \brief this class represents a rectangle with a user-specifyable type for the top-left coordinate (x,y) and size (width,height) */
+template<typename T>
+struct cgRect {
+    inline cgRect() {
+        x=y=width=height=0;
+    }
+
+    inline cgRect(T x, T y, T width, T height) {
+        this->x=x;
+        this->y=y;
+        this->width=width;
+        this->height=height;
+    }
+
+    /** \brief left start of rectangle */
+    T x;
+    /** \brief top start of rectangle */
+    T y;
+    /** \brief width of rectangle */
+    T width;
+    /** \brief height of rectangle */
+    T height;
+
+    /** \brief translate to the top left (x,y) in the given cairo context \a c */
+    inline void cairo_translateTopLeft(cairo_t *c) const {
+        cairo_translate(c, x,y);
+    }
+    /** \brief clip this rectangle  */
+    inline void cairo_clip(cairo_t *c) const {
+        std::cout<<"clip "<<*this<<std::endl;
+        cairo_rectangle(c, x,y,width,height);
+        cairo_clip(c);
+    }
+    /** \brief draw the rectangle-frame-line around it (colored with \a color and with a width of \a framewidth)  */
+    inline void cairo_draw(cairo_t *c, CGColor color, float framewidth=1) const {
+        cgDrawRectangle(c, x,y,width,height,color,framewidth);
+    }
+    /** \brief draw the rectangle, filled with fillColor  */
+    inline void cairo_drawFilled(cairo_t *c, CGColor fillColor) const {
+        cgDrawFilledRectangle(c, x,y,width,height,fillColor);
+    }
+    /** \brief draw the rectangle, filled with fillColor and with a frame-line around it (colored with \a color and with a width of \a framewidth)  */
+    inline void cairo_drawFilled(cairo_t *c, CGColor fillColor, CGColor color, float framewidth=1) const {
+        cgDrawFilledRectangle(c, x,y,width,height, fillColor,color,framewidth);
+    }
+
+};
+
+
+/** \brief implement \c operator<<() for cgRect output into streams. */
+template<typename T>
+inline std::ostream& operator<< (std::ostream& stream, const cgRect<T>& r) {
+    stream<<"cgRect[tl=("<<r.x<<", "<<r.y<<"), size=("<<r.width<<", "<<r.height<<")]";
+    return stream;
+}
+
 /** \brief draw the given text using cairo */
 void cgDrawText(cairo_t* cr, int xx, int yy, int m_width, int m_height, const std::string& m_text, const std::string& m_fontFace=std::string("sans"), float m_fontSize=10.0, bool m_italic=false, bool m_bold=false, CGColor m_textColor=CGColor::ccBlack, float m_lineSpacing=1.2, cgAlignment m_horizontalAlignment=cgalCenter, cgAlignment m_verticalAlignment=cgalCenter);
+/** \brief draw a non-filled rectangle frame */
+void cgDrawRectangle(cairo_t* cr, int xx, int yy, int m_width, int m_height, CGColor color, float framewidth=1);
+/** \brief draw a filled and framed rectangle frame */
+void cgDrawFilledRectangle(cairo_t* cr, int xx, int yy, int m_width, int m_height, CGColor fillColor, CGColor color, float framewidth=1);
+/** \brief draw a filled and non-framed rectangle frame */
+void cgDrawFilledRectangle(cairo_t* cr, int xx, int yy, int m_width, int m_height, CGColor fillColor);
+/** \brief draw a line */
+void cgDrawLine(cairo_t* cr, int x1, int y1, int x2, int y2, CGColor color, float framewidth=1);
+/** \brief draw a 2-line poylgon */
+void cgDrawLines(cairo_t* cr, int x1, int y1, int x2, int y2, int x3, int y3, CGColor color, float framewidth=1);
+/** \brief draw a 3-line poylgon */
+void cgDrawLines(cairo_t* cr, int x1, int y1, int x2, int y2, int x3, int y3, int x4, int y4, CGColor color, float framewidth=1);
+/** \brief draw a 4-line poylgon */
+void cgDrawLines(cairo_t* cr, int x1, int y1, int x2, int y2, int x3, int y3, int x4, int y4, int x5, int y5, CGColor color, float framewidth=1);
+/** \brief fill a 2-line poylgon (automatically closed) */
+void cgFillPolygon(cairo_t* cr, int x1, int y1, int x2, int y2, int x3, int y3, CGColor fillcolor);
+/** \brief draw a 3-line poylgon (automatically closed)  */
+void cgFillPolygon(cairo_t* cr, int x1, int y1, int x2, int y2, int x3, int y3, int x4, int y4, CGColor fillcolor);
+/** \brief draw a 4-line poylgon (automatically closed)  */
+void cgFillPolygon(cairo_t* cr, int x1, int y1, int x2, int y2, int x3, int y3, int x4, int y4, int x5, int y5, CGColor fillcolor);
 
 
 /** \brief convert a long integer to a C++ string */

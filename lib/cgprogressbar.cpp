@@ -60,7 +60,6 @@ void CGProgressBar::setPropsFromPalette(CGPalette *palette)
 {
     CGFrame::setPropsFromPalette(palette);
     if (palette) {
-        setFontPropsFromPalette(palette);
         setProgressColor(palette->color(CGPalette::crHighlight));
         setTextColor(palette->color(CGPalette::crTextOnHighlight));
     }

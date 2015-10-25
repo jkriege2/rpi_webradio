@@ -52,6 +52,67 @@ std::list<std::string> CGFontProps::splitTextIntoLines(cairo_t *cr, const std::s
 }
 
 
+int CGFontProps::getTextHeight(cairo_t *cr, const std::string &text) const
+{
+    cairo_save(cr);
+    setFontProps(cr);
+    cairo_text_extents_t extents;
+    cairo_text_extents(cr, text.c_str(), &extents);
+    cairo_restore(cr);
+    return extents.height;
+}
+
+int CGFontProps::getTextXBearing(cairo_t *cr, const std::string &text) const
+{
+    cairo_save(cr);
+    setFontProps(cr);
+    cairo_text_extents_t extents;
+    cairo_text_extents(cr, text.c_str(), &extents);
+    cairo_restore(cr);
+    return extents.x_bearing;
+}
+
+int CGFontProps::getTextYBearing(cairo_t *cr, const std::string &text) const
+{
+    cairo_save(cr);
+    setFontProps(cr);
+    cairo_text_extents_t extents;
+    cairo_text_extents(cr, text.c_str(), &extents);
+    cairo_restore(cr);
+    return extents.y_bearing;
+}
+
+int CGFontProps::getTextXAdvance(cairo_t *cr, const std::string &text) const
+{
+    cairo_save(cr);
+    setFontProps(cr);
+    cairo_text_extents_t extents;
+    cairo_text_extents(cr, text.c_str(), &extents);
+    cairo_restore(cr);
+    return extents.x_advance;
+}
+
+int CGFontProps::getTextYAdvance(cairo_t *cr, const std::string &text) const
+{
+    cairo_save(cr);
+    setFontProps(cr);
+    cairo_text_extents_t extents;
+    cairo_text_extents(cr, text.c_str(), &extents);
+    cairo_restore(cr);
+    return extents.y_advance;
+}
+
+int CGFontProps::getTextWidth(cairo_t *cr, const std::string &text) const
+{
+    cairo_save(cr);
+    setFontProps(cr);
+    cairo_text_extents_t extents;
+    cairo_text_extents(cr, text.c_str(), &extents);
+    cairo_restore(cr);
+    return extents.width;
+}
+
+
 void CGFontProps::drawText(cairo_t *cr, float xx, float yy, float m_width, float m_height, const std::string &m_text) const
 {
     drawColoredText(cr, xx, yy, m_width, m_height, m_text, m_textColor);
@@ -85,5 +146,5 @@ void CGFontProps::drawAlignedColoredTextFillBackground(cairo_t *cr, float xx, fl
 
 void CGFontPropsWithAlignment::drawColoredText(cairo_t *cr, float xx, float yy, float m_width, float m_height, const std::string &m_text, CGColor color) const
 {
-    drawAlignedColoredText(cr, xx, yy, m_width, m_height, m_text, color, m_horizontalAlignment, m_verticalAlignment);
+    m_fontprops->drawAlignedColoredText(cr, xx, yy, m_width, m_height, m_text, color, m_horizontalAlignment, m_verticalAlignment);
 }

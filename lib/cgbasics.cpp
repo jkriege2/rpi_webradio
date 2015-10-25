@@ -498,3 +498,113 @@ std::ostream &operator<<(std::ostream &stream, const CGColor &matrix)
     stream<<matrix.toString()<<"["<<(int)matrix.r<<", "<<(int)matrix.g<<", "<<(int)matrix.b<<", "<<(int)matrix.a<<"]";
     return stream;
 }
+
+
+void cgDrawRectangle(cairo_t *cr, int xx, int yy, int m_width, int m_height, CGColor color, float framewidth)
+{
+    cairo_rectangle(cr, xx,yy,m_width,m_height);
+    color.cairo_set_source(cr);
+    cairo_set_line_width (cr, framewidth);
+    cairo_stroke(cr);
+}
+
+
+void cgDrawFilledRectangle(cairo_t *cr, int xx, int yy, int m_width, int m_height, CGColor fillColor, CGColor color, float framewidth)
+{
+    cairo_rectangle(cr, xx,yy,m_width,m_height);
+    fillColor.cairo_set_source(cr);
+    cairo_fill_preserve(cr);
+    color.cairo_set_source(cr);
+    cairo_set_line_width (cr, framewidth);
+    cairo_stroke(cr);
+}
+
+
+void cgDrawFilledRectangle(cairo_t *cr, int xx, int yy, int m_width, int m_height, CGColor fillColor)
+{
+    cairo_rectangle(cr, xx,yy,m_width,m_height);
+    fillColor.cairo_set_source(cr);
+    cairo_fill(cr);
+}
+
+
+void cgDrawLine(cairo_t *cr, int x1, int y1, int x2, int y2, CGColor color, float framewidth)
+{
+    cairo_move_to(cr, x1,y1);
+    cairo_line_to(cr, x2,y2);
+    color.cairo_set_source(cr);
+    cairo_set_line_width (cr, framewidth);
+    cairo_stroke(cr);
+}
+
+
+void cgDrawLines(cairo_t *cr, int x1, int y1, int x2, int y2, int x3, int y3, int x4, int y4, int x5, int y5, CGColor color, float framewidth)
+{
+    cairo_move_to(cr, x1,y1);
+    cairo_line_to(cr, x2,y2);
+    cairo_line_to(cr, x3,y3);
+    cairo_line_to(cr, x4,y4);
+    cairo_line_to(cr, x5,y5);
+    color.cairo_set_source(cr);
+    cairo_set_line_width (cr, framewidth);
+    cairo_stroke(cr);
+}
+
+
+void cgDrawLines(cairo_t *cr, int x1, int y1, int x2, int y2, int x3, int y3, int x4, int y4, CGColor color, float framewidth)
+{
+    cairo_move_to(cr, x1,y1);
+    cairo_line_to(cr, x2,y2);
+    cairo_line_to(cr, x3,y3);
+    cairo_line_to(cr, x4,y4);
+    color.cairo_set_source(cr);
+    cairo_set_line_width (cr, framewidth);
+    cairo_stroke(cr);
+}
+
+
+void cgDrawLines(cairo_t *cr, int x1, int y1, int x2, int y2, int x3, int y3, CGColor color, float framewidth)
+{
+    cairo_move_to(cr, x1,y1);
+    cairo_line_to(cr, x2,y2);
+    cairo_line_to(cr, x3,y3);
+    color.cairo_set_source(cr);
+    cairo_set_line_width (cr, framewidth);
+    cairo_stroke(cr);
+}
+
+
+void cgFillPolygon(cairo_t *cr, int x1, int y1, int x2, int y2, int x3, int y3, CGColor fillcolor)
+{
+    cairo_move_to(cr, x1,y1);
+    cairo_line_to(cr, x2,y2);
+    cairo_line_to(cr, x3,y3);
+    cairo_line_to(cr, x1,y1);
+    fillcolor.cairo_set_source(cr);
+    cairo_fill(cr);
+}
+
+
+void cgFillPolygon(cairo_t *cr, int x1, int y1, int x2, int y2, int x3, int y3, int x4, int y4, CGColor fillcolor)
+{
+    cairo_move_to(cr, x1,y1);
+    cairo_line_to(cr, x2,y2);
+    cairo_line_to(cr, x3,y3);
+    cairo_line_to(cr, x4,y4);
+    cairo_line_to(cr, x1,y1);
+    fillcolor.cairo_set_source(cr);
+    cairo_fill(cr);
+}
+
+
+void cgFillPolygon(cairo_t *cr, int x1, int y1, int x2, int y2, int x3, int y3, int x4, int y4, int x5, int y5, CGColor fillcolor)
+{
+    cairo_move_to(cr, x1,y1);
+    cairo_line_to(cr, x2,y2);
+    cairo_line_to(cr, x3,y3);
+    cairo_line_to(cr, x4,y4);
+    cairo_line_to(cr, x5,y5);
+    cairo_line_to(cr, x1,y1);
+    fillcolor.cairo_set_source(cr);
+    cairo_fill(cr);
+}

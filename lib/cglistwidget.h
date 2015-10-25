@@ -7,7 +7,7 @@
 #include "cgfontprops.h"
 #include "cgscrollbar.h"
 
-class CGListWidget: public CGFrame, public CGFontProps, public CGScrollBarMixin
+class CGListWidget: public CGFrame, public CGScrollBarMixin
 {
     public:
         explicit CGListWidget(CGWidget* parent=NULL);

@@ -37,6 +37,7 @@
 #include "cgimage.h"
 #include "rpi_cgevents.h"
 #include "cgeventqueue.h"
+#include "cgtabbedmultiscreens.h"
 
 fbcairo_context* context;
 
@@ -47,7 +48,7 @@ CGLabel* lab1=NULL;
 CGProgressBar* prog1=NULL;
 CGProgressBar* prog2=NULL;
 CGListWidget* lst=NULL;
-CGMultiScreens* multi;
+CGTabbedMultiScreens* multi;
 CGTreeWidget* tree;
 CGImage* imgs[8];
 
@@ -56,7 +57,7 @@ CGImage* imgs[8];
 
 void setupGUI() {
 
-    multi=new CGMultiScreens(context);
+    multi=new CGTabbedMultiScreens(context);
 
     {
         mainFrame=multi->addScreen();//new CGScreen(context);

@@ -1,7 +1,8 @@
 #include "cgscreen.h"
 
 CGScreen::CGScreen(CGWidget *parent):
-    CGWidget(parent)
+    CGWidget(parent),
+    CGFontPropsWithAlignment(this)
 {
     move(0,0);
     setBackgroundColor(CGColor::ccBlack);
@@ -9,14 +10,16 @@ CGScreen::CGScreen(CGWidget *parent):
 }
 
 CGScreen::CGScreen(const fbcairo_context *context, CGWidget *parent):
-    CGWidget(0,0,fbcairo_getWidth(context),fbcairo_getHeight(context), parent)
+    CGWidget(0,0,fbcairo_getWidth(context),fbcairo_getHeight(context), parent),
+    CGFontPropsWithAlignment(this)
 {
     setBackgroundColor(CGColor::ccBlack);
     setPropsFromDefaultPalette();
 }
 
 CGScreen::CGScreen(int width, int height, CGWidget *parent):
-    CGWidget(0,0,width,height, parent)
+    CGWidget(0,0,width,height, parent),
+    CGFontPropsWithAlignment(this)
 {
     setBackgroundColor(CGColor::ccBlack);
     move(0,0);
@@ -67,7 +70,6 @@ void CGScreen::paint(cairo_t *c) const
 void CGScreen::setPropsFromPalette(CGPalette *palette)
 {
     CGWidget::setPropsFromPalette(palette);
-    setFontPropsFromPalette(palette);
     if (palette) {
         setTitleBackgroundColor(palette->color(CGPalette::crTitleBackground));
         setTextColor(palette->color(CGPalette::crTitleText));
