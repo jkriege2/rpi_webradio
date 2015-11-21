@@ -52,6 +52,9 @@ if [ "$FAST" = "0" ] ; then
 	update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.8 50
 	
 
+	#install boost
+	apt-get install libboost-all-dev
+	
 	#install cairo etc.
 	apt-get install libpixman-1-dev libcairo2 libcairo2-dev
 
