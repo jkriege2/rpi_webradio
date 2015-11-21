@@ -6,7 +6,7 @@ CC=g++
 
 
 CFLAGS =  -Wall -pedantic -std=c++11 -I./lib `pkg-config --cflags cairo`
-LDFLAGS = -Wall -pedantic -std=c++11 `pkg-config --libs cairo` -lwiringPi
+LDFLAGS = -Wall -pedantic -std=c++11 `pkg-config --libs cairo` -lwiringPi -lpthread
 
 Release: CFLAGS += -O2
 Release: LDFLAGS += -s
