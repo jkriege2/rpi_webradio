@@ -53,7 +53,7 @@ if [ "$FAST" = "0" ] ; then
 	
 
 	#install boost
-	apt-get install libboost-all-dev
+	apt-get install libboost-all-dev libboost-dev
 	
 	#install cairo etc.
 	apt-get install libpixman-1-dev libcairo2 libcairo2-dev

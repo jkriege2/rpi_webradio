@@ -9,8 +9,9 @@
 #include "cgpalette.h"
 #include "cgevents.h"
 #include "cgfontprops.h"
+#include <boost/noncopyable.hpp>
 
-class CGWidget: public CGFontProps
+class CGWidget: public CGFontProps, private boost::noncopyable
 {
     public:
         explicit CGWidget(CGWidget* parent=NULL);
