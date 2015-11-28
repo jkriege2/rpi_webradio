@@ -5,6 +5,7 @@
 #include "cgbasics.h"
 #include "cgfontprops.h"
 
+/** \brief Mixin, which adds a tab-bar to a widget */
 class CGTabMixin
 {
     public:
@@ -26,6 +27,11 @@ class CGTabMixin
          * The tab-bar always has full width and the height tabHeight().
          */
         virtual void paintTabBar(cairo_t *c, int m_width, int m_height, const CGFontProps* fp, cgRect<int> *remainingRect=NULL) const;
+        /** \brief paint the tab-bar at the top or bottom of the area in the area (x,y) -> (x+m_width,y+m_height).
+         *
+         * The tab-bar always has full width and the height tabHeight().
+         */
+        virtual cgRect<int> getRemainingRect(int m_width, int m_height) const;
 
         virtual void setTabPropsFromPalette(CGPalette *palette);
 

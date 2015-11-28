@@ -7,6 +7,7 @@
 #include "cgfontprops.h"
 #include "cgscrollbar.h"
 
+/** \biref a widget that displays a list of items */
 class CGListWidget: public CGFrame, public CGScrollBarMixin
 {
     public:

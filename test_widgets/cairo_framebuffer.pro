@@ -25,7 +25,8 @@ SOURCES += cairo_test.cpp \
     ../lib/cgimage.cpp \
     ../lib/cgevents.cpp \
     ../lib/rpi_cgevents.cpp \
-    ../lib/cgtabmixin.cpp
+    ../lib/cgtabmixin.cpp \
+    ../lib/cglayout.cpp
 
 HEADERS += \
     ../lib/framebuffer_cairo_tools.h \
@@ -47,7 +48,8 @@ HEADERS += \
     ../lib/cgimage.h \
     ../lib/cgevents.h \
     ../lib/rpi_cgevents.h \
-    ../lib/cgtabmixin.h
+    ../lib/cgtabmixin.h \
+    ../lib/cglayout.h
 
 DISTFILES += Makefile
 

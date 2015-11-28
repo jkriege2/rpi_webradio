@@ -137,6 +137,36 @@ enum cgAlignment {
 
 };
 
+/** \brief direction constants */
+enum cgDirection {
+    cgdHorizontal=0x00,
+    cgdVertical=0x01,
+};
+
+/** \brief this class represents a rectangle with a user-specifyable type for the top-left coordinate (x,y) and size (width,height) */
+template<typename T>
+struct cgSize {
+    inline cgSize() {
+        width=height=0;
+    }
+
+    inline cgSize(T width, T height) {
+        this->width=width;
+        this->height=height;
+    }
+    /** \brief width  */
+    T width;
+    /** \brief height  */
+    T height;
+};
+
+/** \brief implement \c operator<<() for cgSize output into streams. */
+template<typename T>
+inline std::ostream& operator<< (std::ostream& stream, const cgSize<T>& r) {
+    stream<<"cgSize["<<r.width<<", "<<r.height<<"]";
+    return stream;
+}
+
 /** \brief this class represents a rectangle with a user-specifyable type for the top-left coordinate (x,y) and size (width,height) */
 template<typename T>
 struct cgRect {
@@ -182,6 +212,10 @@ struct cgRect {
     inline void cairo_drawFilled(cairo_t *c, CGColor fillColor, CGColor color, float framewidth=1) const {
         cgDrawFilledRectangle(c, x,y,width,height, fillColor,color,framewidth);
     }
+    template<typename T2>
+    inline cgSize<T2> size() const {
+        return cgSize<T2>(width, height);
+    }
 
 };
 
@@ -191,6 +225,13 @@ template<typename T>
 inline std::ostream& operator<< (std::ostream& stream, const cgRect<T>& r) {
     stream<<"cgRect[tl=("<<r.x<<", "<<r.y<<"), size=("<<r.width<<", "<<r.height<<")]";
     return stream;
+}
+
+template<typename T>
+inline T cgBound(T mi, T val, T ma) {
+    if (val<mi) return mi;
+    else if (val>ma) return ma;
+    return val;
 }
 
 /** \brief draw the given text using cairo */
@@ -215,6 +256,8 @@ void cgFillPolygon(cairo_t* cr, int x1, int y1, int x2, int y2, int x3, int y3, 
 void cgFillPolygon(cairo_t* cr, int x1, int y1, int x2, int y2, int x3, int y3, int x4, int y4, CGColor fillcolor);
 /** \brief draw a 4-line poylgon (automatically closed)  */
 void cgFillPolygon(cairo_t* cr, int x1, int y1, int x2, int y2, int x3, int y3, int x4, int y4, int x5, int y5, CGColor fillcolor);
+/** \brief draw an image  */
+void cgDrawImage(cairo_t* cr, int x, int y, int width, int height, cairo_surface_t *img_surface, int img_width, int img_height);
 
 
 /** \brief convert a long integer to a C++ string */

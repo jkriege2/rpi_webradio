@@ -2,12 +2,14 @@ all: Release
 debug: Debug
 release: Release
 
-LIBS=../lib
-CC=g++
+LIBS=../lib \
+     ../../CImg
+
+CC=g++ -std=c++11
 
 
-CFLAGS =  -Wall -pedantic -std=c++11 `pkg-config --cflags cairo`
-LDFLAGS = -Wall -pedantic -std=c++11 `pkg-config --libs cairo` -lwiringPi -lpthread
+CFLAGS =  -Wall -pedantic `pkg-config --cflags cairo`
+LDFLAGS = -Wall -pedantic `pkg-config --libs cairo` -lwiringPi -lpthread
 
 Release: CFLAGS += -O2
 Release: LDFLAGS += -s
@@ -36,7 +38,8 @@ SRC_FILE= cairo_test.cpp \
           ../lib/cgimage.cpp \
           ../lib/rpi_cgevents.cpp \
           ../lib/cgevents.cpp \
-          ../lib/cgtabmixin.cpp
+          ../lib/cgtabmixin.cpp \
+          ../lib/cglayout.cpp
 
 
 SRC_FILE_O = $(subst .cpp,.o,$(SRC_FILE))

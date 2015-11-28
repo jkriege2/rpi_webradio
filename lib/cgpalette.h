@@ -4,6 +4,7 @@
 #include "cgbasics.h"
 #include <string>
 
+/** \brief a CGPalette defines the appearance (colors, ine-widths, fonts, ...) of an application */
 class CGPalette
 {
     public:

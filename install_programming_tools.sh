@@ -84,6 +84,14 @@ if [ "$FAST" = "0" ] ; then
 	./build
 	cd $CURRENTDIR
 
+
+	cd $HOMEDIR
+	# clone and install CImg
+	git clone https://github.com/dtschump/CImg.git
+	cd wiringPi
+	./build
+	cd $CURRENTDIR
+
 fi
 
 echo "\n\nauto-start mpd [y/n]?"

@@ -1,4 +1,5 @@
 #include "cgscreen.h"
+#include "framebuffer_cairo_tools.h"
 
 CGScreen::CGScreen(CGWidget *parent):
     CGWidget(parent),

@@ -1,4 +1,5 @@
 #include "cgeventqueue.h"
+#include "cgwidget.h"
 
 CGEventQueue* CGEventQueue::inst=NULL;
 

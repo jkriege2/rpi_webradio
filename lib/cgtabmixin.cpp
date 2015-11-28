@@ -20,18 +20,16 @@ int CGTabMixin::tabGetActiveTab() const
 
 void CGTabMixin::paintTabBar(cairo_t *c, int m_width, int m_height, const CGFontProps *fp, cgRect<int>* remainingRect) const
 {
-
+    if (remainingRect) *remainingRect=getRemainingRect(m_width, m_height);
     if (m_tabPosition==tpTop) {
         cairo_save(c);
         cairo_rectangle(c, 0,0,m_width,m_tabheight);
         cairo_clip(c);
-        if (remainingRect) *remainingRect=cgRect<int>(0,m_tabheight,m_width,m_height-m_tabheight);
     } else if (m_tabPosition==tpBottom) {
         cairo_save(c);
         cairo_translate(c, 0, m_height-m_tabheight);
         cairo_rectangle(c, 0,0,m_width,m_tabheight);
         cairo_clip(c);
-        if (remainingRect) *remainingRect=cgRect<int>(0,0,m_width,m_height-m_tabheight);
     } else {
         return;
     }
@@ -71,7 +69,18 @@ void CGTabMixin::paintTabBar(cairo_t *c, int m_width, int m_height, const CGFont
                 x=x2;
             }
         }
-    cairo_restore(c);
+        cairo_restore(c);
+}
+
+cgRect<int> CGTabMixin::getRemainingRect(int m_width, int m_height) const
+{
+    if (m_tabPosition==tpTop) {
+        return cgRect<int>(0,m_tabheight,m_width,m_height-m_tabheight-1);
+    } else if (m_tabPosition==tpBottom) {
+        return cgRect<int>(0,0,m_width,m_height-m_tabheight-1);
+    } else {
+        return cgRect<int>(0,0,m_width,m_height-1);
+    }
 }
 
 void CGTabMixin::setTabPropsFromPalette(CGPalette *palette)

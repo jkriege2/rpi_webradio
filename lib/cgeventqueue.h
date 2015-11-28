@@ -4,8 +4,10 @@
 #include <queue>
 #include <mutex>
 #include "cgbasics.h"
-#include "cgwidget.h"
 #include "cgevents.h"
+
+class CGWidget; // forward
+
 
 /** \brief thread-safe (mutex-locked) queue for CGEvent s */
 class CGEventQueue

@@ -7,6 +7,7 @@
 #include "cgfontprops.h"
 #include "cgscrollbar.h"
 
+/** \brief a widget that displays a tree of items (CGTreeWidget::TreeItem) */
 class CGTreeWidget: public CGFrame, public CGScrollBarMixin
 {
     public:

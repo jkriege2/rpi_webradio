@@ -7,6 +7,9 @@
 #include <vector>
 #include "cgpalette.h"
 
+/*! \brief class that represents the properties of text (fontface, fontsize, italic, bold, color)
+           and provides functions for drawing text
+ */
 class CGFontProps
 {
     public:

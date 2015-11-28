@@ -4,6 +4,7 @@
 #include "cgbasics.h"
 #include "cgpalette.h"
 
+/** \brief a mix-in that add scrollbars to a widget */
 class CGScrollBarMixin
 {
     public:

@@ -37,6 +37,7 @@
 #include "cgimage.h"
 #include "rpi_cgevents.h"
 #include "cgeventqueue.h"
+#include "cglayout.h"
 #include "cgtabbedmultiscreens.h"
 
 fbcairo_context* context;
@@ -44,6 +45,7 @@ fbcairo_context* context;
 CGScreen* mainFrame=NULL;
 CGScreen* mainFrame2=NULL;
 CGScreen* mainFrame3=NULL;
+CGScreen* mainFrame4=NULL;
 CGLabel* lab1=NULL;
 CGProgressBar* prog1=NULL;
 CGProgressBar* prog2=NULL;
@@ -155,6 +157,7 @@ void setupGUI() {
         int cnt=0;
         imgs[cnt]=new CGImage(10,10+hh*(cnt/2), ww, hh, mainFrame3);
         imgs[cnt]->setImagePNG("../images/lena.png");
+        imgs[cnt]->setImageScaled(CGImage::smScaled);
         cnt++;
         imgs[cnt]=new CGImage(10+ww,10+hh*(cnt/2), ww, hh, mainFrame3);
         imgs[cnt]->setImagePNG("../images/lena.png");
@@ -172,7 +175,7 @@ void setupGUI() {
 
         imgs[cnt]=new CGImage(10,10+hh*(cnt/2), ww, hh, mainFrame3);
         imgs[cnt]->setImagePNG("../images/icon.png");
-        imgs[cnt]->setImageScaled(CGImage::smOriginal);
+        imgs[cnt]->setImageScaled(CGImage::smScaled);
         cnt++;
         imgs[cnt]=new CGImage(10+ww,10+hh*(cnt/2), ww, hh, mainFrame3);
         imgs[cnt]->setImagePNG("../images/icon.png");
@@ -187,6 +190,32 @@ void setupGUI() {
         imgs[cnt]->setImageScaled(CGImage::smExpandOnly);
         cnt++;
     }
+    {
+        mainFrame4=multi->addScreen();
+        CGLinearLayout* lay=new CGLinearLayout(mainFrame4, cgdVertical);
+        CGWidget* widsublay;
+        lay->addWidget(widsublay=new CGWidget(mainFrame4));
+        CGLinearLayout* layh=new CGLinearLayout(widsublay, cgdHorizontal);
+        widsublay->setLayout(layh);
+        for (int i=0; i<5; i++) {
+            CGImage* img=new CGImage(widsublay);
+            img->setImagePNG("../images/lena.png");
+            img->setImageScaled(CGImage::smScaled);
+            img->resize(100,100);
+            layh->addWidget(img);
+        }
+        lay->addWidget(widsublay=new CGWidget(mainFrame4));
+        layh=new CGLinearLayout(widsublay, cgdHorizontal);
+        widsublay->setLayout(layh);
+        for (int i=0; i<5; i++) {
+            CGImage* img=new CGImage(widsublay);
+            img->setImagePNG("../images/icon.png");
+            img->setImageScaled(CGImage::smScaled);
+            img->resize(100,100);
+            layh->addWidget(img);
+        }
+        //lay->layoutWidgets();
+    }
     CGEventQueue::registerMainWidget(multi);
 }
 void destroyGUI() {
@@ -199,7 +228,7 @@ void destroyGUI() {
 void paintGUI(cairo_t *c, float fps=0) {
     char txt[1024];
     static float txtBackgroundI=0;
-    static int globcnt=400;
+    static int globcnt=440;
     static int cur=0;
     static int curInc=1;
     sprintf(txt, "%4.2f fps\n%3.1f degC\n%dXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", fps, rpitemp_getCurrentCPUTemperature(), globcnt);
@@ -217,6 +246,7 @@ void paintGUI(cairo_t *c, float fps=0) {
     if (cur>=(int)lst->count()*5-1 || cur<=0) curInc*=-1;
 
     globcnt++;
+
     multi->setCurrentScreen(0);
 
     if (globcnt<=100) {
@@ -234,15 +264,27 @@ void paintGUI(cairo_t *c, float fps=0) {
                 tree->prevItem();
             }
         }
-    } else if (globcnt>400 && globcnt<=450) {
+    } else if (globcnt>400 && globcnt<=420) {
         multi->setCurrentScreen(2);
+        for (int i=0; i<8; i++) {
+            imgs[i]->setKeepAspectRatio(true);
+        }
 
+    } else if (globcnt>420 && globcnt<=440) {
+        multi->setCurrentScreen(2);
+        for (int i=0; i<8; i++) {
+            imgs[i]->setKeepAspectRatio(false);
+        }
+
+    } else if (globcnt>440 && globcnt<=500) {
+        multi->setCurrentScreen(3);
     } else {
         globcnt=0;
     }
     mainFrame->setTitle(cgFormat("screen %d/%d: %d  %4.2f fps", multi->currentScreenID()+1, multi->count(), globcnt, fps));
     mainFrame2->setTitle(cgFormat("screen %d/%d: %d  %4.2f fps", multi->currentScreenID()+1, multi->count(), globcnt, fps));
     mainFrame3->setTitle(cgFormat("screen %d/%d: %d  %4.2f fps", multi->currentScreenID()+1, multi->count(), globcnt, fps));
+    mainFrame4->setTitle(cgFormat("screen %d/%d: %d  %4.2f fps", multi->currentScreenID()+1, multi->count(), globcnt, fps));
 }
 
 

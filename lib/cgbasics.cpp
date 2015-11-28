@@ -608,3 +608,28 @@ void cgFillPolygon(cairo_t *cr, int x1, int y1, int x2, int y2, int x3, int y3, 
     fillcolor.cairo_set_source(cr);
     cairo_fill(cr);
 }
+
+
+void cgDrawImage(cairo_t *cr, int x, int y, int width, int height, cairo_surface_t *img_surface, int img_w, int img_h) {
+    if (img_surface && img_w>0 && img_h>0 && width>0 && height>0) {
+        cairo_save(cr);
+            cairo_matrix_t cm;
+            cairo_matrix_init_identity(&cm);
+            cairo_matrix_translate (&cm, x, y);
+            if (width!=img_w || height!=img_h) cairo_matrix_scale(&cm, float(width)/float(img_w), float(height)/float(img_h));
+            cairo_matrix_invert(&cm);
+
+            cairo_pattern_t* brush=cairo_pattern_create_for_surface(img_surface);
+            cairo_pattern_set_matrix(brush, &cm);
+            cairo_pattern_set_extend(brush, CAIRO_EXTEND_NONE);
+
+            cairo_rectangle(cr, x, y, width, height);
+            cairo_set_source(cr, brush);
+            cairo_fill_preserve(cr);
+            cairo_set_source_rgba(cr, 0,0,0,0);
+            cairo_set_line_width(cr, 0.0);
+            cairo_stroke(cr);
+            cairo_pattern_destroy(brush);
+        cairo_restore(cr);
+    }
+}

@@ -5,6 +5,7 @@
 #include <vector>
 #include "cgtabmixin.h"
 
+/** \brief a multi-screen-manager with tabs that indicate which screen is currently used */
 class CGTabbedMultiScreens : public CGMultiScreens, public CGTabMixin
 {
     public:

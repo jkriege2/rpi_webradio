@@ -53,6 +53,7 @@ void CGTabbedMultiScreens::addScreen(CGScreen *screen, const std::string &name)
 CGScreen *CGTabbedMultiScreens::addScreen(const std::string &name)
 {
     CGScreen * s=CGMultiScreens::addScreen();
+    s->resize(getRemainingRect(m_width, m_height).size<unsigned int>());
     m_screenNames.push_back(name);
     return s;
 }

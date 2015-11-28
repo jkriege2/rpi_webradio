@@ -3,6 +3,7 @@
 CGImage::CGImage(CGWidget *parent):
     CGFrame(parent)
 {
+    m_keepAspectRatio=true;
     img_surface=NULL;
     img_w=img_h=0;
     m_image_file="";
@@ -19,6 +20,7 @@ CGImage::CGImage(CGWidget *parent):
 CGImage::CGImage(int x, int y, int width, int height, const std::string &image_file, CGWidget *parent):
     CGFrame(x,y,width,height,parent)
 {
+    m_keepAspectRatio=true;
     img_surface=NULL;
     img_w=img_h=0;
     m_imageOffset=1;
@@ -35,6 +37,7 @@ CGImage::CGImage(int x, int y, int width, int height, const std::string &image_f
 CGImage::CGImage(int x, int y, int width, int height, CGWidget *parent):
     CGFrame(x,y,width,height,parent)
 {
+    m_keepAspectRatio=true;
     img_surface=NULL;
     img_w=img_h=0;
     m_imageOffset=1;
@@ -52,6 +55,7 @@ CGImage::CGImage(int x, int y, int width, int height, CGWidget *parent):
 CGImage::CGImage(const std::string &image_file, CGWidget *parent):
     CGFrame(parent)
 {
+    m_keepAspectRatio=true;
     img_surface=NULL;
     img_w=img_h=0;
     m_imageOffset=1;
@@ -96,54 +100,45 @@ void CGImage::paint(cairo_t *c) const
         float target_width=m_width-offx*2;
         float target_height=m_height-offy*2;
 
-        float scalex=1;
-        float scaley=1;
+        float tw;
+        float th;
 
-        if (m_imageScaled==CGImage::smScaled) {
-            scalex=target_width/float(img_w);
-            scaley=target_height/float(img_h);
-        } else if (m_imageScaled==CGImage::smShrinkOnly) {
-            scalex=std::min(1.0f,target_width/float(img_w));
-            scaley=std::min(1.0f,target_height/float(img_h));
-        } else if (m_imageScaled==CGImage::smExpandOnly) {
-            scalex=std::max(1.0f,target_width/float(img_w));
-            scaley=std::max(1.0f,target_height/float(img_h));
+        if (m_keepAspectRatio) {
+            if (m_imageScaled==CGImage::smScaled) {
+                float scale= std::min(target_width/float(img_w), target_height/float(img_h));
+                tw=scale*img_w;
+                th=scale*img_h;
+            } else if (m_imageScaled==CGImage::smShrinkOnly) {
+                float scale= std::min(std::min<float>(img_w, target_width)/img_w,std::min<float>(img_h, target_height)/img_h);
+                tw=scale*img_w;
+                th=scale*img_h;
+            } else if (m_imageScaled==CGImage::smExpandOnly) {
+                float scale= std::min(std::max<float>(img_w, target_width)/img_w,std::max<float>(img_h, target_height)/img_h);
+                tw=scale*img_w;
+                th=scale*img_h;
+            } else {
+                tw=img_w;
+                th=img_h;
+            }
+        } else {
+            if (m_imageScaled==CGImage::smScaled) {
+                tw=target_width;
+                th=target_height;
+            } else if (m_imageScaled==CGImage::smShrinkOnly) {
+                tw=std::min<float>(img_w, target_width);
+                th=std::min<float>(img_h, target_height);
+            } else if (m_imageScaled==CGImage::smExpandOnly) {
+                tw=std::max<float>(img_w, target_width);
+                th=std::max<float>(img_h, target_height);
+            } else {
+                tw=img_w;
+                th=img_h;
+            }
         }
 
-        //float target_img_width=scalex*target_width;
-        //float target_img_height=scaley*target_height;
-
-        float imgoffx=0;
-        float imgoffy=0;
-
-        int ixoff=0, iyoff=0;
-
-//        if (m_horizontalAlignment==cgalLeft) imgoffx=0;
-//        else if (m_horizontalAlignment==cgalCenter) { imgoffx=(target_width-target_img_width)/2.0; ixoff=0;}//-img_w/2.0; }
-//        else if (m_horizontalAlignment==cgalRight) { imgoffx=target_width-target_img_width; ixoff=0;}//-img_w; }
-
-//        if (m_verticalAlignment==cgalTop) imgoffy=0;
-//        else if (m_verticalAlignment==cgalCenter) imgoffy=(target_height-target_img_height)/2.0;
-//        else if (m_verticalAlignment==cgalBottom) imgoffy=target_height-target_img_height;
-
-        //std::cout<<m_image_file<<"  off="<<offx<<","<<offy<<"   imgoff="<<imgoffx<<","<<imgoffy<<"   scale="<<scalex<<","<<scaley<<"   target="<<target_width<<","<<target_height<<"   target_img="<<target_img_width<<","<<target_img_height<<std::endl;
-
-        cairo_save(c);
-            cairo_translate(c, offx,offy);
-            cairo_rectangle(c, 0,0, target_width,target_height);
-            cairo_clip (c);
-
-            cairo_translate(c, imgoffx,imgoffy);
-            cairo_scale(c, scalex, scaley);
-            cairo_translate(c, ixoff,iyoff);
-
-            cairo_set_source_surface(c, img_surface, 0,0);
-
-            cairo_paint (c);
-        cairo_restore(c);
+        cgDrawImage(c, offx, offy, tw, th, img_surface, img_w, img_h);
 
     }
-
 }
 
 void CGImage::clear()

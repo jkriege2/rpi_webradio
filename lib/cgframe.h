@@ -3,6 +3,8 @@
 
 #include "cgwidget.h"
 
+/*! \brief a widget witha frame (given color and width) around it
+ */
 class CGFrame: public CGWidget {
 	public:
         explicit CGFrame(CGWidget* parent=NULL);

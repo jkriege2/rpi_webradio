@@ -2,9 +2,11 @@
 #define CGSCREEN_H
 
 #include "cgwidget.h"
-#include "framebuffer_cairo_tools.h"
 #include "cgfontprops.h"
 
+class fbcairo_context; // forward
+
+/** \biref represents an (exclusively displayed) screen */
 class CGScreen : public CGWidget, public CGFontPropsWithAlignment
 {
     public:

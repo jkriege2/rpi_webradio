@@ -5,6 +5,7 @@
 #include <string>
 #include "cgfontprops.h"
 
+/** \brief a widget that displays text */
 class CGLabel: public CGFrame, public CGFontPropsWithAlignment
 {
     public:

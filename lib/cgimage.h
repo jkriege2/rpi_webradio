@@ -4,7 +4,7 @@
 #include "cgframe.h"
 #include "cgfontprops.h"
 
-
+/** \brief awidget, which can display an image */
 class CGImage : public CGFrame//, public CGPropsAlignment
 {
     public:
@@ -42,6 +42,13 @@ class CGImage : public CGFrame//, public CGPropsAlignment
             m_imageScaled=size;
         }
 
+        inline bool keepAspectRatio() const {
+            return m_keepAspectRatio;
+        }
+        inline void setKeepAspectRatio(bool enabled) {
+            m_keepAspectRatio=enabled;
+        }
+
         void clear();
         void setPropsFromPalette(CGPalette *palette);
         void resizeToImageSize();
@@ -49,6 +56,7 @@ class CGImage : public CGFrame//, public CGPropsAlignment
         std::string m_image_file;
         float m_imageOffset;
         ScaleMode m_imageScaled;
+        bool m_keepAspectRatio;
 
         int img_w;
         int img_h;

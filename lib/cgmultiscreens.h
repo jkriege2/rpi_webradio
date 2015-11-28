@@ -4,6 +4,7 @@
 #include "cgscreen.h"
 #include <vector>
 
+/** \biref this CGScreen manages several screens, of which one is shown exclusively at every instant */
 class CGMultiScreens : public CGScreen
 {
     public:
