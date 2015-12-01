@@ -1,16 +1,18 @@
 all: Release
 debug: Debug
 release: Release
+both: 
+	make Debug -j4
+	make Release -j4
 
-LIBS=../lib \
-     ./ \
+LIBS=./ \
      ../ \
      ../../CImg
 
 CC=g++ -std=c++11
 
 
-CFLAGS =  -Wall -pedantic `pkg-config --cflags cairo`
+CFLAGS =  -Wall -pedantic `pkg-config --cflags cairo` -static
 LDFLAGS = -Wall -pedantic `pkg-config --libs cairo` -lwiringPi -lpthread
 
 Release: OBJDIR = .objs
@@ -23,41 +25,57 @@ Release: LDFLAGS += -s
 
 Debug: CC += -g -DDEBUG
 
+LIB_NAME=cairogui
+SRC_FILE= framebuffer_cairo_tools.cpp \
+          cgwidget.cpp \
+          cgframe.cpp \
+          cglabel.cpp \
+          rpi_tools.cpp \
+          cgbasics.cpp \
+          cgscreen.cpp \
+          cgeventqueue.cpp \
+          cgprogressbar.cpp \
+          cglistwidget.cpp \
+          cgfontprops.cpp \
+          cgtreewidget.cpp \
+          cgmultiscreens.cpp \
+          cgtabbedmultiscreens.cpp \
+          cgscrollbar.cpp \
+          cgpalette.cpp \
+          cgimage.cpp \
+          rpi_cgevents.cpp \
+          cgevents.cpp \
+          cgtabmixin.cpp \
+          cglayout.cpp
 
-EXECUTABLE=cairo_test
-EXECUTABLE_DEBUG=cairo_test_debug
-SRC_FILE= cairo_test.cpp
-
+RELEASE_LIB_NAME = lib${LIB_NAME}.a
+DEBUG_LIB_NAME = lib${LIB_NAME}_debug.a
+Release: FULL_LIB_NAME = lib${LIB_NAME}.a
+Debug: FULL_LIB_NAME = lib${LIB_NAME}_debug.a
 
 SRC_FILE_D = $(addprefix ${OBJDIR}/,$(subst .cpp,.d,$(SRC_FILE)))
 SRC_FILE_O_DEBUG = $(addprefix ${OBJDIR_DEBUG}/,$(subst .cpp,.o,$(SRC_FILE)))
 SRC_FILE_O_RELEASE = $(addprefix ${OBJDIR_RELEASE}/,$(subst .cpp,.o,$(SRC_FILE)))
+
+Release: SRC_FILE_D = lib${LIB_NAME}.a
+Debug: FULL_LIB_NAME = lib${LIB_NAME}_debug.a
+
+
 LIBS_I = $(addprefix -I,$(LIBS))
 LIBS_L = $(addprefix -L,$(LIBS))
 
-GUILIBDIR = ../lib/
-Release: LDFLAGS += -L${GUILIBDIR} -lcairogui
-Debug: LDFLAGS += -L${GUILIBDIR} -lcairogui_debug
-
-
 -include ${SRC_FILE_D}
 
-Debug:  ${EXECUTABLE_DEBUG}
+Debug:  ${DEBUG_LIB_NAME}
+Release:  ${RELEASE_LIB_NAME}
 
-Release:  ${EXECUTABLE}
+${DEBUG_LIB_NAME}: ${SRC_FILE_O_DEBUG}
+	ar rc $@ ${SRC_FILE_O_DEBUG}
+	ranlib $@
 
-${EXECUTABLE}: GUILIB_RELEASE ${SRC_FILE_O_RELEASE}
-	cd $(GUILIBDIR); make Release -j4
-	$(CC) $(CFLAGS) $(LIBS_L) -o $(EXECUTABLE) ${SRC_FILE_O_RELEASE} $(LDFLAGS)
-
-${EXECUTABLE_DEBUG}: GUILIB_DEBUG ${SRC_FILE_O_DEBUG}
-	$(CC) $(CFLAGS) $(LIBS_L) -o $(EXECUTABLE) ${SRC_FILE_O_DEBUG} $(LDFLAGS)
-
-GUILIB_DEBUG:
-	cd $(GUILIBDIR); make Debug -j4
-GUILIB_RELEASE:
-	cd $(GUILIBDIR); make Release -j4
-
+${RELEASE_LIB_NAME}: ${SRC_FILE_O_RELEASE}
+	ar rc $@ ${SRC_FILE_O_RELEASE}
+	ranlib $@
 
 ${OBJDIR_RELEASE}/%.o: ./%.cpp
 	@mkdir -p ${OBJDIR_RELEASE}
@@ -80,10 +98,8 @@ ${OBJDIR_DEBUG}/%.o: ./%.cpp
 	@rm -f ${OBJDIR_DEBUG}/$*.d.tmp
 
 
-
 clean:
-	rm -f ${EXECUTABLE}
-	rm -f ${EXECUTABLE_DEBUG}
+	rm -f ${DEBUG_LIB_NAME}
+	rm -f ${RELEASE_LIB_NAME}
 	rm -rf ${OBJDIR_DEBUG}
 	rm -rf ${OBJDIR_RELEASE}
-

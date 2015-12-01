@@ -202,9 +202,9 @@ void setupGUI() {
             img->setImagePNG("../images/lena.png");
             img->setImageScaled(CGImage::smScaled);
             img->resize(100,100);
-            layh->addWidget(img);
+            layh->addWidget(img, -1-i);
         }
-        lay->addWidget(widsublay=new CGWidget(mainFrame4));
+        lay->addWidget(widsublay=new CGWidget(mainFrame4), -2);
         layh=new CGLinearLayout(widsublay, cgdHorizontal);
         widsublay->setLayout(layh);
         for (int i=0; i<5; i++) {
