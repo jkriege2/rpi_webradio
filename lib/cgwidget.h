@@ -45,6 +45,8 @@ class CGWidget: public CGFontProps, private boost::noncopyable
         inline cgSize<unsigned int> size() const {
             return cgSize<unsigned int>(width(), height());
         }
+        /** \brief size, available for child-widgets */
+        virtual cgSize<unsigned int> sizeForChildren() const;
 
         /** \brief the top-left corner x-coordinate of the wqidget */
         inline int x() const { return m_x; }

@@ -11,10 +11,10 @@ CGImage::CGImage(CGWidget *parent):
     m_imageScaled=smScaled;
 //    m_verticalAlignment=cgalLeft;
 //    m_horizontalAlignment=cgalTop;
+    setPropsFromDefaultPalette();
     setFrameWidth(0);
     setFrameColor(CGColor::ccTransparent);
     setBackgroundColor(CGColor::ccTransparent);
-    setPropsFromDefaultPalette();
 }
 
 CGImage::CGImage(int x, int y, int width, int height, const std::string &image_file, CGWidget *parent):
@@ -27,11 +27,11 @@ CGImage::CGImage(int x, int y, int width, int height, const std::string &image_f
     m_imageScaled=smScaled;
 //    m_verticalAlignment=cgalLeft;
 //    m_horizontalAlignment=cgalTop;
+    setPropsFromDefaultPalette();
     setFrameWidth(0);
     setFrameColor(CGColor::ccTransparent);
     setBackgroundColor(CGColor::ccTransparent);
     setImagePNG(image_file);
-    setPropsFromDefaultPalette();
 }
 
 CGImage::CGImage(int x, int y, int width, int height, CGWidget *parent):
@@ -45,10 +45,10 @@ CGImage::CGImage(int x, int y, int width, int height, CGWidget *parent):
     m_imageScaled=smScaled;
 //    m_verticalAlignment=cgalLeft;
 //    m_horizontalAlignment=cgalTop;
+    setPropsFromDefaultPalette();
     setFrameWidth(0);
     setFrameColor(CGColor::ccTransparent);
     setBackgroundColor(CGColor::ccTransparent);
-    setPropsFromDefaultPalette();
 
 }
 
@@ -62,11 +62,11 @@ CGImage::CGImage(const std::string &image_file, CGWidget *parent):
     m_imageScaled=smScaled;
 //    m_verticalAlignment=cgalLeft;
 //    m_horizontalAlignment=cgalTop;
+    setPropsFromDefaultPalette();
     setFrameWidth(0);
     setFrameColor(CGColor::ccTransparent);
     setBackgroundColor(CGColor::ccTransparent);
     setImagePNG(image_file);
-    setPropsFromDefaultPalette();
 }
 
 CGImage::~CGImage()
@@ -80,8 +80,10 @@ void CGImage::setImagePNG(const std::string &image_file, bool resize)
     if (img_surface) {
         img_w=img_h=0;
         cairo_surface_destroy(img_surface);
+        img_surface=NULL;
     }
     if (m_image_file.size()>0) {
+        img_symbol.setSymbol(CGSymbol::iNone);
         img_surface = cairo_image_surface_create_from_png(m_image_file.c_str());
         img_w = cairo_image_surface_get_width(img_surface);
         img_h = cairo_image_surface_get_height(img_surface);
@@ -90,11 +92,20 @@ void CGImage::setImagePNG(const std::string &image_file, bool resize)
 
 }
 
-void CGImage::paint(cairo_t *c) const
+void CGImage::setImageSymbol(const CGSymbol & symbol)
 {
-    CGFrame::paint(c);
+    setImagePNG("");
+    img_symbol=symbol;
+}
 
-    if (img_surface && img_w>0 && img_h>0){
+void CGImage::paintImage(cairo_t *c, cairo_surface_t *img_surface, int img_w, int img_h, const CGSymbol& symbol) const
+{
+    //std::cout<<"CGImage::paintImage: 0 "<<symbol.symbol()<<" -> "<<img_w<<","<<img_h<<"\n";
+    if (!symbol.isNoneSymbol()  || (img_w>0 && img_h>0)) {
+        if (!symbol.isNoneSymbol()) {
+            img_w=width()-2*border();
+            img_h=symbol.heightForWidth(img_w);
+        }
         float offx=m_imageOffset+m_frameWidth;
         float offy=m_imageOffset+m_frameWidth;
         float target_width=m_width-offx*2;
@@ -135,10 +146,19 @@ void CGImage::paint(cairo_t *c) const
                 th=img_h;
             }
         }
-
-        cgDrawImage(c, offx, offy, tw, th, img_surface, img_w, img_h);
-
+        //std::cout<<"CGImage::paintImage: 1 "<<symbol.isNoneSymbol()<<" -> "<<img_w<<","<<img_h<<"\n";
+        if (!symbol.isNoneSymbol()) {
+            symbol.paint(c, offx, offy, tw, th);
+        } else if (img_surface){
+            cgDrawImage(c, offx, offy, tw, th, img_surface, img_w, img_h);
+        }
     }
+}
+
+void CGImage::paint(cairo_t *c) const
+{
+    CGFrame::paint(c);
+    paintImage(c, img_surface, img_w, img_h, img_symbol);
 }
 
 void CGImage::clear()
@@ -150,6 +170,7 @@ void CGImage::setPropsFromPalette(CGPalette *palette)
 {
     CGFrame::setPropsFromPalette(palette);
     if (palette) {
+
     }
 }
 

@@ -64,6 +64,7 @@ void CGWidget::resize(unsigned int width, unsigned int height)
     unsigned int w=cgBound<unsigned int>(m_minSize.width, width, m_maxSize.width);
     unsigned int h=cgBound<unsigned int>(m_minSize.height, height, m_maxSize.height);
     bool newsize=(m_width!=w)||(m_height!=h);
+    //std::cout<<"CGWidget::resize("<<width<<","<<height<<"): "<<w<<","<<h<<": "<<newsize<<"\n";
     if (newsize) {
         m_width=w;
         m_height=h;
@@ -71,6 +72,11 @@ void CGWidget::resize(unsigned int width, unsigned int height)
         if (m_parent && m_parent->layout()) m_parent->layout()->layoutWidgets();
         else if (m_layout) m_layout->layoutWidgets();
     }
+}
+
+cgSize<unsigned int> CGWidget::sizeForChildren() const
+{
+    return cgSize<unsigned int>(width()-2*border(), height()-2*border());
 }
 
 void CGWidget::move(int x, int y)

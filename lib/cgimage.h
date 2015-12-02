@@ -3,6 +3,7 @@
 
 #include "cgframe.h"
 #include "cgfontprops.h"
+#include "cgsymbol.h"
 
 /** \brief awidget, which can display an image */
 class CGImage : public CGFrame//, public CGPropsAlignment
@@ -25,8 +26,16 @@ class CGImage : public CGFrame//, public CGPropsAlignment
         inline std::string imageFile() const {
             return m_image_file;
         }
+        void setImageSymbol(CGSymbol::Symbols symbol) {
+            setImageSymbol(CGSymbol(symbol));
+        }
 
-        virtual void paint(cairo_t *c) const;
+        void setImageSymbol(const CGSymbol &symbol);
+        inline CGSymbol imageSymbol() const {
+            return img_symbol;
+        }
+
+        virtual void paint(cairo_t *c) const override;
 
         inline float imageOffset() const {
             return m_imageOffset;
@@ -49,18 +58,21 @@ class CGImage : public CGFrame//, public CGPropsAlignment
             m_keepAspectRatio=enabled;
         }
 
-        void clear();
+        virtual void clear() ;
         void setPropsFromPalette(CGPalette *palette);
-        void resizeToImageSize();
+        virtual void resizeToImageSize() ;
     protected:
         std::string m_image_file;
         float m_imageOffset;
         ScaleMode m_imageScaled;
         bool m_keepAspectRatio;
 
+
         int img_w;
         int img_h;
+        CGSymbol img_symbol;
         cairo_surface_t *img_surface;
+        virtual void paintImage(cairo_t *c, cairo_surface_t *img_surface, int img_w, int img_h, const CGSymbol &symbol) const;
 };
 
 #endif // CGIMAGE_H

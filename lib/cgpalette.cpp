@@ -8,9 +8,14 @@ CGPalette::CGPalette()
     fontName="sans";
     frameWidth=1;
     focusedFrameWidth=1;
+    iconLineWidth=2;
 
     backgroundColor=CGColor::ccBlack;
     textColor=CGColor::ccWhite;
+    iconColor=CGColor(16,12,39);
+    iconHighlightColor=CGColor("lightsteelblue");
+    iconShadowColor=CGColor("steelblue");
+    iconBackgroundColor=backgroundColor;
 
     brightColor=CGColor::ccGrey75;
     dimColor=CGColor("gray50");
@@ -57,6 +62,14 @@ CGColor CGPalette::color(CGPalette::ColorRoles role) const
             return backgroundColor;
         case crText:
             return textColor;
+        case crIcon:
+            return iconColor;
+        case crIconHighlight:
+            return iconHighlightColor;
+        case crIconShadow:
+            return iconShadowColor;
+        case crIconBackground:
+            return iconBackgroundColor;
         case crBright:
             return brightColor;
         case crDim:
@@ -102,6 +115,8 @@ float CGPalette::size(CGPalette::SizeRoles role) const
     switch (role) {
         case srFrameWidth:
             return frameWidth;
+        case srIconLineWidth:
+            return iconLineWidth;
         case srFocusedFrameWidth:
             return focusedFrameWidth;
         case srFontSize:

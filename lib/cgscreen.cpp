@@ -1,4 +1,5 @@
 #include "cgscreen.h"
+#include "cgtabbedmultiscreens.h"
 #include "framebuffer_cairo_tools.h"
 
 CGScreen::CGScreen(CGWidget *parent):
@@ -8,6 +9,12 @@ CGScreen::CGScreen(CGWidget *parent):
     move(0,0);
     setBackgroundColor(CGColor::ccBlack);
     setPropsFromDefaultPalette();
+    CGTabbedMultiScreens* tscreen=dynamic_cast<CGTabbedMultiScreens*>(parent);
+    if (tscreen) resize(tscreen->size());
+    else {
+        CGScreen* screen=dynamic_cast<CGScreen*>(parent);
+        if (screen) resize(screen->size());
+    }
 }
 
 CGScreen::CGScreen(const fbcairo_context *context, CGWidget *parent):
@@ -75,4 +82,10 @@ void CGScreen::setPropsFromPalette(CGPalette *palette)
         setTitleBackgroundColor(palette->color(CGPalette::crTitleBackground));
         setTextColor(palette->color(CGPalette::crTitleText));
     }
+}
+
+void CGScreen::resizeFromContext(const fbcairo_context *context)
+{
+    //std::cout<<"GScreen::resizeFromContext("<<context<<"): "<<fbcairo_getWidth(context)<<","<<fbcairo_getHeight(context)<<"\n";
+    if (context) resize(fbcairo_getWidth(context),fbcairo_getHeight(context));
 }

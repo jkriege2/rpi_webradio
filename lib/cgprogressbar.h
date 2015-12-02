@@ -48,7 +48,7 @@ class CGProgressBar : public CGFrame
         }
 
 
-        virtual void paint(cairo_t *c) const;
+        virtual void paint(cairo_t *c) const override;
         virtual std::string progressText() const;
 
         void setPropsFromPalette(CGPalette *palette);

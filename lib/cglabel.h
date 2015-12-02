@@ -30,7 +30,7 @@ class CGLabel: public CGFrame, public CGFontPropsWithAlignment
         }
 
 
-        virtual void paint(cairo_t *c) const;
+        virtual void paint(cairo_t *c) const override;
         void setPropsFromPalette(CGPalette *palette);
     protected:
         std::string m_text;

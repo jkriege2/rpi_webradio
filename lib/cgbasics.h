@@ -10,6 +10,12 @@
 #include <fstream>
 #include <sstream>
 
+template<typename T>
+inline T cgBound(T mi, T val, T ma) {
+    if (val<mi) return mi;
+    else if (val>ma) return ma;
+    return val;
+}
 
 /** \brief represents a color in RGBA */
 struct CGColor {
@@ -96,6 +102,17 @@ struct CGColor {
         return float(a)/255.0;
     }
 
+    inline void setRGB(unsigned char r, unsigned char g, unsigned char b) {
+        this->r=r;
+        this->g=g;
+        this->b=b;
+    }
+    inline void setRGBF(float r, float g, float b) {
+        this->r=cgBound<int>(0, r*255.0, 255);
+        this->g=cgBound<int>(0, g*255.0, 255);
+        this->b=cgBound<int>(0, b*255.0, 255);
+    }
+
 
     unsigned char r;
     unsigned char g;
@@ -119,6 +136,12 @@ struct CGColor {
     inline CGColor colorLinearFrom(float v, CGColor col1) const {
         return colorLinear(v, col1, *this);
     }
+
+    void getHSV(float& h, float& s, float& v) const;
+    void setFromHSV(float h, float s, float v);
+
+    CGColor lighter(float factor=200);
+    CGColor darker(float factor=200);
 };
 
 /** \brief implement \c operator<<() for CGColor output into streams. */
@@ -227,12 +250,6 @@ inline std::ostream& operator<< (std::ostream& stream, const cgRect<T>& r) {
     return stream;
 }
 
-template<typename T>
-inline T cgBound(T mi, T val, T ma) {
-    if (val<mi) return mi;
-    else if (val>ma) return ma;
-    return val;
-}
 
 /** \brief draw the given text using cairo */
 void cgDrawText(cairo_t* cr, int xx, int yy, int m_width, int m_height, const std::string& m_text, const std::string& m_fontFace=std::string("sans"), float m_fontSize=10.0, bool m_italic=false, bool m_bold=false, CGColor m_textColor=CGColor::ccBlack, float m_lineSpacing=1.2, cgAlignment m_horizontalAlignment=cgalCenter, cgAlignment m_verticalAlignment=cgalCenter);
@@ -250,6 +267,12 @@ void cgDrawLines(cairo_t* cr, int x1, int y1, int x2, int y2, int x3, int y3, CG
 void cgDrawLines(cairo_t* cr, int x1, int y1, int x2, int y2, int x3, int y3, int x4, int y4, CGColor color, float framewidth=1);
 /** \brief draw a 4-line poylgon */
 void cgDrawLines(cairo_t* cr, int x1, int y1, int x2, int y2, int x3, int y3, int x4, int y4, int x5, int y5, CGColor color, float framewidth=1);
+/** \brief draw a 2-line poylgon */
+void cgDrawPolygon(cairo_t* cr, int x1, int y1, int x2, int y2, int x3, int y3, CGColor color, float framewidth=1);
+/** \brief draw a 3-line poylgon */
+void cgDrawPolygon(cairo_t* cr, int x1, int y1, int x2, int y2, int x3, int y3, int x4, int y4, CGColor color, float framewidth=1);
+/** \brief draw a 4-line poylgon */
+void cgDrawPolygon(cairo_t* cr, int x1, int y1, int x2, int y2, int x3, int y3, int x4, int y4, int x5, int y5, CGColor color, float framewidth=1);
 /** \brief fill a 2-line poylgon (automatically closed) */
 void cgFillPolygon(cairo_t* cr, int x1, int y1, int x2, int y2, int x3, int y3, CGColor fillcolor);
 /** \brief draw a 3-line poylgon (automatically closed)  */

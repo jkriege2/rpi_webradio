@@ -15,7 +15,7 @@ class CGScreen : public CGWidget, public CGFontPropsWithAlignment
         explicit CGScreen(int width, int height, CGWidget* parent=NULL);
         virtual ~CGScreen();
 
-        virtual void move(int x, int y);
+        virtual void move(int x, int y) override;
 
         void setTitle(const std::string& text) {
             m_title=text;
@@ -31,8 +31,10 @@ class CGScreen : public CGWidget, public CGFontPropsWithAlignment
             return m_titleBackground;
         }
 
-        virtual void paint(cairo_t *c) const;
+        virtual void paint(cairo_t *c) const override;
         void setPropsFromPalette(CGPalette *palette);
+
+        void resizeFromContext(const fbcairo_context* context);
     protected:
         std::string m_title;
         CGColor m_titleBackground;

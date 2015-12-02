@@ -14,17 +14,18 @@ class CGTabbedMultiScreens : public CGMultiScreens, public CGTabMixin
         explicit CGTabbedMultiScreens(int width, int height, CGWidget* parent=NULL);
         virtual ~CGTabbedMultiScreens();
 
-        virtual void paint(cairo_t *c) const;
-
-        virtual void resize(int width, int height);
+        virtual void paint(cairo_t *c) const override;
 
         void addScreen(CGScreen* screen, const std::string& name);
         CGScreen* addScreen(const std::string& name);
         void addScreen(CGScreen* screen);
         CGScreen* addScreen();
         std::string screenName(int idx) const;
+        /** \brief size, available for child-widgets */
+        virtual cgSize<unsigned int> sizeForChildren() const override;
 
-        virtual void setPropsFromPalette(CGPalette *palette);
+
+        virtual void setPropsFromPalette(CGPalette *palette) override;
 
         virtual std::string tabName(int idx) const;
         virtual int tabCount() const;

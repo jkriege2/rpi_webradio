@@ -1,4 +1,4 @@
-#! /bin/bash
+#! /bin/sh
 
 echo "THIS TOOL HELPS TO EDIT WEBRADIO STATIONS:"
 echo "  editwebradiostations [USERID]"

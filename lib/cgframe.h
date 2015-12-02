@@ -1,6 +1,7 @@
 #ifndef CAIROGUI_FRAME_H
 #define CAIROGUI_FRAME_H
 
+
 #include "cgwidget.h"
 
 /*! \brief a widget witha frame (given color and width) around it
@@ -11,7 +12,7 @@ class CGFrame: public CGWidget {
         explicit CGFrame(int x, int y, int width, int height, CGWidget* parent=NULL);
         virtual ~CGFrame();
 
-        virtual void setPropsFromPalette(CGPalette* palette);
+        virtual void setPropsFromPalette(CGPalette* palette) override;
 
         inline CGColor frameColor() const {
             return m_frameColor;
@@ -31,7 +32,7 @@ class CGFrame: public CGWidget {
         }
         void setFocusedFrameWidth(float width);
 
-        virtual void paint(cairo_t *c) const;
+        virtual void paint(cairo_t *c) const override;
     protected:
         float m_frameWidth;
         CGColor m_frameColor;

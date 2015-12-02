@@ -209,6 +209,81 @@ CGColor CGColor::colorLinear(float v, CGColor col1, CGColor col2)
     return c;
 }
 
+void CGColor::getHSV(float &h, float &s, float &v) const
+{
+    // see https://de.wikipedia.org/wiki/HSV-Farbraum
+    float rr=redf();
+    float gg=greenf();
+    float bb=bluef();
+    float ma=std::max(std::max(rr,gg),bb);
+    float mi=std::min(std::min(rr,gg),bb);
+
+    if (ma==mi) h=0;
+    else if (ma==rr) h=60.0*(0.0+(gg-bb)/(ma-mi));
+    else if (ma==gg) h=60.0*(2.0+(bb-rr)/(ma-mi));
+    else if (ma==bb) h=60.0*(4.0+(rr-gg)/(ma-mi));
+    if (h<0.0) h=h+360.0;
+
+    if (ma==0.0) s=0.0;
+    else s=(ma-mi)/ma;
+
+    v=ma;
+}
+
+void CGColor::setFromHSV(float h, float s, float v)
+{
+    // see https://de.wikipedia.org/wiki/HSV-Farbraum
+    float hi=floor(h/60.0);
+    float f=h/60.0-hi;
+    float p=v*(1.0-s);
+    float q=v*(1.0-s*f);
+    float t=v*(1.0-s*(1.0-f));
+
+    //std::cout<<"CGColor::setFromHSV("<<h<<","<<s<<","<<v<<") "<<hi<<"\n";
+
+    if (hi==1.0) setRGBF(q,v,p);
+    else if (hi==2.0) setRGBF(p,v,t);
+    else if (hi==3.0) setRGBF(p,q,v);
+    else if (hi==4.0) setRGBF(t,p,v);
+    else if (hi==5.0) setRGBF(v,p,q);
+    else if (0<=hi && hi<=6) setRGBF(v,t,p);
+}
+
+CGColor CGColor::lighter(float factor)
+{
+    if ( factor <= 0 )				// invalid lightness factor
+        return *this;
+    else if ( factor < 100 )			// makes color darker
+        return darker( 10000.0/factor );
+
+    float h, s, v;
+    getHSV( h, s, v );
+    v = (factor*v)/100.0;
+    if ( v > 1.0 ) {				// overflow
+        s -= v-1.0;				// adjust saturation
+        if ( s < 0 )
+            s = 0;
+        v = 1.0;
+    }
+    CGColor c;
+    c.setFromHSV(h, s, v );
+    return c;
+}
+
+CGColor CGColor::darker(float factor)
+{
+    if ( factor <= 0 )				// invalid darkness factor
+        return *this;
+    else if ( factor < 100 )			// makes color lighter
+        return lighter( 10000.0/factor );
+    float h, s, v;
+    getHSV( h, s, v );
+    v = (v*100.0)/factor;
+    CGColor c;
+    c.setFromHSV( h, s, v );
+    return c;
+}
+
 
 CGColor::CGColor(CGColor::ColorConstants color)
 {
@@ -502,6 +577,7 @@ std::ostream &operator<<(std::ostream &stream, const CGColor &matrix)
 
 void cgDrawRectangle(cairo_t *cr, int xx, int yy, int m_width, int m_height, CGColor color, float framewidth)
 {
+    if (color.isTransparent())  return;
     cairo_rectangle(cr, xx,yy,m_width,m_height);
     color.cairo_set_source(cr);
     cairo_set_line_width (cr, framewidth);
@@ -511,6 +587,7 @@ void cgDrawRectangle(cairo_t *cr, int xx, int yy, int m_width, int m_height, CGC
 
 void cgDrawFilledRectangle(cairo_t *cr, int xx, int yy, int m_width, int m_height, CGColor fillColor, CGColor color, float framewidth)
 {
+    if (color.isTransparent() && fillColor.isTransparent())  return;
     cairo_rectangle(cr, xx,yy,m_width,m_height);
     fillColor.cairo_set_source(cr);
     cairo_fill_preserve(cr);
@@ -522,6 +599,7 @@ void cgDrawFilledRectangle(cairo_t *cr, int xx, int yy, int m_width, int m_heigh
 
 void cgDrawFilledRectangle(cairo_t *cr, int xx, int yy, int m_width, int m_height, CGColor fillColor)
 {
+    if (fillColor.isTransparent())  return;
     cairo_rectangle(cr, xx,yy,m_width,m_height);
     fillColor.cairo_set_source(cr);
     cairo_fill(cr);
@@ -530,6 +608,7 @@ void cgDrawFilledRectangle(cairo_t *cr, int xx, int yy, int m_width, int m_heigh
 
 void cgDrawLine(cairo_t *cr, int x1, int y1, int x2, int y2, CGColor color, float framewidth)
 {
+    if (color.isTransparent())  return;
     cairo_move_to(cr, x1,y1);
     cairo_line_to(cr, x2,y2);
     color.cairo_set_source(cr);
@@ -540,6 +619,7 @@ void cgDrawLine(cairo_t *cr, int x1, int y1, int x2, int y2, CGColor color, floa
 
 void cgDrawLines(cairo_t *cr, int x1, int y1, int x2, int y2, int x3, int y3, int x4, int y4, int x5, int y5, CGColor color, float framewidth)
 {
+    if (color.isTransparent())  return;
     cairo_move_to(cr, x1,y1);
     cairo_line_to(cr, x2,y2);
     cairo_line_to(cr, x3,y3);
@@ -553,6 +633,7 @@ void cgDrawLines(cairo_t *cr, int x1, int y1, int x2, int y2, int x3, int y3, in
 
 void cgDrawLines(cairo_t *cr, int x1, int y1, int x2, int y2, int x3, int y3, int x4, int y4, CGColor color, float framewidth)
 {
+    if (color.isTransparent())  return;
     cairo_move_to(cr, x1,y1);
     cairo_line_to(cr, x2,y2);
     cairo_line_to(cr, x3,y3);
@@ -565,6 +646,7 @@ void cgDrawLines(cairo_t *cr, int x1, int y1, int x2, int y2, int x3, int y3, in
 
 void cgDrawLines(cairo_t *cr, int x1, int y1, int x2, int y2, int x3, int y3, CGColor color, float framewidth)
 {
+    if (color.isTransparent())  return;
     cairo_move_to(cr, x1,y1);
     cairo_line_to(cr, x2,y2);
     cairo_line_to(cr, x3,y3);
@@ -573,9 +655,50 @@ void cgDrawLines(cairo_t *cr, int x1, int y1, int x2, int y2, int x3, int y3, CG
     cairo_stroke(cr);
 }
 
+void cgDrawPolygon(cairo_t *cr, int x1, int y1, int x2, int y2, int x3, int y3, int x4, int y4, int x5, int y5, CGColor color, float framewidth)
+{
+    if (color.isTransparent())  return;
+    cairo_move_to(cr, x1,y1);
+    cairo_line_to(cr, x2,y2);
+    cairo_line_to(cr, x3,y3);
+    cairo_line_to(cr, x4,y4);
+    cairo_line_to(cr, x5,y5);
+    cairo_line_to(cr, x1,y1);
+    color.cairo_set_source(cr);
+    cairo_set_line_width (cr, framewidth);
+    cairo_stroke(cr);
+}
+
+
+void cgDrawPolygon(cairo_t *cr, int x1, int y1, int x2, int y2, int x3, int y3, int x4, int y4, CGColor color, float framewidth)
+{
+    if (color.isTransparent())  return;
+    cairo_move_to(cr, x1,y1);
+    cairo_line_to(cr, x2,y2);
+    cairo_line_to(cr, x3,y3);
+    cairo_line_to(cr, x4,y4);
+    cairo_line_to(cr, x1,y1);
+    color.cairo_set_source(cr);
+    cairo_set_line_width (cr, framewidth);
+    cairo_stroke(cr);
+}
+
+
+void cgDrawPolygon(cairo_t *cr, int x1, int y1, int x2, int y2, int x3, int y3, CGColor color, float framewidth)
+{
+    if (color.isTransparent())  return;
+    cairo_move_to(cr, x1,y1);
+    cairo_line_to(cr, x2,y2);
+    cairo_line_to(cr, x3,y3);
+    cairo_line_to(cr, x1,y1);
+    color.cairo_set_source(cr);
+    cairo_set_line_width (cr, framewidth);
+    cairo_stroke(cr);
+}
 
 void cgFillPolygon(cairo_t *cr, int x1, int y1, int x2, int y2, int x3, int y3, CGColor fillcolor)
 {
+    if (fillcolor.isTransparent())  return;
     cairo_move_to(cr, x1,y1);
     cairo_line_to(cr, x2,y2);
     cairo_line_to(cr, x3,y3);
@@ -587,6 +710,7 @@ void cgFillPolygon(cairo_t *cr, int x1, int y1, int x2, int y2, int x3, int y3, 
 
 void cgFillPolygon(cairo_t *cr, int x1, int y1, int x2, int y2, int x3, int y3, int x4, int y4, CGColor fillcolor)
 {
+    if (fillcolor.isTransparent())  return;
     cairo_move_to(cr, x1,y1);
     cairo_line_to(cr, x2,y2);
     cairo_line_to(cr, x3,y3);
@@ -599,6 +723,7 @@ void cgFillPolygon(cairo_t *cr, int x1, int y1, int x2, int y2, int x3, int y3, 
 
 void cgFillPolygon(cairo_t *cr, int x1, int y1, int x2, int y2, int x3, int y3, int x4, int y4, int x5, int y5, CGColor fillcolor)
 {
+    if (fillcolor.isTransparent())  return;
     cairo_move_to(cr, x1,y1);
     cairo_line_to(cr, x2,y2);
     cairo_line_to(cr, x3,y3);

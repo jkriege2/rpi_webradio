@@ -14,7 +14,7 @@ class CGListWidget: public CGFrame, public CGScrollBarMixin
         explicit CGListWidget(CGWidget* parent=NULL);
         explicit CGListWidget(int x, int y, int width, int height, CGWidget* parent=NULL);
         virtual ~CGListWidget();
-        virtual void paint(cairo_t *c) const;
+        virtual void paint(cairo_t *c) const override;
 
         inline int currentItem() const {
             return m_currentItem;
@@ -76,7 +76,7 @@ class CGListWidget: public CGFrame, public CGScrollBarMixin
         std::string item(int i, const std::string& defaultItem=std::string()) const;
 
 
-        void setPropsFromPalette(CGPalette *palette);
+        void setPropsFromPalette(CGPalette *palette) override;
     protected:
         void updateState();
         float itemHeight() const;

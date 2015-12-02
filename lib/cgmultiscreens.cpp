@@ -34,10 +34,11 @@ void CGMultiScreens::paint(cairo_t *c) const
     }
 }
 
-void CGMultiScreens::resize(int width, int height)
+void CGMultiScreens::resize(unsigned int width, unsigned int height)
 {
+    CGScreen::resize(width, height);
     for (size_t i=0; i<m_screens.size(); i++) {
-        if (m_screens[i]) m_screens[i]->resize(width, height);
+        if (m_screens[i]) m_screens[i]->resize(sizeForChildren());
     }
 }
 
@@ -97,8 +98,10 @@ int CGMultiScreens::indexOf(CGScreen *s) const
 
 void CGMultiScreens::addScreen(CGScreen *screen)
 {
+    if (!screen) return;
     m_screens.push_back(screen);
     screen->setParent(this);
+    screen->resize(sizeForChildren());
 }
 
 CGScreen *CGMultiScreens::addScreen()

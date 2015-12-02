@@ -43,7 +43,7 @@ class CGTreeWidget: public CGFrame, public CGScrollBarMixin
         explicit CGTreeWidget(CGWidget* parent=NULL);
         explicit CGTreeWidget(int x, int y, int width, int height, CGWidget* parent=NULL);
         virtual ~CGTreeWidget();
-        virtual void paint(cairo_t *c) const;
+        virtual void paint(cairo_t *c) const override;
 
         inline TreeItem* root() const {
             return m_root;

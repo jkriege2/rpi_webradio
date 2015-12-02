@@ -53,7 +53,7 @@ if [ "$FAST" = "0" ] ; then
 	
 
 	#install boost
-	apt-get install libboost-all-dev libboost-dev
+	apt-get install libboost-all-dev libboost-dev libboost-dbg libboost-doc
 	
 	#install cairo etc.
 	apt-get install libpixman-1-dev libcairo2 libcairo2-dev
@@ -62,7 +62,7 @@ if [ "$FAST" = "0" ] ; then
 	sudo apt-get install alsa-base alsa-utils
 
 	# install mpd, libmpdcleint, mpc
-	apt-get install mpd mpc libmpdclient2
+	apt-get install mpd mpc libmpdclient2 libmpdclient-dev libmpdclient-doc libmpdclient2-dbg
 	
 	
 	# install samba-client

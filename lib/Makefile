@@ -1,9 +1,10 @@
 all: Release
 debug: Debug
 release: Release
+
 both: 
-	make Debug -j4
-	make Release -j4
+	+make Debug 
+	+make Release 
 
 LIBS=./ \
      ../ \
@@ -13,17 +14,15 @@ CC=g++ -std=c++11
 
 
 CFLAGS =  -Wall -pedantic `pkg-config --cflags cairo` -static
-LDFLAGS = -Wall -pedantic `pkg-config --libs cairo` -lwiringPi -lpthread
-
-Release: OBJDIR = .objs
+LDFLAGS = -Wall -pedantic `pkg-config --libs cairo` -lwiringPi -lpthread -lboost_iostreams -lboost_program_options
 OBJDIR_DEBUG = .objs_debug
 OBJDIR_RELEASE = .objs
+OBJDIR = .objs
+Release: OBJDIR = .objs
 Debug: OBJDIR = .objs_debug
-
+Debug: CC += -g -DDEBUG
 Release: CFLAGS += -O2
 Release: LDFLAGS += -s
-
-Debug: CC += -g -DDEBUG
 
 LIB_NAME=cairogui
 SRC_FILE= framebuffer_cairo_tools.cpp \
@@ -46,25 +45,31 @@ SRC_FILE= framebuffer_cairo_tools.cpp \
           rpi_cgevents.cpp \
           cgevents.cpp \
           cgtabmixin.cpp \
-          cglayout.cpp
+          cglayout.cpp \
+          cgapplication.cpp \
+          cgtwostatimage.cpp \
+          cgsymbol.cpp
 
 RELEASE_LIB_NAME = lib${LIB_NAME}.a
 DEBUG_LIB_NAME = lib${LIB_NAME}_debug.a
+
 Release: FULL_LIB_NAME = lib${LIB_NAME}.a
+
 Debug: FULL_LIB_NAME = lib${LIB_NAME}_debug.a
 
-SRC_FILE_D = $(addprefix ${OBJDIR}/,$(subst .cpp,.d,$(SRC_FILE)))
-SRC_FILE_O_DEBUG = $(addprefix ${OBJDIR_DEBUG}/,$(subst .cpp,.o,$(SRC_FILE)))
-SRC_FILE_O_RELEASE = $(addprefix ${OBJDIR_RELEASE}/,$(subst .cpp,.o,$(SRC_FILE)))
+#SRC_FILE_D = 
 
-Release: SRC_FILE_D = lib${LIB_NAME}.a
-Debug: FULL_LIB_NAME = lib${LIB_NAME}_debug.a
+Release: SRC_FILE_D = $(addprefix $(OBJDIR_RELEASE)/,$(subst .cpp,.d,$(SRC_FILE)))
+
+Debug: SRC_FILE_D = $(addprefix $(OBJDIR_DEBUG)/,$(subst .cpp,.d,$(SRC_FILE)))
+
+SRC_FILE_O_DEBUG = $(addprefix $(OBJDIR_DEBUG)/,$(subst .cpp,.o,$(SRC_FILE)))
+SRC_FILE_O_RELEASE = $(addprefix $(OBJDIR_RELEASE)/,$(subst .cpp,.o,$(SRC_FILE)))
 
 
 LIBS_I = $(addprefix -I,$(LIBS))
 LIBS_L = $(addprefix -L,$(LIBS))
-
--include ${SRC_FILE_D}
+include ${SRC_FILE_D}
 
 Debug:  ${DEBUG_LIB_NAME}
 Release:  ${RELEASE_LIB_NAME}

@@ -16,6 +16,10 @@ class CGPalette
         enum ColorRoles {
             crBackground,
             crText,
+            crIcon,
+            crIconHighlight,
+            crIconShadow,
+            crIconBackground,
             crBright,
             crDim,
             crDark,
@@ -38,6 +42,7 @@ class CGPalette
         enum SizeRoles {
             srFrameWidth,
             srFocusedFrameWidth,
+            srIconLineWidth,
             srFontSize
         };
 
@@ -56,6 +61,10 @@ class CGPalette
 
         CGColor backgroundColor;
         CGColor textColor;
+        CGColor iconColor;
+        CGColor iconHighlightColor;
+        CGColor iconShadowColor;
+        CGColor iconBackgroundColor;
         CGColor brightColor;
         CGColor dimColor;
         CGColor darkColor;
@@ -76,6 +85,7 @@ class CGPalette
         CGColor titleTextColor;
 
         float frameWidth;
+        float iconLineWidth;
         float focusedFrameWidth;
         float fontSize;
         std::string fontName;
