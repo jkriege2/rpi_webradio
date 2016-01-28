@@ -18,7 +18,7 @@ WRMusicScreen::WRMusicScreen(CGWidget *parent):
     setLayout(vlay);
 
 
-    m_musicTree=new CGTreeWidget(this);
+    m_musicTree=new CGTreeWidget<std::string>(this);
 
     CGWidget* wibhlay=new CGWidget(this);
     CGLinearLayout* hlay=new CGLinearLayout(wibhlay, cgdHorizontal);
@@ -81,7 +81,7 @@ void WRMusicScreen::event(CGEvent *e)
     std::cout<<"WRMusicScreen::event: "<<e->toString()<<", "<<clk<<", "<<rot<<"\n";
     if (clk && clk->button()==BTN_MUSIC_ENTER) {
         std::cout<<"  BTN_MUSIC_ENTER-clicked playing="<<m_playing<<" m_playingItem="<<m_playingItem<<"\n";
-        CGTreeWidget::TreeItem* item=m_musicTree->currentTreeItem();
+        CGTreeWidget<std::string>::TreeItem* item=m_musicTree->currentTreeItem();
         if (item->hasChildern()) {
             m_musicTree->downLevel();
         } else {
@@ -90,7 +90,7 @@ void WRMusicScreen::event(CGEvent *e)
         clk->accept();
     } else if (clk && clk->button()==BTN_MUSIC_PLAY) {
         std::cout<<"  BTN_MUSIC_PLAY-clicked playing="<<m_playing<<" m_playingItem="<<m_playingItem<<"\n";
-        CGTreeWidget::TreeItem* item=m_musicTree->currentTreeItem();
+        CGTreeWidget<std::string>::TreeItem* item=m_musicTree->currentTreeItem();
         if (item->hasChildern()) {
 
         } else {
