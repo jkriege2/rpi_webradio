@@ -8,8 +8,8 @@ WRMainScreen::WRMainScreen(CGWidget* parent):
 {
     addScreen(m_webradio=new WRRadioScreen(this), "Radio");
     addScreen(m_music=new WRMusicScreen(this), "Music");
-
-    setCurrentScreen(0);
+    int idx=CGApplication::getInstance().getINI().get<int>("main.lastScreen", 0);
+    setCurrentScreen(idx);
 }
 
 WRMainScreen::~WRMainScreen()
@@ -30,6 +30,8 @@ void WRMainScreen::event(CGEvent *e)
     } else if (clk && clk->button()==BTN_MAIN_CHOOSE_MODE) {
         std::cout<<"  BTN_MAIN_CHOOSE_MODE-clicked\n";
         setCurrentScreen((currentScreenID()+1)%count());
+        CGApplication::getInstance().getINI().put<int>("main.lastScreen", currentScreenID());
+        CGApplication::getInstance().saveINI();
         clk->accept();
     } else {
         CGTabbedMultiScreens::event(e);

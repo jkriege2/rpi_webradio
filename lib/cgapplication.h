@@ -37,6 +37,7 @@ class CGApplication {
         inline boost::property_tree::ptree& getINI() {
             return m_props;
         }
+        void saveINI();
         /** \brief set the name of the framebuffer device */
         inline void setFramebuffer(const std::string & fb) {
             m_framebuffer=fb;
@@ -107,6 +108,7 @@ class CGApplication {
 
         int m_maxFramerate;
         int m_mainloopDelay;
+        std::string m_exename;
 
     protected:
         /** \brief the actual main loop */

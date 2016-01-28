@@ -2,6 +2,8 @@
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/info_parser.hpp>
 #include <boost/filesystem.hpp>
+#include <boost/algorithm/string.hpp>
+#include <algorithm>
 #include <string>
 #include <sstream>
 #include <iostream>
@@ -131,6 +133,7 @@ void WRRadioScreen::play(int idx)
         if (idx>=0 && idx<(long long)m_stations.size()) {
             m_playingItem=idx;
             CGApplication::getInstance().getINI().put<int>("radio.lastStationIdx", idx);
+            CGApplication::getInstance().saveINI();
             std::cout<<"sending URI '"<<m_stations[idx].uri<<"' ...\n";
             mpdtools::clearErrors();
             mpd_send_add(mpdtools::getConnection(), m_stations[idx].uri.c_str());
@@ -151,7 +154,7 @@ void WRRadioScreen::onShow()
     int idx=CGApplication::getInstance().getINI().get<int>("radio.lastStationIdx", 0);
     play(idx);
     m_stationList->setCurrentItem(idx);
-    std::cout<<" idx="<<idx<<"\n";
+    //std::cout<<" idx="<<idx<<"\n";
 }
 
 void WRRadioScreen::onHide()
@@ -194,6 +197,8 @@ void WRRadioScreen::addWebradiosFromCONF(const std::string &filename)
                 }
             }
         }
+        // sort, ascending order, case-insensitive
+        std::sort(m_stations.begin(), m_stations.end(), []( const radiostation& s1, const radiostation& s2) { return boost::algorithm::to_lower_copy(s1.name)<boost::algorithm::to_lower_copy(s2.name); } );
         updateList();
     } catch (std::exception& E) {
         std::cout<<"  error: "<<E.what()<<"\n";
