@@ -35,7 +35,7 @@ class CGImage : public CGFrame//, public CGPropsAlignment
             return img_symbol;
         }
 
-        virtual void paint(cairo_t *c) const override;
+        virtual void paint(cairo_t *c)  override;
 
         inline float imageOffset() const {
             return m_imageOffset;

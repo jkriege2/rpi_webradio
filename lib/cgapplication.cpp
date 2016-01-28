@@ -22,6 +22,7 @@ boost::program_options::options_description CGApplication::m_optdesc("Allowed op
 
 CGApplication::CGApplication():
     m_optmap(),
+    m_close_flag(false),
     m_framebuffer("/dev/fb1"),
     m_noDoubleBuffer(false),
     m_mainScreen(NULL),
@@ -41,6 +42,8 @@ CGApplication::CGApplication():
         ;
     }
 
+
+
     rpit_initIO();
     rpievents_init();
 
@@ -53,6 +56,8 @@ CGApplication::CGApplication():
 
 CGApplication::~CGApplication()
 {
+    saveINIFile("~/.webradio_gui/webradio_gui.ini");
+    CGEventQueue::registerMainWidget(NULL);
     if (fs_app.load()==this) {
         fs_app=NULL;
     }
@@ -78,6 +83,8 @@ bool CGApplication::parseCommandline(int argc, char *argv[])
         std::cout << m_optdesc << "\n";
         return false;
     }
+
+    parseINIFile("~/.webradio_gui/webradio_gui.ini");
     return true;
 }
 
@@ -114,16 +121,22 @@ int CGApplication::start(CGScreen *mainScreen, bool ownsMainScreen)
         if (m_mainScreen) {
             m_mainScreen->resizeFromContext(m_context);
             CGEventQueue::registerMainWidget(m_mainScreen);
+            m_mainScreen->showScreen();
         }
 
         // main loop
         mainLoop();
+
+        if (m_mainScreen) {
+            m_mainScreen->hideScreen();
+        }
 
         // de-init after mainloop
         rpievents_deinit();
         rpitemp_deinit();
         fbcairo_unbind(m_context);
         m_context=NULL;
+        saveINIFile("~/.webradio_gui/webradio_gui.ini");
         return EXIT_SUCCESS;
     } else {
         fprintf(stderr, "ERROR: could not open framebuffer for cairo!\n");
@@ -131,8 +144,63 @@ int CGApplication::start(CGScreen *mainScreen, bool ownsMainScreen)
     }
 }
 
+void CGApplication::exit()
+{
+    m_close_flag=true;
+}
+
+void CGApplication::parseINIFile(const std::string &fn)
+{
+    std::string filename=fn;
+    if (filename.size()>0 && filename[0]=='~') {
+        const char* home=std::getenv("HOME");
+        if (home) {
+            filename.erase(0,1);
+            filename=std::string(home)+"/"+filename;
+        }
+    }
+    if (!boost::filesystem::exists(boost::filesystem::path(filename))) return;
+    std::cout<<"parsing ini-file from '"<<filename<<"' ... \n";
+    try {
+        using boost::property_tree::ptree;
+
+        read_ini(filename, m_props);
+    } catch (std::exception& E) {
+        std::cout<<"  error: "<<E.what()<<"\n";
+    }
+    std::cout<<"parsing ini-file from '"<<filename<<"' ... DONE!\n";
+}
+
+void CGApplication::saveINIFile(const std::string &fn)
+{
+    std::string filename=fn;
+    if (filename.size()>0 && filename[0]=='~') {
+        const char* home=std::getenv("HOME");
+        if (home) {
+            filename.erase(0,1);
+            filename=std::string(home)+"/"+filename;
+        }
+    }
+
+    std::cout<<"saving ini-file to '"<<filename<<"' ... \n";
+    try {
+        using boost::property_tree::ptree;
+        boost::filesystem::path p(filename);
+        std::string fn=p.string();
+        p.remove_filename();
+        create_directories(p);
+        write_ini(fn, m_props);
+        std::cout<<"   "<<fn<<"\n";
+    } catch (std::exception& E) {
+        std::cout<<"  error: "<<E.what()<<"\n";
+    }
+    std::cout<<"saving ini-file to '"<<filename<<"' ... DONE!\n";
+}
+
 void CGApplication::mainLoop()
 {
+    m_close_flag=false;
+
     // get cairo surface to draw onto
     cairo_surface_t* cs=fbcairo_getSurface(m_context);
 
@@ -140,7 +208,7 @@ void CGApplication::mainLoop()
     std::chrono::steady_clock::time_point tlastpaint = std::chrono::steady_clock::now();
     std::chrono::steady_clock::time_point tstart = std::chrono::steady_clock::now();
     double fcnt=0;
-    while (true) { // endless event loop
+    while (!m_close_flag.load()) { // endless event loop
 
         // get current time
         std::chrono::steady_clock::time_point t = std::chrono::steady_clock::now();
@@ -170,6 +238,7 @@ void CGApplication::mainLoop()
         // sleep a bit, so not 100% processor time are used ...
         std::this_thread::sleep_for (std::chrono::milliseconds(m_mainloopDelay));
     }
+
 }
 
 void CGApplication::paintGUI(cairo_t *c, float fps)

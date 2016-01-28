@@ -34,7 +34,7 @@ CGListWidget::~CGListWidget()
 
 }
 
-void CGListWidget::paint(cairo_t *c) const
+void CGListWidget::paint(cairo_t *c)
 {
     CGFrame::paint(c);
 
@@ -122,6 +122,20 @@ std::string CGListWidget::item(int i, const std::string &defaultItem) const
 {
     if (i<0 || i>=(int)m_items.size()) return defaultItem;
     return m_items[i];
+}
+
+void CGListWidget::setItem(int i, const std::string &item)
+{
+    if (i>=0 || i<(int)m_items.size()) {
+        m_items[i]=item;
+    }
+}
+
+void CGListWidget::removeItem(int i)
+{
+    if (i>=0 || i<(int)m_items.size()) {
+        m_items.erase(m_items.begin()+i);
+    }
 }
 
 void CGListWidget::updateState()

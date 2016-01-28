@@ -60,7 +60,7 @@ void CGFrame::setFocusedFrameWidth(float width)
     m_focusedFrameWidth=width;
 }
 
-void CGFrame::paint(cairo_t *c) const
+void CGFrame::paint(cairo_t *c)
 {
     //std::cout<<"draw frame ("<<m_x<<", "<<m_y<<"; "<<m_width<<"x"<<m_height<<") -> abs: ("<<absX()<<", "<<absY()<<"; "<<m_width<<"x"<<m_height<<")\n";
     CGWidget::paint(c);

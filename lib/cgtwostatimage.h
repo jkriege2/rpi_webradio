@@ -44,7 +44,7 @@ class CGTwoStateImage : public CGImage
             return imageFile();
         }
 
-        virtual void paint(cairo_t *c) const override;
+        virtual void paint(cairo_t *c)  override;
 
         virtual void clear() override;
         virtual void resizeToImageSize() override;

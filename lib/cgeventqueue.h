@@ -17,9 +17,9 @@ class CGEventQueue
         ~CGEventQueue();
 
         bool hasEvents() const;
-        void addEvent(const CGEvent& e);
-        CGEvent popEvent();
-        CGEvent peekEvent();
+        void addEvent(CGEvent* e);
+        CGEvent* popEvent();
+        CGEvent* peekEvent();
         void clear();
         static CGEventQueue* instance();
         static void registerMainWidget(CGWidget* main);
@@ -28,7 +28,7 @@ class CGEventQueue
     protected:
         void thisRegisterMainWidget(CGWidget* main);
         void thisDeployEvents();
-        std::queue<CGEvent> m_events;
+        std::queue<CGEvent*> m_events;
         mutable std::mutex m_mutex;
         static CGEventQueue* inst;
         CGWidget* m_mainWidget;

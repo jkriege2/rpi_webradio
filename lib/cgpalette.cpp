@@ -4,7 +4,7 @@ CGPalette* CGPalette::defInstance=NULL;
 
 CGPalette::CGPalette()
 {
-    fontSize=10;
+    fontSize=15;
     fontName="sans";
     frameWidth=1;
     focusedFrameWidth=1;

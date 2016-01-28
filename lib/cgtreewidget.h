@@ -1,4 +1,4 @@
-#ifndef CGTreeWidget_H
+#ifndef CGTREEWIDGET_H
 #define CGTREEWIDGET_H
 
 #include "cgframe.h"
@@ -6,23 +6,67 @@
 #include <string>
 #include "cgfontprops.h"
 #include "cgscrollbar.h"
+#include "cgtreebase.h"
 
-/** \brief a widget that displays a tree of items (CGTreeWidget::TreeItem) */
-class CGTreeWidget: public CGFrame, public CGScrollBarMixin
+/** \brief a widget that displays a tree of items of type CGTreeWidget::TreeItem */
+template <class TItemData>
+class CGTreeWidget: public CGTreeBase
 {
     public:
         struct TreeItem {
-            TreeItem(TreeItem* parent=NULL);
-            ~TreeItem();
             std::vector<TreeItem*> children;
             std::string name;
-            std::string data;
+            TItemData data;
             TreeItem* parent;
             int id;
-            void clear();
-            TreeItem* addChild(const std::string & name, const std::string& data=std::string(), int id=-1);
-            void deleteChild(int i);
-            TreeItem* child(int i);
+
+            inline TreeItem(TreeItem* parent=NULL) {
+                this->parent=parent;
+                name="";
+                id=0;
+            }
+            inline ~TreeItem() {
+                clear();
+            }
+
+
+            inline void clear() {
+                for (size_t i=0; i<children.size(); i++) {
+                    delete children[i];
+                }
+                children.clear();
+            }
+            inline TreeItem* addChild(const std::string & name, int id=-1) {
+                CGTreeWidget::TreeItem* it=new CGTreeWidget::TreeItem(this);
+                it->name=name;
+                it->id=id;
+                children.push_back(it);
+                return it;
+            }
+            inline TreeItem* addChild(const std::string & name, const TItemData& data, int id=-1) {
+                CGTreeWidget::TreeItem* it=new CGTreeWidget::TreeItem(this);
+                it->name=name;
+                it->data=data;
+                it->id=id;
+                children.push_back(it);
+                return it;
+            }
+
+            inline void deleteChild(int i) {
+                if (i>=0 && i<(int64_t)children.size()) {
+                    CGTreeWidget::TreeItem * it=child(i);
+                    children.erase(children.begin()+i);
+                    if (it) delete it;
+                }
+            }
+
+            inline TreeItem* child(int i) {
+                if (i>=0 && i<(int64_t)children.size()) {
+                    return children[i];
+                }
+                return NULL;
+            }
+
             inline TreeItem* lastChild() {
                 return child(count()-1);
             }
@@ -30,20 +74,60 @@ class CGTreeWidget: public CGFrame, public CGScrollBarMixin
                 return child(0);
             }
 
-            const TreeItem* child(int i) const;
-            int count() const;
-            int indexOf(const TreeItem* it);
-            TreeItem* trueRoot();
+            inline const TreeItem* child(int i) const {
+                if (i>=0 && i<(int64_t)children.size()) {
+                    return children[i];
+                }
+                return NULL;
+            }
+
+            inline int count() const {
+                return children.size();
+            }
+
+            inline int indexOf(const TreeItem* it) {
+                for (size_t i=0; i<children.size(); i++) {
+                    if (children[i]==it) return i;
+                }
+                return -1;
+            }
+
+            inline TreeItem* trueRoot() {
+                CGTreeWidget::TreeItem *r=parent;
+                while (r && r->parent) {
+                    r=r->parent;
+                }
+                return r;
+            }
+
             inline bool hasChildern() const {
                 return count()>0;
             }
-            int level() const;
+            inline int level() const {
+                int l=0;
+                const CGTreeWidget::TreeItem *r=this;
+                while (r && r->parent) {
+                    r=r->parent;
+                    l++;
+                }
+                return l;
+            }
+
         };
 
-        explicit CGTreeWidget(CGWidget* parent=NULL);
-        explicit CGTreeWidget(int x, int y, int width, int height, CGWidget* parent=NULL);
-        virtual ~CGTreeWidget();
-        virtual void paint(cairo_t *c) const override;
+        inline explicit CGTreeWidget(CGWidget* parent=NULL):
+            CGTreeBase(parent)
+        {
+            m_root=NULL;
+        }
+
+        inline explicit CGTreeWidget(int x, int y, int width, int height, CGWidget* parent=NULL):
+            CGTreeBase(x,y,width,height,parent)
+        {
+            m_root=NULL;
+        }
+
+        inline virtual ~CGTreeWidget() {}
 
         inline TreeItem* root() const {
             return m_root;
@@ -64,143 +148,155 @@ class CGTreeWidget: public CGFrame, public CGScrollBarMixin
             }
             return NULL;
         }
+
         inline TreeItem* currentTreeItem() const {
             if (m_root) {
                 return m_root->child(m_currentItem);
             }
             return NULL;
         }
-        void setCurrentItem(const TreeItem* it);
 
-        inline int currentItem() const {
-            return m_currentItem;
-        }
-        inline void setCurrentItem(int v) {
-            m_currentItem=v;
-            updateState();
-        }
-        inline void nextItem(int inc=1) {
-            m_currentItem+=inc;
-            updateState();
-        }
-        inline void prevItem(int inc=1) {
-            m_currentItem-=inc;
-            updateState();
-        }
-        inline void scrollDown(int inc=1) {
-            m_startVisible+=inc;
-            updateState();
-        }
-        inline void scrollUp(int inc=1) {
-            m_startVisible-=inc;
+        inline void setCurrentItem(const TreeItem* it) {
+            if (it) {
+                m_root=it->parent;
+                m_currentItem=m_root->indexOf(it);
+            }
             updateState();
         }
 
-        void downLevel();
-        void upLevel();
-
-        inline int scrollbarWidth() const {
-            return m_scrollbarWidth;
-        }
-        inline void setScrollbarWidth(int v) {
-            m_scrollbarWidth=v;
-        }
-
-        inline int subindicatorWidth() const {
-            return m_subindicatorWidth;
-        }
-        inline void setSubindicatorWidth(int v) {
-            m_subindicatorWidth=v;
+        inline virtual void downLevel() {
+            if (m_root) {
+                CGTreeWidget::TreeItem *it=currentTreeItem();
+                if (it && it->hasChildern()) {
+                    m_root=it;
+                    m_currentItem=0;
+                }
+            }
+            updateState();
         }
 
-        inline int treeIndent() const {
-            return m_treeIndent;
-        }
-        inline void setTreeIndent(int v) {
-            m_treeIndent=v;
-        }
-
-        inline CGColor selectedColor() const {
-            return m_selectedColor;
-        }
-        inline void setSelectedColor(CGColor v) {
-            m_selectedColor=v;
+        inline virtual void upLevel() {
+            if (m_root && m_root->parent) {
+                m_root=m_root->parent;
+                m_currentItem=0;
+            }
+            updateState();
         }
 
-
-        inline CGColor selectedTextColor() const {
-            return m_selectedTextColor;
-        }
-        inline void setSelectedTextColor(CGColor v) {
-            m_selectedTextColor=v;
-        }
-
-        inline CGColor scrollbarColor() const {
-            return m_scrollbarColor;
-        }
-        inline void SetScrollbarColor(CGColor v) {
-            m_scrollbarColor=v;
+        inline virtual void clear() {
+            if (!m_root) return;
+            CGTreeWidget::TreeItem * r=m_root->trueRoot();
+            delete r;
+            m_root=NULL;
+            m_currentItem=-1;
+            updateState();
         }
 
-        inline CGColor scrollbarBackgroundColor() const {
-            return m_scrollbarBackgroundColor;
-        }
-        inline void setScrollbarBackgroundColor(CGColor v) {
-            m_scrollbarBackgroundColor=v;
-        }
-
-        inline bool showScrollbar() const {
-            return m_showScrollbar;
-        }
-        inline void setShowScrollbar(bool v) {
-            m_showScrollbar=v;
+        inline virtual int count() const {
+            if (m_root) {
+                return m_root->count();
+            } else {
+                return 0;
+            }
         }
 
-        inline bool showUpperLevels() const {
-            return m_showUpperLevels;
-        }
-        inline void setShowUpperLevels(bool v) {
-            m_showUpperLevels=v;
+        inline virtual std::string itemName(int i, const std::string& defaultItem=std::string()) const {
+            if (!m_root) return defaultItem;
+            CGTreeWidget::TreeItem * it=m_root->child(i);
+            if (it) return it->name;
+            return defaultItem;
         }
 
-        CGTreeWidget::TreeItem * addItem(const std::string & name, const std::string& data=std::string(), int id=-1);
-        void clear();
-        int count() const;
-        std::string itemName(int i, const std::string& defaultItem=std::string()) const;
-        std::string itemData(int i, const std::string& defaultItem=std::string()) const;
-        int itemID(int i, int defaultItem=-1) const;
-        bool hasChildren(int i) const;
-        CGTreeWidget::TreeItem * item(int i) const;
+        inline virtual TItemData itemData(int i, const TItemData& defaultItem) const {
+            if (!m_root) return defaultItem;
+            CGTreeWidget::TreeItem * it=m_root->child(i);
+            if (it) return it->data;
+            return defaultItem;
+        }
+
+        inline virtual int itemID(int i, int defaultItem=-1) const {
+            if (!m_root) return defaultItem;
+            CGTreeWidget::TreeItem * it=m_root->child(i);
+            if (it) return it->id;
+            return defaultItem;
+        }
+
+        inline virtual bool hasChildren(int i) const {
+            if (!m_root) return false;
+            CGTreeWidget::TreeItem * it=m_root->child(i);
+            if (it) return it->hasChildern();
+            return false;
+        }
+
+        inline virtual int currentLevel() const {
+            if (currentTreeItem()) {
+                return currentTreeItem()->level();
+            }
+            return 0;
+        }
+
+        inline virtual bool hasParent() const {
+            return (m_root && m_root->parent);
+        }
+
+        inline virtual std::vector<std::string> parentItemNames(int maxLevel=-1, const std::string& defaultItem=std::string()) const {
+            std::vector<std::string> res;
+            TreeItem* it=m_root;
+            while (it && it->parent) {
+                res.push_back(it->parent->name);
+                it=it->parent;
+            }
+            return res;
+        }
+
+        inline virtual std::string parentItemName(const std::string& defaultItem=std::string()) const {
+            if (m_root && m_root->parent) {
+                return m_root->parent->name;
+            }
+            return defaultItem;
+        }
+
+
+        inline CGTreeWidget::TreeItem * addItem(const std::string & name, const TItemData& data, int id=-1) {
+            if (!m_root) {
+                m_root=new CGTreeWidget::TreeItem(NULL);
+            }
+            if (m_root) {
+                return m_root->addChild(name, data, id);
+            }
+            return NULL;
+        }
+
+        inline CGTreeWidget::TreeItem * addItem(const std::string & name, int id=-1) {
+            if (!m_root) {
+                m_root=new CGTreeWidget::TreeItem(NULL);
+            }
+            if (m_root) {
+                return m_root->addChild(name, id);
+            }
+            return NULL;
+        }
+
+        inline CGTreeWidget::TreeItem * item(int i) const {
+            if (!m_root) return NULL;
+            CGTreeWidget::TreeItem * it=m_root->child(i);
+            if (it) return it;
+            return NULL;
+        }
+
         inline CGTreeWidget::TreeItem * lastItem() const {
             return item(count()-1);
         }
+
         inline CGTreeWidget::TreeItem * firstItem() const {
             return item(0);
         }
 
 
-        void setPropsFromPalette(CGPalette *palette);
     protected:
-        void updateState();
-        float itemHeight() const;
-        int currentLevel() const;
-        void drawIndicator(cairo_t* c, float x, float y, float lh, CGColor col) const ;
 
 
         TreeItem* m_root;
-        int m_currentItem;
-        int m_startVisible;
-        CGColor m_selectedColor;
-        CGColor m_selectedTextColor;
-
-        CGColor m_scrollbarColor;
-        CGColor m_scrollbarBackgroundColor;
-        int m_scrollbarWidth;
-        bool m_showScrollbar;
-        bool m_showUpperLevels;
-
-        int m_subindicatorWidth;
-        int m_treeIndent;
 };
 
-#endif // CGTreeWidget_H
+#endif // CGTREEWIDGET_H

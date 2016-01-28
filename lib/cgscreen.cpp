@@ -6,6 +6,7 @@ CGScreen::CGScreen(CGWidget *parent):
     CGWidget(parent),
     CGFontPropsWithAlignment(this)
 {
+    m_isVirgin=true;
     move(0,0);
     setBackgroundColor(CGColor::ccBlack);
     setPropsFromDefaultPalette();
@@ -21,6 +22,7 @@ CGScreen::CGScreen(const fbcairo_context *context, CGWidget *parent):
     CGWidget(0,0,fbcairo_getWidth(context),fbcairo_getHeight(context), parent),
     CGFontPropsWithAlignment(this)
 {
+    m_isVirgin=true;
     setBackgroundColor(CGColor::ccBlack);
     setPropsFromDefaultPalette();
 }
@@ -29,6 +31,7 @@ CGScreen::CGScreen(int width, int height, CGWidget *parent):
     CGWidget(0,0,width,height, parent),
     CGFontPropsWithAlignment(this)
 {
+    m_isVirgin=true;
     setBackgroundColor(CGColor::ccBlack);
     move(0,0);
     setPropsFromDefaultPalette();
@@ -36,7 +39,7 @@ CGScreen::CGScreen(int width, int height, CGWidget *parent):
 
 CGScreen::~CGScreen()
 {
-
+    hideScreen();
 }
 
 void CGScreen::move(int /*x*/, int /*y*/)
@@ -44,8 +47,11 @@ void CGScreen::move(int /*x*/, int /*y*/)
     CGWidget::move(0,0);
 }
 
-void CGScreen::paint(cairo_t *c) const
+void CGScreen::paint(cairo_t *c)
 {
+    if (m_isVirgin) {
+        showScreen();
+    }
     cairo_reset_clip(c);
     if (!m_backgroundColor.isTransparent()) {
         cairo_rectangle(c,-2,-2,m_width+5,m_height+5);
@@ -88,4 +94,34 @@ void CGScreen::resizeFromContext(const fbcairo_context *context)
 {
     //std::cout<<"GScreen::resizeFromContext("<<context<<"): "<<fbcairo_getWidth(context)<<","<<fbcairo_getHeight(context)<<"\n";
     if (context) resize(fbcairo_getWidth(context),fbcairo_getHeight(context));
+}
+
+void CGScreen::showScreen()
+{
+    //std::cout<<"CGScreen::showScreen(): m_isVirgin="<<m_isVirgin<<"\n";
+    if (m_isVirgin) {
+        m_isVirgin=false;
+        onShow();
+    }
+    //std::cout<<"CGScreen::showScreen(): m_isVirgin="<<m_isVirgin<<"\n";
+}
+
+void CGScreen::hideScreen()
+{
+    //std::cout<<"CGScreen::hideScreen(): m_isVirgin="<<m_isVirgin<<"\n";
+    if (!m_isVirgin) {
+        m_isVirgin=true;
+        onHide();
+    }
+    //std::cout<<"CGScreen::hideScreen(): m_isVirgin="<<m_isVirgin<<"\n";
+}
+
+void CGScreen::onShow()
+{
+
+}
+
+void CGScreen::onHide()
+{
+
 }

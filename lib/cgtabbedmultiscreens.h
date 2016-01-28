@@ -14,7 +14,7 @@ class CGTabbedMultiScreens : public CGMultiScreens, public CGTabMixin
         explicit CGTabbedMultiScreens(int width, int height, CGWidget* parent=NULL);
         virtual ~CGTabbedMultiScreens();
 
-        virtual void paint(cairo_t *c) const override;
+        virtual void paint(cairo_t *c)  override;
 
         void addScreen(CGScreen* screen, const std::string& name);
         CGScreen* addScreen(const std::string& name);

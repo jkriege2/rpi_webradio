@@ -51,7 +51,7 @@ CGProgressBar* prog1=NULL;
 CGProgressBar* prog2=NULL;
 CGListWidget* lst=NULL;
 CGTabbedMultiScreens* multi;
-CGTreeWidget* tree;
+CGTreeWidget<std::string>* tree;
 CGImage* imgs[8];
 
 
@@ -127,7 +127,7 @@ void setupGUI() {
     }
     {
         mainFrame2=multi->addScreen();//new CGScreen(context);
-        tree=new CGTreeWidget(10,10,mainFrame2->width()-20, mainFrame2->height()-50, mainFrame2);
+        tree=new CGTreeWidget<std::string>(10,10,mainFrame2->width()-20, mainFrame2->height()-50, mainFrame2);
         tree->setFontSize(15);
 
 

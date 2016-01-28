@@ -11,7 +11,7 @@ CC=g++ -std=c++11
 
 
 CFLAGS =  -Wall -pedantic `pkg-config --cflags cairo`
-LDFLAGS = -Wall -pedantic `pkg-config --libs cairo` -lwiringPi -lpthread -lboost_iostreams -lboost_program_options -lmpdclient
+LDFLAGS = -Wall -pedantic `pkg-config --libs cairo` -lwiringPi -lpthread -lboost_iostreams -lboost_program_options -lboost_filesystem -lboost_exception -lboost_system -lboost_signals -lmpdclient
 
 Release: OBJDIR = .objs
 OBJDIR_DEBUG = .objs_debug
@@ -28,7 +28,8 @@ EXECUTABLE=webradio_gui
 EXECUTABLE_DEBUG=webradio_gui_debug
 SRC_FILE= main.cpp \
 		  wrmainscreen.cpp \
-		  wrradioscreen.cpp
+		  wrradioscreen.cpp \
+		  wrmusicscreen.cpp
 
 
 SRC_FILE_D = $(addprefix ${OBJDIR}/,$(subst .cpp,.d,$(SRC_FILE)))
@@ -53,7 +54,7 @@ ${EXECUTABLE}: GUILIB_RELEASE ${SRC_FILE_O_RELEASE}
 	$(CC) $(CFLAGS) $(LIBS_L) -o $(EXECUTABLE) ${SRC_FILE_O_RELEASE} $(LDFLAGS)
 
 ${EXECUTABLE_DEBUG}: GUILIB_DEBUG ${SRC_FILE_O_DEBUG}
-	$(CC) $(CFLAGS) $(LIBS_L) -o $(EXECUTABLE) ${SRC_FILE_O_DEBUG} $(LDFLAGS)
+	$(CC) -o $(EXECUTABLE_DEBUG) $(CFLAGS) $(LIBS_L) ${SRC_FILE_O_DEBUG} $(LDFLAGS)
 
 GUILIB_DEBUG:
 	+cd $(GUILIBDIR); $(MAKE) Debug
@@ -89,3 +90,6 @@ clean:
 	rm -rf ${OBJDIR_DEBUG}
 	rm -rf ${OBJDIR_RELEASE}
 
+
+cleanlib:
+	+cd $(GUILIBDIR); $(MAKE) clean

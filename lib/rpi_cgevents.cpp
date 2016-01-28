@@ -103,24 +103,24 @@ void rpi_events_thread_func() {
             const std::chrono::steady_clock::time_point tnow=std::chrono::steady_clock::now();
             const double since_last = b.since_lastevent_ms(tnow);
             if (b.check_double_click && b.click_pending && since_last>BUTTON_DOUBLECLICK_DELAY_MAX) {
-                rpi_events_queue->addEvent(CGButtonClickedEvent(b.ID));
+                rpi_events_queue->addEvent(new CGButtonClickedEvent(b.ID));
                 b.click_pending=false;
             } else  if (((b.inverted && s==b.active_state && olds==b.inactive_state) || (!b.inverted && s==b.inactive_state && olds==b.active_state)) && since_last>BUTTON_DOWN_DELAY_MIN) {
                 if (!b.last_wasrepeat) {
                     if (b.check_double_click && b.click_pending) {
                         if (since_last<=BUTTON_DOUBLECLICK_DELAY_MAX) { // double-click
-                            rpi_events_queue->addEvent(CGButtonDoubleClickedEvent(b.ID));
+                            rpi_events_queue->addEvent(new CGButtonDoubleClickedEvent(b.ID));
                             b.click_pending=false;
                         } else { // no double-click, so we need two clicks
-                            rpi_events_queue->addEvent(CGButtonClickedEvent(b.ID));
-                            rpi_events_queue->addEvent(CGButtonClickedEvent(b.ID));
+                            rpi_events_queue->addEvent(new CGButtonClickedEvent(b.ID));
+                            rpi_events_queue->addEvent(new CGButtonClickedEvent(b.ID));
                             b.click_pending=false;
                         }
                     } else if (b.check_double_click && !b.click_pending) { // wait a bit and see whether we get a double-click
                         b.click_pending=true;
-                        //rpi_events_queue->addEvent(CGButtonClickedEvent(b.ID));
+                        //rpi_events_queue->addEvent(new CGButtonClickedEvent(b.ID));
                     } else if (!b.check_double_click ) { // single-click only, as we don't check for double-clicks
-                        rpi_events_queue->addEvent(CGButtonClickedEvent(b.ID));
+                        rpi_events_queue->addEvent(new CGButtonClickedEvent(b.ID));
                         b.click_pending=false;
                     }
                 }
@@ -129,10 +129,10 @@ void rpi_events_thread_func() {
             } else if(b.can_repeat && ((!b.last_wasrepeat && since_last>BUTTON_REPEAT_DELAY_MIN) || (b.last_wasrepeat && since_last>BUTTON_REPEAT_DELAY_REPEAT))) {
                 if (((b.inverted && s==b.inactive_state && olds==b.active_state) || (!b.inverted && s==b.active_state && olds==b.inactive_state))) {
                     b.lastevent=tnow;
-                    //rpi_events_queue->addEvent(CGButtonEvent(b.ID));
+                    //rpi_events_queue->addEvent(new CGButtonEvent(b.ID));
                 } else if (s==b.active_state && olds==b.active_state && since_last<BUTTON_REPEAT_DELAY_MAX) {
                     b.lastevent=tnow;
-                    rpi_events_queue->addEvent(CGButtonClickedEvent(b.ID));
+                    rpi_events_queue->addEvent(new CGButtonClickedEvent(b.ID));
                     b.click_pending=false;
                     b.last_wasrepeat=true;
                 }
@@ -147,7 +147,7 @@ void rpi_events_thread_func() {
             const int s=rpit_readDigital(rpi_events_statechanges[i].pin);
             const int olds=rpi_events_statechanges[i].last_state;
             if ((s==1 && olds==0) || (s==0 && olds==1)) {
-                rpi_events_queue->addEvent(CGInputStateChanged(rpi_events_statechanges[i].ID, s));
+                rpi_events_queue->addEvent(new CGInputStateChanged(rpi_events_statechanges[i].ID, s));
             }
             rpi_events_statechanges[i].last_state=s;
         }
@@ -194,7 +194,7 @@ void rpi_events_rotary_thread_func() {
                     if ((abs(b.inc)>=b.steps_for_inc1) && (ROTARY_MIN_DELAY<=0 || since_last>ROTARY_MIN_DELAY)) {
                         int ii=b.inc/b.steps_for_inc1;
                         b.lastinc=b.inc;
-                        rpi_events_queue->addEvent(CGInputScroll(b.ID, ii));
+                        rpi_events_queue->addEvent(new CGInputScroll(b.ID, ii));
                         b.inc=0;
                         b.lastevent=tnow;
 

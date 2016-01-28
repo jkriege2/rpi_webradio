@@ -155,7 +155,7 @@ void CGImage::paintImage(cairo_t *c, cairo_surface_t *img_surface, int img_w, in
     }
 }
 
-void CGImage::paint(cairo_t *c) const
+void CGImage::paint(cairo_t *c)
 {
     CGFrame::paint(c);
     paintImage(c, img_surface, img_w, img_h, img_symbol);

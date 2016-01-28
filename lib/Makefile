@@ -14,7 +14,7 @@ CC=g++ -std=c++11
 
 
 CFLAGS =  -Wall -pedantic `pkg-config --cflags cairo` -static
-LDFLAGS = -Wall -pedantic `pkg-config --libs cairo` -lwiringPi -lpthread -lboost_iostreams -lboost_program_options
+LDFLAGS = -Wall -pedantic `pkg-config --libs cairo` -lwiringPi -lpthread -lboost_iostreams -lboost_program_options -lboost_filesystem -lboost_exception -lboost_system -lboost_signals -lmpdclient
 OBJDIR_DEBUG = .objs_debug
 OBJDIR_RELEASE = .objs
 OBJDIR = .objs
@@ -36,7 +36,6 @@ SRC_FILE= framebuffer_cairo_tools.cpp \
           cgprogressbar.cpp \
           cglistwidget.cpp \
           cgfontprops.cpp \
-          cgtreewidget.cpp \
           cgmultiscreens.cpp \
           cgtabbedmultiscreens.cpp \
           cgscrollbar.cpp \
@@ -48,7 +47,10 @@ SRC_FILE= framebuffer_cairo_tools.cpp \
           cglayout.cpp \
           cgapplication.cpp \
           cgtwostatimage.cpp \
-          cgsymbol.cpp
+          cgsymbol.cpp \
+          cgdirectorytreewidget.cpp \
+          cgtreebase.cpp \
+          mpd_tools.cpp
 
 RELEASE_LIB_NAME = lib${LIB_NAME}.a
 DEBUG_LIB_NAME = lib${LIB_NAME}_debug.a

@@ -82,7 +82,7 @@ void CGLabel::setText(const std::string &text)
 }
 
 
-void CGLabel::paint(cairo_t *cr) const
+void CGLabel::paint(cairo_t *cr)
 {
     CGFrame::paint(cr);
 

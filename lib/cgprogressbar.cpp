@@ -34,7 +34,7 @@ CGProgressBar::~CGProgressBar()
 
 }
 
-void CGProgressBar::paint(cairo_t *c) const
+void CGProgressBar::paint(cairo_t *c)
 {
     CGFrame::paint(c);
     float w=(m_value-m_min)/(m_max-m_min);

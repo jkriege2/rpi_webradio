@@ -1,7 +1,7 @@
-#include "cgtreewidget.h"
+#include "cgtreebase.h"
 
 
-CGTreeWidget::CGTreeWidget(CGWidget *parent):
+CGTreeBase::CGTreeBase(CGWidget *parent):
     CGFrame(parent)
 {
     m_textColor=CGColor::ccGray50;
@@ -13,14 +13,13 @@ CGTreeWidget::CGTreeWidget(CGWidget *parent):
     m_showScrollbar=true;
     m_showUpperLevels=true;
     m_currentItem=0;
-    m_root=NULL;
     m_startVisible=0;
     m_scrollbarWidth=10;
     m_treeIndent=10;
     setPropsFromDefaultPalette();
 }
 
-CGTreeWidget::CGTreeWidget(int x, int y, int width, int height, CGWidget *parent):
+CGTreeBase::CGTreeBase(int x, int y, int width, int height, CGWidget *parent):
     CGFrame(x,y,width,height,parent)
 {
     m_textColor=CGColor::ccGray50;
@@ -33,19 +32,18 @@ CGTreeWidget::CGTreeWidget(int x, int y, int width, int height, CGWidget *parent
     m_showScrollbar=true;
     m_showUpperLevels=true;
     m_currentItem=0;
-    m_root=NULL;
     m_startVisible=0;
     m_scrollbarWidth=10;
     setPropsFromDefaultPalette();
 }
 
-CGTreeWidget::~CGTreeWidget()
+CGTreeBase::~CGTreeBase()
 {
     clear();
 }
 
 
-void CGTreeWidget::updateState()
+void CGTreeBase::updateState()
 {
     int cnt=count();
     int level=currentLevel();
@@ -94,13 +92,12 @@ void CGTreeWidget::updateState()
 
 }
 
-void CGTreeWidget::paint(cairo_t *c) const
+void CGTreeBase::paint(cairo_t *c)
 {
     CGFrame::paint(c);
 
     int cnt=count();
-    int level=0;
-    if (currentTreeItem()) level=currentTreeItem()->level();
+    int level=currentLevel();
 
     float w=m_width-2.0*m_frameWidth-2;
     if (m_showScrollbar) {
@@ -118,8 +115,7 @@ void CGTreeWidget::paint(cairo_t *c) const
         float lh=itemHeight();
         if (m_showUpperLevels) {
             if (level==2) {
-                std::string txt1;
-                if (currentTreeItemParent()) txt1=currentTreeItemParent()->name;
+                std::string txt1=parentItemName();
                 CGColor cv=m_selectedTextColor.colorLinearTo(0.5, m_textColor);
                 CGColor cb=m_selectedColor.colorLinearTo(0.5, m_backgroundColor);
                 cairo_rectangle(c, x, y, w, lh);
@@ -131,8 +127,9 @@ void CGTreeWidget::paint(cairo_t *c) const
                 xtxt+=m_treeIndent;
             } else if (level==3) {
                 std::string txt1, txt2;
-                if (currentTreeItemParent()) txt1=currentTreeItemParent()->name;
-                if (currentTreeItemParent() && currentTreeItemParent()->parent) txt2=currentTreeItemParent()->parent->name;
+                std::vector<std::string> txts=parentItemNames(2);
+                if (txts.size()>0) txt1=txts[0];
+                if (txts.size()>1) txt2=txts[1];
                 CGColor cv=m_selectedTextColor.colorLinearTo(0.33, m_textColor);
                 CGColor cb=m_selectedColor.colorLinearTo(0.33, m_backgroundColor);
                 cairo_rectangle(c, x, y, w, lh);
@@ -155,8 +152,9 @@ void CGTreeWidget::paint(cairo_t *c) const
             } else if (level>3) {
                 std::string txt1, txt2;
                 std::string txtell="...";
-                if (currentTreeItemParent()) txt1=currentTreeItemParent()->name;
-                if (currentTreeItemParent() && currentTreeItemParent()->trueRoot()) txt2=currentTreeItemParent()->trueRoot()->name;
+                std::vector<std::string> txts=parentItemNames(2);
+                if (txts.size()>0) txt1=txts[0];
+                if (txts.size()>1) txt2=txts[1];
                 CGColor cv=m_selectedTextColor.colorLinearTo(0.25, m_textColor);
                 CGColor cb=m_selectedColor.colorLinearTo(0.25, m_backgroundColor);
                 cairo_rectangle(c, x, y, w, lh);
@@ -206,7 +204,7 @@ void CGTreeWidget::paint(cairo_t *c) const
                     if (ifirst<0) ifirst=i;
                     if (y+lh<m_height) ilast=i;
                 }
-                //std::cout<<"CGTreeWidget: i="<<i<<": x="<<x<<", y="<<y<<": "<<item(i)<<"   lh="<<lh<<"   col="<<col<<"\n";
+                //std::cout<<"CGTreeBase: i="<<i<<": x="<<x<<", y="<<y<<": "<<item(i)<<"   lh="<<lh<<"   col="<<col<<"\n";
                 drawAlignedColoredText(c, xtxt+m_subindicatorWidth+2, y+3, w-m_subindicatorWidth-2, lh, itemName(i), col, cgalLeft, cgalTop);
 
                 if (hasChildren(i)){
@@ -231,123 +229,22 @@ void CGTreeWidget::paint(cairo_t *c) const
 
 }
 
-void CGTreeWidget::setCurrentItem(const CGTreeWidget::TreeItem *it)
+void CGTreeBase::clear()
 {
-    if (it) {
-        m_root=it->parent;
-        m_currentItem=m_root->indexOf(it);
-    }
-    updateState();
-}
 
-void CGTreeWidget::downLevel()
-{
-    if (m_root) {
-        CGTreeWidget::TreeItem *it=currentTreeItem();
-        if (it && it->hasChildern()) {
-            m_root=it;
-            m_currentItem=0;
-        }
-    }
-    updateState();
 }
 
 
-void CGTreeWidget::upLevel()
-{
-    if (m_root && m_root->parent) {
-        m_root=m_root->parent;
-        m_currentItem=0;
-    }
-    updateState();
-}
-
-CGTreeWidget::TreeItem *CGTreeWidget::addItem(const std::string &name, const std::string &data, int id)
-{
-    if (!m_root) {
-        m_root=new CGTreeWidget::TreeItem(NULL);
-    }
-    if (m_root) {
-        return m_root->addChild(name, data, id);
-    }
-    return NULL;
-}
 
 
-void CGTreeWidget::clear()
-{
-    if (!m_root) return;
-    CGTreeWidget::TreeItem * r=m_root->trueRoot();
-    delete r;
-    m_root=NULL;
-    m_currentItem=-1;
-    updateState();
-}
-
-int CGTreeWidget::count() const
-{
-    if (m_root) {
-        return m_root->count();
-    } else {
-        return 0;
-    }
-}
-
-std::string CGTreeWidget::itemName(int i, const std::string &defaultItem) const
-{
-    if (!m_root) return defaultItem;
-    CGTreeWidget::TreeItem * it=m_root->child(i);
-    if (it) return it->name;
-    return defaultItem;
-}
-
-std::string CGTreeWidget::itemData(int i, const std::string &defaultItem) const
-{
-    if (!m_root) return defaultItem;
-    CGTreeWidget::TreeItem * it=m_root->child(i);
-    if (it) return it->data;
-    return defaultItem;
-}
-
-int CGTreeWidget::itemID(int i, int defaultItem) const
-{
-    if (!m_root) return defaultItem;
-    CGTreeWidget::TreeItem * it=m_root->child(i);
-    if (it) return it->id;
-    return defaultItem;
-}
-
-bool CGTreeWidget::hasChildren(int i) const
-{
-    if (!m_root) return false;
-    CGTreeWidget::TreeItem * it=m_root->child(i);
-    if (it) return it->hasChildern();
-    return false;
-}
-
-CGTreeWidget::TreeItem *CGTreeWidget::item(int i) const
-{
-    if (!m_root) return NULL;
-    CGTreeWidget::TreeItem * it=m_root->child(i);
-    if (it) return it;
-    return NULL;
-}
 
 
-float CGTreeWidget::itemHeight() const
+float CGTreeBase::itemHeight() const
 {
     return m_fontSize*1.3;
 }
 
-int CGTreeWidget::currentLevel() const
-{
-    if (currentTreeItem()) {
-        return currentTreeItem()->level();
-    }
-    return 0;
-}
-
-void CGTreeWidget::drawIndicator(cairo_t *c, float x, float y, float lh, CGColor col) const
+void CGTreeBase::drawIndicator(cairo_t *c, float x, float y, float lh, CGColor col) const
 {
     float isiz=m_subindicatorWidth*0.75;
     cairo_move_to(c, x+m_subindicatorWidth/2.0+isiz/2.0, y+lh/2.0);
@@ -359,95 +256,7 @@ void CGTreeWidget::drawIndicator(cairo_t *c, float x, float y, float lh, CGColor
 }
 
 
-CGTreeWidget::TreeItem::TreeItem(TreeItem *parent)
-{
-    this->parent=parent;
-    name="";
-    data="";
-    id=0;
-}
-
-CGTreeWidget::TreeItem::~TreeItem()
-{
-    clear();
-}
-
-void CGTreeWidget::TreeItem::clear()
-{
-    for (size_t i=0; i<children.size(); i++) {
-        delete children[i];
-    }
-    children.clear();
-}
-
-CGTreeWidget::TreeItem *CGTreeWidget::TreeItem::addChild(const std::string &name, const std::string &data, int id)
-{
-    CGTreeWidget::TreeItem* it=new CGTreeWidget::TreeItem(this);
-    it->name=name;
-    it->data=data;
-    it->id=id;
-    children.push_back(it);
-    return it;
-}
-
-void CGTreeWidget::TreeItem::deleteChild(int i)
-{
-    if (i>=0 && i<(int64_t)children.size()) {
-        CGTreeWidget::TreeItem * it=child(i);
-        children.erase(children.begin()+i);
-        if (it) delete it;
-    }
-}
-
-CGTreeWidget::TreeItem *CGTreeWidget::TreeItem::child(int i)
-{
-    if (i>=0 && i<(int64_t)children.size()) {
-        return children[i];
-    }
-    return NULL;
-}
-
-const CGTreeWidget::TreeItem *CGTreeWidget::TreeItem::child(int i) const
-{
-    if (i>=0 && i<(int64_t)children.size()) {
-        return children[i];
-    }
-    return NULL;
-}
-
-int CGTreeWidget::TreeItem::count() const
-{
-    return children.size();
-}
-
-int CGTreeWidget::TreeItem::indexOf(const CGTreeWidget::TreeItem *it)
-{
-    for (size_t i=0; i<children.size(); i++) {
-        if (children[i]==it) return i;
-    }
-    return -1;
-}
-
-CGTreeWidget::TreeItem *CGTreeWidget::TreeItem::trueRoot()
-{
-    CGTreeWidget::TreeItem *r=parent;
-    while (r && r->parent) {
-        r=r->parent;
-    }
-    return r;
-}
-
-int CGTreeWidget::TreeItem::level() const
-{
-    int l=0;
-    const CGTreeWidget::TreeItem *r=this;
-    while (r && r->parent) {
-        r=r->parent;
-        l++;
-    }
-    return l;
-}
-void CGTreeWidget::setPropsFromPalette(CGPalette *palette)
+void CGTreeBase::setPropsFromPalette(CGPalette *palette)
 {
     CGFrame::setPropsFromPalette(palette);
     if (palette) {

@@ -5,6 +5,9 @@
 #include <string>
 #include <boost/program_options/options_description.hpp>
 #include <boost/program_options/variables_map.hpp>
+#include <boost/property_tree/ptree.hpp>
+#include <boost/property_tree/ini_parser.hpp>
+#include <boost/filesystem.hpp>
 #include "cgscreen.h"
 #include<cairo.h>
 
@@ -26,6 +29,13 @@ class CGApplication {
         /** \brief allows to add allowed program-options before instancing the application */
         static inline boost::program_options::options_description& getCmdOptionsDescription() {
             return m_optdesc;
+        }
+
+        inline const boost::property_tree::ptree& getINI() const {
+            return m_props;
+        }
+        inline boost::property_tree::ptree& getINI() {
+            return m_props;
         }
         /** \brief set the name of the framebuffer device */
         inline void setFramebuffer(const std::string & fb) {
@@ -75,11 +85,18 @@ class CGApplication {
         /** \brief start the application */
         int start(CGScreen* mainScreen, bool m_ownsMainScreen);
 
+        void exit();
+
     private:
         static std::atomic<CGApplication*> fs_app;
 
         static boost::program_options::options_description m_optdesc;
         boost::program_options::variables_map m_optmap;
+        boost::property_tree::ptree m_props;
+
+        void parseINIFile(const std::string& filename);
+        void saveINIFile(const std::string& filename);
+        std::atomic<bool> m_close_flag;
 
         std::string m_framebuffer;
         bool m_noDoubleBuffer;

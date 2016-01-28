@@ -142,6 +142,8 @@ struct CGColor {
 
     CGColor lighter(float factor=200);
     CGColor darker(float factor=200);
+
+    CGColor linearColor(float val, CGColor end) const;
 };
 
 /** \brief implement \c operator<<() for CGColor output into streams. */

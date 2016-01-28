@@ -67,7 +67,7 @@ void CGTwoStateImage::setImageSymbolFalse(const CGSymbol &symbol)
     img_symbol_false=symbol;
 }
 
-void CGTwoStateImage::paint(cairo_t *c) const
+void CGTwoStateImage::paint(cairo_t *c)
 {
     CGFrame::paint(c);
     if (m_state) paintImage(c, img_surface, img_w, img_h, img_symbol);

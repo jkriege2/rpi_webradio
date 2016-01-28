@@ -98,7 +98,7 @@ void CGWidget::setParent(CGWidget *p)
     //std::cout<<this<<" CGWidget::setParent("<<p<<").0 m_parent="<<m_parent<<"\n";
 }
 
-void CGWidget::paint(cairo_t *c) const
+void CGWidget::paint(cairo_t *c)
 {
     if (!m_backgroundColor.isTransparent()) {
         cairo_rectangle(c, 0, 0, m_width, m_height);

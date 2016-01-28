@@ -88,7 +88,7 @@ class CGInputScroll: public CGEvent {
         virtual ~CGInputScroll() {}
         virtual std::string toString() const;
         inline int id() const { return m_id; }
-        inline bool inc() const { return m_inc; }
+        inline int inc() const { return m_inc; }
     protected:
         int m_id;
         int m_inc;

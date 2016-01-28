@@ -284,6 +284,16 @@ CGColor CGColor::darker(float factor)
     return c;
 }
 
+CGColor CGColor::linearColor(float val, CGColor end) const
+{
+    CGColor c;
+    c.r=r+val*float(end.r-r);
+    c.g=g+val*float(end.g-g);
+    c.b=b+val*float(end.b-b);
+    c.a=a+val*float(end.a-a);
+    return c;
+}
+
 
 CGColor::CGColor(CGColor::ColorConstants color)
 {

@@ -89,7 +89,7 @@ class CGWidget: public CGFontProps, private boost::noncopyable
         virtual void setParent(CGWidget* p);
 
         /** \brief paint the widget */
-        virtual void paint(cairo_t *c) const;
+        virtual void paint(cairo_t *c) ;
 
         /** \brief returns true, if the absolute screen coordinates ( \a x , \a y ) are inside the widget */
         virtual bool isAbsPosInside(int x, int y);
@@ -155,7 +155,6 @@ class CGWidget: public CGFontProps, private boost::noncopyable
         /** \brief signals a resize of the widget */
         boost::signals2::signal<void(unsigned int, unsigned int)> sigResize;
 
-    protected:
         /** \brief process events
          *
          * Overwrite this function in a derived class, if you want to react to events. However, remember to call the events() function
@@ -163,6 +162,7 @@ class CGWidget: public CGFontProps, private boost::noncopyable
          * any other child-widget to receive this event, set its state to accepted after reacting to it!
          */
         virtual void event(CGEvent* e);
+    protected:
 
         CGWidget* m_parent;
         std::list<CGWidget*> m_children;

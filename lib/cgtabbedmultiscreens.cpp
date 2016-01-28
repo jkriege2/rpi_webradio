@@ -25,7 +25,7 @@ CGTabbedMultiScreens::~CGTabbedMultiScreens()
 {
 }
 
-void CGTabbedMultiScreens::paint(cairo_t *c) const
+void CGTabbedMultiScreens::paint(cairo_t *c)
 {
     cairo_save(c);
         cairo_translate(c, 0, 0);

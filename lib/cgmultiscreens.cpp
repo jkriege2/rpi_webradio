@@ -27,7 +27,7 @@ CGMultiScreens::~CGMultiScreens()
     clear();
 }
 
-void CGMultiScreens::paint(cairo_t *c) const
+void CGMultiScreens::paint(cairo_t *c)
 {
     if (currentScreen()) {
         currentScreen()->paint(c);
@@ -48,7 +48,7 @@ void CGMultiScreens::clear()
         if (m_screens[i]) delete m_screens[i];
     }
     m_screens.clear();
-    m_currentScreen=0;
+    setCurrentScreen(0);
 }
 
 CGScreen *CGMultiScreens::currentScreen() const
@@ -71,9 +71,15 @@ void CGMultiScreens::previousScreen()
 
 void CGMultiScreens::setCurrentScreen(int i)
 {
+    int oldcs=m_currentScreen;
     m_currentScreen=i;
     if (m_currentScreen>(int64_t)m_screens.size()) m_currentScreen=(int64_t)m_screens.size()-1;
     if (m_currentScreen<0) m_currentScreen=0;
+    if (oldcs!=m_currentScreen) {
+        if (screen(oldcs)) screen(oldcs)->hideScreen();
+        if (screen(m_currentScreen)) screen(m_currentScreen)->showScreen();
+    }
+
 }
 
 void CGMultiScreens::setCurrentScreen(CGScreen *s)
@@ -127,4 +133,22 @@ void CGMultiScreens::setPropsFromPalette(CGPalette *palette)
             m_screens[i]->setPropsFromPalette(palette);
         }
     }
+}
+
+void CGMultiScreens::event(CGEvent *e)
+{
+    if (currentScreen()) currentScreen()->event(e);
+    /*if (!e->accepted()) {
+        CGScreen::event(e);
+    }*/
+}
+
+void CGMultiScreens::showScreen()
+{
+    if (currentScreen()) currentScreen()->showScreen();
+}
+
+void CGMultiScreens::hideScreen()
+{
+    if (currentScreen()) currentScreen()->hideScreen();
 }

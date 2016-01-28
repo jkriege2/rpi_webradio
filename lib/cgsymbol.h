@@ -3,6 +3,7 @@
 
 #include "cgbasics.h"
 #include "cgfontprops.h"
+#include <chrono>
 
 /** \brief a class that represents an icon, drawn programmatically (scalably, i.e. no pixel-graphics) by cairo-instructions */
 class CGSymbol
@@ -12,7 +13,9 @@ class CGSymbol
             iNone=0,          /**< no symbol */
             iEmpty,           /**< an empty symbol (with a box!) */
             iPlay,            /**< a play-symbol (right-pointing rectangle) */
+            iPlayAnimated,    /**< an animated play-symbol (right-pointing rectangle) */
             iStop,            /**< a stop-symbol (box) */
+            iPause,           /**< a pause-symbol (two upright bars) */
         };
 
         explicit CGSymbol(Symbols s=iNone);
@@ -75,6 +78,7 @@ class CGSymbol
         CGColor m_highlightColor;
         CGColor m_shadowColor;
         float m_linewidth;
+        mutable std::chrono::steady_clock::time_point lastpaint;
 };
 
 #endif // CGSYMBOL_H

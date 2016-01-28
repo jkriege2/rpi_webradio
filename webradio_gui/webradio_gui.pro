@@ -31,7 +31,10 @@ SOURCES += main.cpp \
     ../lib/cgapplication.cpp \
     wrradioscreen.cpp \
     ../lib/cgtwostatimage.cpp \
-    ../lib/cgsymbol.cpp
+    ../lib/cgsymbol.cpp \
+    ../lib/mpd_tools.cpp \
+    wrmusicscreen.cpp \
+    ../lib/cgdirectorytreewidget.cpp
 
 HEADERS += \
     wrmainscreen.h \
@@ -59,7 +62,11 @@ HEADERS += \
     ../lib/cgapplication.h \
     wrradioscreen.h \
     ../lib/cgtwostatimage.h \
-    ../lib/cgsymbol.h
+    ../lib/cgsymbol.h \
+    ../lib/mpd_tools.h \
+    global.h \
+    wrmusicscreen.h \
+    ../lib/cgdirectorytreewidget.h
 
 DISTFILES += Makefile \
     ../lib/Makefile

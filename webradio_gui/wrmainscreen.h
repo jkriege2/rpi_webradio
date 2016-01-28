@@ -3,6 +3,7 @@
 
 #include "cgtabbedmultiscreens.h"
 #include "wrradioscreen.h"
+#include "wrmusicscreen.h"
 
 class WRMainScreen : public CGTabbedMultiScreens
 {
@@ -11,7 +12,9 @@ class WRMainScreen : public CGTabbedMultiScreens
         virtual ~WRMainScreen();
 
     protected:
+        virtual void event(CGEvent *e);
         WRRadioScreen* m_webradio;
+        WRMusicScreen* m_music;
 };
 
 #endif // WRMAINSCREEN_H

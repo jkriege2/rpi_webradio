@@ -21,27 +21,28 @@ bool CGEventQueue::hasEvents() const
     return res;
 }
 
-void CGEventQueue::addEvent(const CGEvent &e)
+void CGEventQueue::addEvent(CGEvent *e)
 {
+    if (!e) return;
     m_mutex.lock();
     m_events.push(e);
-    std::cout<<"added event "<<e.toString()<<"\n";
+    std::cout<<"added event "<<e->toString()<<"\n";
     m_mutex.unlock();
 }
 
-CGEvent CGEventQueue::popEvent()
+CGEvent* CGEventQueue::popEvent()
 {
     m_mutex.lock();
-    CGEvent e=m_events.front();
+    CGEvent* e=m_events.front();
     m_events.pop();
     m_mutex.unlock();
     return e;
 }
 
-CGEvent CGEventQueue::peekEvent()
+CGEvent* CGEventQueue::peekEvent()
 {
     m_mutex.lock();
-    CGEvent e= m_events.front();
+    CGEvent* e= m_events.front();
     m_mutex.unlock();
     return e;
 }
@@ -83,8 +84,11 @@ void CGEventQueue::deployEvents()
 void CGEventQueue::thisDeployEvents()
 {
     while (hasEvents() && m_mainWidget) {
-        CGEvent e=popEvent();
-        m_mainWidget->postEvent(&e);
+        CGEvent* e=popEvent();
+        if (e) {
+            m_mainWidget->postEvent(e);
+            delete e;
+        }
     }
 }
 

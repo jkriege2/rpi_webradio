@@ -14,7 +14,7 @@ class CGMultiScreens : public CGScreen
         virtual ~CGMultiScreens();
 
 
-        virtual void paint(cairo_t *c) const override;
+        virtual void paint(cairo_t *c)  override;
 
         virtual void resize(unsigned int width, unsigned int height) override;
 
@@ -35,6 +35,10 @@ class CGMultiScreens : public CGScreen
             return m_screens.size();
         }
         virtual void setPropsFromPalette(CGPalette *palette) override;
+        virtual void event(CGEvent* e) override;
+        virtual void showScreen();
+        virtual void hideScreen();
+
     protected:
         std::vector<CGScreen*> m_screens;
         int m_currentScreen;

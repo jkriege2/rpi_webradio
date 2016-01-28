@@ -32,7 +32,7 @@ class CGFrame: public CGWidget {
         }
         void setFocusedFrameWidth(float width);
 
-        virtual void paint(cairo_t *c) const override;
+        virtual void paint(cairo_t *c)  override;
     protected:
         float m_frameWidth;
         CGColor m_frameColor;

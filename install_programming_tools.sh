@@ -193,9 +193,15 @@ if [ "$USE_AUTOFS" = "n" ] ; then
 	mount -a
 	
 	if [ "$ADD_CHRON_MOUNT" = "y" ] ; then
-		command="/bin/mount -a > /dev/null 2>&1"
+		#command="/bin/mount -a > /dev/null 2>&1"
+		CRONSCRIPT="/home/$USERNAME/cron_remount.sh"
+		cp cron_remount.sh $CRONSCRIPT
+		chown -R $USERNAME $CRONSCRIPT
+		sudo chmod 666 $CRONSCRIPT
+		command="sudo sh $CRONSCRIPT"
 		job="*/2 * * * * $command"
 		echo "$job" > /etc/cron.d/automount.cron
+		echo "$job" > /var/spool/cron/crontabs/$USERNAME
 		echo "added chron-job"
 		service cron restart
 	fi
