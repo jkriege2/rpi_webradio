@@ -12,93 +12,46 @@
 class CGDirectoryTreeWidget: public CGTreeBase
 {
     public:
-        struct TreeItem {
-            TreeItem(TreeItem* parent=NULL);
-            ~TreeItem();
-            std::vector<TreeItem*> children;
-            std::string name;
-            std::string data;
-            TreeItem* parent;
-            int id;
-            void clear();
-            TreeItem* addChild(const std::string & name, const std::string& data=std::string(), int id=-1);
-            void deleteChild(int i);
-            TreeItem* child(int i);
-            inline TreeItem* lastChild() {
-                return child(count()-1);
-            }
-            inline TreeItem* firstChild() {
-                return child(0);
-            }
-
-            const TreeItem* child(int i) const;
-            int count() const;
-            int indexOf(const TreeItem* it);
-            TreeItem* trueRoot();
-            inline bool hasChildern() const {
-                return count()>0;
-            }
-            int level() const;
+        class TreeProvider {
+            public:
+                TreeProvider() {}
+                virtual ~TreeProvider() {}
+                virtual int count() const=0;
+                virtual int level() const=0;
+                virtual std::string itemName(int i, const std::string& defaultName=std::string()) const=0;
+                virtual bool upLevel()=0;
+                virtual bool downLevel(int i)=0;
+                virtual bool hasParent() const=0;
+                virtual bool hasChildren(int idx) const=0;
+                virtual std::vector<std::string> parentNames(int maxLevel=-1, const std::string& defaultItem=std::string()) const=0;
+                virtual std::string parentName(const std::string& defaultItem=std::string()) const;
         };
 
         explicit CGDirectoryTreeWidget(CGWidget* parent=NULL);
         explicit CGDirectoryTreeWidget(int x, int y, int width, int height, CGWidget* parent=NULL);
         virtual ~CGDirectoryTreeWidget();
 
-        inline TreeItem* root() const {
-            return m_root;
+        inline TreeProvider* provider() const {
+            return m_provider;
         }
-        inline void setRoot(TreeItem* r) {
-            m_root=r;
-            if (m_root) {
-                if (m_currentItem>=m_root->count()) m_currentItem=m_root->count();
-            } else {
-                m_currentItem=-1;
-            }
-            updateState();
-        }
-
-        inline TreeItem* currentTreeItemParent() const {
-            if (currentTreeItem()) {
-                return currentTreeItem()->parent;
-            }
-            return NULL;
-        }
-
-        inline TreeItem* currentTreeItem() const {
-            if (m_root) {
-                return m_root->child(m_currentItem);
-            }
-            return NULL;
-        }
-
-        void setCurrentItem(const TreeItem* it);
+        void setProvider(TreeProvider* p, bool ownsProviderObject);
 
         virtual void downLevel();
         virtual void upLevel();
         virtual void clear();
         virtual int count() const;
         virtual std::string itemName(int i, const std::string& defaultItem=std::string()) const;
-        virtual std::string itemData(int i, const std::string& defaultItem=std::string()) const;
-        virtual int itemID(int i, int defaultItem=-1) const;
         virtual bool hasChildren(int i) const;
         virtual int currentLevel() const;
+        virtual bool hasParent() const;
+        virtual std::vector<std::string> parentItemNames(int maxLevel=-1, const std::string& defaultItem=std::string()) const;
 
-
-        TreeItem * addItem(const std::string & name, const std::string& data=std::string(), int id=-1);
-        TreeItem * item(int i) const;
-        inline TreeItem * lastItem() const {
-            return item(count()-1);
-        }
-        inline TreeItem * firstItem() const {
-            return item(0);
-        }
 
 
     protected:
 
-
-        TreeItem* m_root;
+        bool m_ownsProvider;
+        TreeProvider* m_provider;
 };
 
 

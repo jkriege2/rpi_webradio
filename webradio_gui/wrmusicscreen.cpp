@@ -18,7 +18,9 @@ WRMusicScreen::WRMusicScreen(CGWidget *parent):
     setLayout(vlay);
 
 
-    m_musicTree=new CGTreeWidget<std::string>(this);
+    m_musicTree=new CGDirectoryTreeWidget(this);
+    m_musicProvider=new WRMPDDirectoryTreeProvider();
+    m_musicTree->setProvider(m_musicProvider, true);
 
     CGWidget* wibhlay=new CGWidget(this);
     CGLinearLayout* hlay=new CGLinearLayout(wibhlay, cgdHorizontal);
@@ -81,20 +83,19 @@ void WRMusicScreen::event(CGEvent *e)
     std::cout<<"WRMusicScreen::event: "<<e->toString()<<", "<<clk<<", "<<rot<<"\n";
     if (clk && clk->button()==BTN_MUSIC_ENTER) {
         std::cout<<"  BTN_MUSIC_ENTER-clicked playing="<<m_playing<<" m_playingItem="<<m_playingItem<<"\n";
-        CGTreeWidget<std::string>::TreeItem* item=m_musicTree->currentTreeItem();
-        if (item->hasChildern()) {
-            m_musicTree->downLevel();
-        } else {
-
-        }
+        m_musicTree->downLevel();
         clk->accept();
     } else if (clk && clk->button()==BTN_MUSIC_PLAY) {
         std::cout<<"  BTN_MUSIC_PLAY-clicked playing="<<m_playing<<" m_playingItem="<<m_playingItem<<"\n";
-        CGTreeWidget<std::string>::TreeItem* item=m_musicTree->currentTreeItem();
-        if (item->hasChildern()) {
 
+        if (m_musicProvider->isDirectory(m_musicTree->currentItem())) {
+            mpdtools::clearQueue();
+            mpdtools::addToQueue(mpdtools::searchSongs(m_musicProvider->uri(m_musicTree->currentItem())));
+            mpdtools::play(0);
         } else {
-
+            mpdtools::clearQueue();
+            mpdtools::addSongToQueue(m_musicProvider->uri(m_musicTree->currentItem()));
+            mpdtools::play(0);
         }
         clk->accept();
     } else if (clk && clk->button()==BTN_MUSIC_BACK) {

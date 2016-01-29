@@ -113,11 +113,10 @@ class CGTreeBase: public CGFrame, public CGScrollBarMixin
         virtual void clear();
         virtual int count() const=0;
         virtual std::string itemName(int i, const std::string& defaultItem=std::string()) const=0;
-        virtual int itemID(int i, int defaultItem=-1) const=0;
         virtual bool hasChildren(int i) const=0;
         virtual bool hasParent() const=0;
         virtual std::vector<std::string> parentItemNames(int maxLevel=-1, const std::string& defaultItem=std::string()) const=0;
-        virtual std::string parentItemName(const std::string& defaultItem=std::string()) const=0;
+        virtual std::string parentItemName(const std::string& defaultItem=std::string()) const;
 
 
         void setPropsFromPalette(CGPalette *palette);

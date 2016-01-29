@@ -196,6 +196,13 @@ void mpdtools::setRandom(bool val)
     mpd_run_random(inst.m_conn, val);
 }
 
+void mpdtools::clearQueue()
+{
+    mpdtools& inst=getInstance();
+    std::lock_guard<std::recursive_mutex> lock(inst.mpd_mutex);
+    mpd_run_clear(inst.m_conn);
+}
+
 bool mpdtools::hadError(bool showMessage)
 {
     mpdtools& inst=getInstance();

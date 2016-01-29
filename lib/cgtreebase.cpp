@@ -234,6 +234,13 @@ void CGTreeBase::clear()
 
 }
 
+std::string CGTreeBase::parentItemName(const std::string &defaultItem) const
+{
+    std::vector<std::string> pars=parentItemNames(-1, defaultItem);
+    if (pars.size()>0) return pars[0];
+    return defaultItem;
+}
+
 
 
 

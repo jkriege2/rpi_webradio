@@ -2,8 +2,7 @@ all: Release
 debug: Debug
 release: Release
 
-LIBS=../lib \
-     ./ \
+LIBS=./ \
      ../ \
      ../../CImg
 
@@ -29,7 +28,8 @@ EXECUTABLE_DEBUG=webradio_gui_debug
 SRC_FILE= main.cpp \
 		  wrmainscreen.cpp \
 		  wrradioscreen.cpp \
-		  wrmusicscreen.cpp
+		  wrmusicscreen.cpp \
+		  wrmpddirectorytreeprovider.cpp
 
 
 SRC_FILE_D = $(addprefix ${OBJDIR}/,$(subst .cpp,.d,$(SRC_FILE)))
@@ -39,8 +39,11 @@ LIBS_I = $(addprefix -I,$(LIBS))
 LIBS_L = $(addprefix -L,$(LIBS))
 
 GUILIBDIR = ../lib/
-Release: LDFLAGS += -L${GUILIBDIR} -lcairogui
-Debug: LDFLAGS += -L${GUILIBDIR} -lcairogui_debug
+MPDTOOLSLIBDIR = ../mpdtools/
+Release: LDFLAGS += -L${GUILIBDIR} -lcairogui -L${MPDTOOLSLIBDIR} -lmpdtools
+Debug: LDFLAGS += -L${GUILIBDIR} -lcairogui_debug -L${MPDTOOLSLIBDIR} -lmpdtools_debug
+
+LIBS += ${GUILIBDIR} ${MPDTOOLSLIBDIR}
 
 
 -include ${SRC_FILE_D}
@@ -49,17 +52,22 @@ Debug:  ${EXECUTABLE_DEBUG}
 
 Release:  ${EXECUTABLE}
 
-${EXECUTABLE}: GUILIB_RELEASE ${SRC_FILE_O_RELEASE}
+${EXECUTABLE}: GUILIB_RELEASE MPDTOOLSLIB_RELEASE ${SRC_FILE_O_RELEASE}
 	cd $(GUILIBDIR); make Release -j4
 	$(CC) $(CFLAGS) $(LIBS_L) -o $(EXECUTABLE) ${SRC_FILE_O_RELEASE} $(LDFLAGS)
 
-${EXECUTABLE_DEBUG}: GUILIB_DEBUG ${SRC_FILE_O_DEBUG}
+${EXECUTABLE_DEBUG}: GUILIB_DEBUG MPDTOOLSLIB_DEBUG ${SRC_FILE_O_DEBUG}
 	$(CC) -o $(EXECUTABLE_DEBUG) $(CFLAGS) $(LIBS_L) ${SRC_FILE_O_DEBUG} $(LDFLAGS)
 
 GUILIB_DEBUG:
 	+cd $(GUILIBDIR); $(MAKE) Debug
 GUILIB_RELEASE:
 	+cd $(GUILIBDIR); $(MAKE) Release
+
+MPDTOOLSLIB_DEBUG:
+	+cd $(MPDTOOLSLIBDIR); $(MAKE) Debug
+MPDTOOLSLIB_RELEASE:
+	+cd $(MPDTOOLSLIBDIR); $(MAKE) Release
 
 
 ${OBJDIR_RELEASE}/%.o: ./%.cpp

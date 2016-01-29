@@ -7,6 +7,9 @@
 #include "cglabel.h"
 #include "cgtwostatimage.h"
 #include "global.h"
+#include "wrmpddirectorytreeprovider.h"
+#include "cgdirectorytreewidget.h"
+#include "mpd_tools.h"
 
 /** \brief a screen for music player */
 class WRMusicScreen : public CGScreen
@@ -22,9 +25,10 @@ class WRMusicScreen : public CGScreen
 
 
     protected:
-        CGTreeWidget<std::string>* m_musicTree;
+        CGDirectoryTreeWidget* m_musicTree;
         CGImage* m_playState;
         CGLabel* m_label;
+        WRMPDDirectoryTreeProvider* m_musicProvider;
         bool m_playing;
         int m_playingItem;
 

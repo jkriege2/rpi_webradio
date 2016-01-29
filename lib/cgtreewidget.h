@@ -100,7 +100,7 @@ class CGTreeWidget: public CGTreeBase
                 return r;
             }
 
-            inline bool hasChildern() const {
+            inline bool hasChildren() const {
                 return count()>0;
             }
             inline int level() const {
@@ -167,7 +167,7 @@ class CGTreeWidget: public CGTreeBase
         inline virtual void downLevel() {
             if (m_root) {
                 CGTreeWidget::TreeItem *it=currentTreeItem();
-                if (it && it->hasChildern()) {
+                if (it && it->hasChildren()) {
                     m_root=it;
                     m_currentItem=0;
                 }
@@ -224,7 +224,7 @@ class CGTreeWidget: public CGTreeBase
         inline virtual bool hasChildren(int i) const {
             if (!m_root) return false;
             CGTreeWidget::TreeItem * it=m_root->child(i);
-            if (it) return it->hasChildern();
+            if (it) return it->hasChildren();
             return false;
         }
 

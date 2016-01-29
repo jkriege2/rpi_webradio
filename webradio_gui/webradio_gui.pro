@@ -3,7 +3,8 @@ CONFIG += console
 CONFIG -= app_bundle
 CONFIG -= qt
 
-INCLUDEPATH += ../lib/
+INCLUDEPATH += ../lib/  \
+               ../mpdtools/
 
 SOURCES += main.cpp \
     wrmainscreen.cpp \
@@ -33,7 +34,10 @@ SOURCES += main.cpp \
     ../lib/cgsymbol.cpp \
     ../lib/mpd_tools.cpp \
     wrmusicscreen.cpp \
-    ../lib/cgdirectorytreewidget.cpp
+    ../lib/cgdirectorytreewidget.cpp \
+    ../mpdtools/mpd_tools.cpp \
+    ../wrmpddirectorytreeprovider.cpp \
+    wrmpddirectorytreeprovider.cpp
 
 HEADERS += \
     wrmainscreen.h \
@@ -62,12 +66,15 @@ HEADERS += \
     wrradioscreen.h \
     ../lib/cgtwostatimage.h \
     ../lib/cgsymbol.h \
-    ../lib/mpd_tools.h \
     global.h \
     wrmusicscreen.h \
+    ../mpdtools/mpd_tools.h \
+    ../wrmpddirectorytreeprovider.h \
+    wrmpddirectorytreeprovider.h \
     ../lib/cgdirectorytreewidget.h
 
 DISTFILES += Makefile \
-    ../lib/Makefile
+    ../lib/Makefile \
+    ../mpdtools/Makefile
 
 

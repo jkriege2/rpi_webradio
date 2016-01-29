@@ -1,6 +1,6 @@
 #include "wrmpddirectorytreeprovider.h"
 
-WRMPDDirectoryTreeProvider::WRMPDDirectoryTreeProvider(const std::string &uri):
+WRMPDDirectoryTreeProvider::WRMPDDirectoryTreeProvider(const std::string &uri)
 {
     cd(uri);
 }
@@ -12,7 +12,7 @@ WRMPDDirectoryTreeProvider::~WRMPDDirectoryTreeProvider()
 
 int WRMPDDirectoryTreeProvider::count() const
 {
-    return m_list.count();
+    return m_list.size();
 }
 
 int WRMPDDirectoryTreeProvider::level() const
@@ -22,7 +22,7 @@ int WRMPDDirectoryTreeProvider::level() const
 
 std::string WRMPDDirectoryTreeProvider::itemName(int i, const std::string &defaultName) const
 {
-    if (i<0 || i>=m_list.size()) {
+    if (i<0 || i>=(long)m_list.size()) {
         return m_list[i].name;
     }
     return defaultName;
@@ -56,7 +56,15 @@ bool WRMPDDirectoryTreeProvider::hasParent() const
 
 bool WRMPDDirectoryTreeProvider::hasChildren(int i) const
 {
-    if (i<0 || i>=m_list.size()) {
+    if (i<0 || i>=(long)m_list.size()) {
+        return m_list[i].type==mpdtools::EntryType::Directory;
+    }
+    return false;
+}
+
+bool WRMPDDirectoryTreeProvider::isDirectory(int i) const
+{
+    if (i<0 || i>=(long)m_list.size()) {
         return m_list[i].type==mpdtools::EntryType::Directory;
     }
     return false;
@@ -69,6 +77,14 @@ std::vector<std::string> WRMPDDirectoryTreeProvider::parentNames(int maxLevel, c
         res.push_back(m_uriSplit[i]);
     }
     return res;
+}
+
+std::string WRMPDDirectoryTreeProvider::uri(int i) const
+{
+    if (i<0 || i>=(long)m_list.size()) {
+        return m_list[i].uri;
+    }
+    return std::string();
 }
 
 void WRMPDDirectoryTreeProvider::cd(const std::string &uri)
