@@ -20,7 +20,7 @@ WRRadioScreen::WRRadioScreen(CGWidget *parent):
     setLayout(vlay);
 
 
-    m_stationList=new CGListWidget(this);
+    m_stationList=new CGListWidget<radiostation>(this);
 
     CGWidget* wibhlay=new CGWidget(this);
     CGLinearLayout* hlay=new CGLinearLayout(wibhlay, cgdHorizontal);
@@ -72,9 +72,11 @@ void WRRadioScreen::paint(cairo_t *c)
         txt+=elapsed;
         //if (txt.size()>0 && txt[txt.size()-1]!='\n') txt+="\n";
         m_label->setText(txt);
+        //std::cout<<"PLAYING "<<txt<<"\n\n";
     } else {
         m_playState->setImageSymbol(CGSymbol::iPause);
         m_label->setText("\n ... not playing ...\n\n");
+        //std::cout<<"NOT PLAYING\n";
     }
     CGScreen::paint(c)   ;
     //std::cout<<"WRRadioScreen::paint size="<<size()<<"\n";
@@ -99,8 +101,9 @@ void WRRadioScreen::event(CGEvent *e)
         }
         clk->accept();
     } else if (rot && rot->id()==ROTARY_RADIO_MAIN) {
-        std::cout<<"  ROTARY_RADIO_MAIN-turned "<<rot->inc()<<"\n";
+        std::cout<<"  ROTARY_RADIO_MAIN-turned "<<rot->inc()<<" oldstation="<<m_stationList->currentItem()<<", "<<m_stationList->item(m_stationList->currentItem())<<"\n";
         m_stationList->nextItem(rot->inc());
+        std::cout<<"     -> newstation="<<m_stationList->currentItem()<<", "<<m_stationList->item(m_stationList->currentItem())<<"\n";
         rot->accept();
     } else {
         CGScreen::event(e);
@@ -130,13 +133,13 @@ void WRRadioScreen::play(int idx)
         mpd_run_clear(mpdtools::getConnection());
         mpdtools::hadError(true);
 
-        if (idx>=0 && idx<(long long)m_stations.size()) {
+        if (idx>=0 && idx<(long long)m_stationList->count()) {
             m_playingItem=idx;
             CGApplication::getInstance().getINI().put<int>("radio.lastStationIdx", idx);
             CGApplication::getInstance().saveINI();
-            std::cout<<"sending URI '"<<m_stations[idx].uri<<"' ...\n";
+            std::cout<<"sending URI '"<<m_stationList->itemData(idx).uri<<"' ...\n";
             mpdtools::clearErrors();
-            mpd_send_add(mpdtools::getConnection(), m_stations[idx].uri.c_str());
+            mpd_send_add(mpdtools::getConnection(), m_stationList->itemData(idx).uri.c_str());
             mpdtools::hadError(true);
             mpdtools::clearErrors();
             mpd_response_finish(mpdtools::getConnection());
@@ -181,16 +184,16 @@ void WRRadioScreen::addWebradiosFromCONF(const std::string &filename)
                 s.name=v.second.get<std::string>("name");
                 s.uri=v.second.get<std::string>("uri");
                 bool found=false;
-                for (radiostation& vv: m_stations) {
-                    if (vv.name==s.name) {
-                        vv.uri=s.uri;
+                for (int i=0; i<m_stationList->count(); i++) {
+                    if (m_stationList->item(i)==s.name) {
+                        m_stationList->setItem(i, s.name, s);
                         found =true;
                         break;
                     }
                 }
                 if (!found) {
                     //std::cout<<"    adding station '"<<s.name<<"': "<<s.uri<<"\n";
-                    m_stations.push_back(s);
+                    m_stationList->addItem(s.name, s);
                     std::cout<<"    adding station '"<<s.name<<"': "<<s.uri<<"\n";//<<" --> "<<m_stations.size()<<"\n";
                 } else {
                     std::cout<<"    updated station '"<<s.name<<"': "<<s.uri<<"\n";
@@ -198,8 +201,7 @@ void WRRadioScreen::addWebradiosFromCONF(const std::string &filename)
             }
         }
         // sort, ascending order, case-insensitive
-        std::sort(m_stations.begin(), m_stations.end(), []( const radiostation& s1, const radiostation& s2) { return boost::algorithm::to_lower_copy(s1.name)<boost::algorithm::to_lower_copy(s2.name); } );
-        updateList();
+        m_stationList->sort(true);
     } catch (std::exception& E) {
         std::cout<<"  error: "<<E.what()<<"\n";
     }
@@ -207,17 +209,4 @@ void WRRadioScreen::addWebradiosFromCONF(const std::string &filename)
 
 }
 
-void WRRadioScreen::updateList()
-{
-    while ((long long)m_stations.size()<m_stationList->count()) {
-        m_stationList->removeItem(0);
-    }
-    while ((long long)m_stations.size()>m_stationList->count()) {
-        m_stationList->addItem("");
-    }
-    //std::cout<<m_stations.size()<<", "<<m_stationList->count()<<"\n";
-    for (size_t i=0; i<m_stations.size(); i++) {
-        m_stationList->setItem(i, m_stations[i].name);
-    }
-}
 

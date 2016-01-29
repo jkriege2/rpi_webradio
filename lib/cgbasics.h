@@ -9,6 +9,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <boost/locale.hpp>
 
 template<typename T>
 inline T cgBound(T mi, T val, T ma) {
@@ -332,5 +333,7 @@ std::string cgToLower(const std::string & s);
 std::string cgToUpper(const std::string & s);
 /** \brief returns \c true, if the string consists of whitepsaces only */
 bool cgOnlySpace(const std::string& text);
+std::string cgUtf8ToLocale(const std::string& str, const std::locale& loc=std::locale());
+std::string cgLocaleToUtf8(const std::string& str, const std::locale& loc=std::locale());
 
 #endif // CGBASICS_H

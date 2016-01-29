@@ -16,7 +16,6 @@ SOURCES += main.cpp \
     ../lib/cgscreen.cpp \
     ../lib/cgeventqueue.cpp \
     ../lib/cgprogressbar.cpp \
-    ../lib/cglistwidget.cpp \
     ../lib/cgfontprops.cpp \
     ../lib/cgtreewidget.cpp \
     ../lib/cgmultiscreens.cpp \

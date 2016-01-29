@@ -1,5 +1,6 @@
 #include "cgbasics.h"
-
+#include <locale>
+#include <iomanip>
 #include <exception>
 #include <stdexcept>
 #include <cmath>
@@ -572,7 +573,18 @@ void cgDrawText(cairo_t* cr, int xx, int yy, int m_width, int m_height, const st
 
         m_textColor.cairo_set_source(cr);
         cairo_move_to (cr, x,y);
-        cairo_show_text (cr, (*it).c_str());
+        std::string utf8;
+        try {
+            utf8=cgLocaleToUtf8(*it);
+        } catch(std::exception& E) {
+            utf8=*it;
+            //std::cout<<"could not convert string '"<<utf8<<"' from "<<std::locale().name()<<" to UTF-8 << error: "<<E.what()<<"\n";
+        } catch(...) {
+            utf8=*it;
+            //std::cout<<"could not convert string '"<<utf8<<"' from "<<std::locale().name()<<" to UTF-8\n";
+        }
+
+        cairo_show_text (cr, utf8.c_str());
         y=y+extents.height*m_lineSpacing;
     }
 }
@@ -767,4 +779,40 @@ void cgDrawImage(cairo_t *cr, int x, int y, int width, int height, cairo_surface
             cairo_pattern_destroy(brush);
         cairo_restore(cr);
     }
+}
+
+std::string cgUtf8ToLocale(const std::string& str, const std::locale& loc)
+{
+    std::u32string utext = boost::locale::conv::utf_to_utf<char32_t>(str);
+
+    std::string textLocal;
+    for(char32_t ch : utext)
+    {
+        std::string newChar;
+        try
+        {
+            std::u32string convStr;
+            convStr += ch;
+            std::string utf8Str =
+                    boost::locale::conv::utf_to_utf<char>(convStr);
+
+            newChar = boost::locale::conv::from_utf(
+                        utf8Str,
+                        loc,
+                        boost::locale::conv::stop);
+        }
+        catch(boost::locale::conv::conversion_error& /*error*/)
+        {
+            newChar = " ";
+        }
+        textLocal.append(newChar);
+    }
+
+    return textLocal;
+}
+
+
+std::string cgLocaleToUtf8(const std::string &str, const std::locale &loc)
+{
+    return  boost::locale::conv::to_utf<char>(str, loc);
 }

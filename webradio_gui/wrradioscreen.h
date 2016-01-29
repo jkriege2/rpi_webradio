@@ -18,20 +18,18 @@ class WRRadioScreen : public CGScreen
         virtual void paint(cairo_t *c);
 
         void addWebradiosFromCONF(const std::string& filename);
-        void updateList();
         virtual void event(CGEvent* e);
 
 
     protected:
-        CGListWidget* m_stationList;
-        CGImage* m_playState;
-        CGLabel* m_label;
         struct radiostation {
             std::string name;
             std::string uri;
         };
+        CGListWidget<radiostation>* m_stationList;
+        CGImage* m_playState;
+        CGLabel* m_label;
 
-        std::vector<radiostation> m_stations;
         bool m_playing;
         int m_playingItem;
 

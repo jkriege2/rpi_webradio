@@ -49,7 +49,7 @@ CGScreen* mainFrame4=NULL;
 CGLabel* lab1=NULL;
 CGProgressBar* prog1=NULL;
 CGProgressBar* prog2=NULL;
-CGListWidget* lst=NULL;
+CGSimpleListWidget* lst=NULL;
 CGTabbedMultiScreens* multi;
 CGTreeWidget<std::string>* tree;
 CGImage* imgs[8];
@@ -89,7 +89,7 @@ void setupGUI() {
         prog2->setRange(-1,1);
         prog2->setShowText(false);
 
-        lst=new CGListWidget(120,2,180,65,mainFrame);
+        lst=new CGSimpleListWidget(120,2,180,65,mainFrame);
         //lst->setBackgroundColor(CGColor::ccBlack);
         lst->setFrameWidth(3);
         //lst->setFrameColor(CGColor::ccRed);
