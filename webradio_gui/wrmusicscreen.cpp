@@ -83,7 +83,13 @@ void WRMusicScreen::event(CGEvent *e)
     std::cout<<"WRMusicScreen::event: "<<e->toString()<<", "<<clk<<", "<<rot<<"\n";
     if (clk && clk->button()==BTN_MUSIC_ENTER) {
         std::cout<<"  BTN_MUSIC_ENTER-clicked playing="<<m_playing<<" m_playingItem="<<m_playingItem<<"\n";
-        m_musicTree->downLevel();
+        if (m_musicProvider->isDirectory(m_musicTree->currentItem())) {
+            m_musicTree->downLevel();
+        } else {
+            mpdtools::clearQueue();
+            mpdtools::addSongToQueue(m_musicProvider->uri(m_musicTree->currentItem()));
+            mpdtools::play(0);
+        }
         clk->accept();
     } else if (clk && clk->button()==BTN_MUSIC_PLAY) {
         std::cout<<"  BTN_MUSIC_PLAY-clicked playing="<<m_playing<<" m_playingItem="<<m_playingItem<<"\n";

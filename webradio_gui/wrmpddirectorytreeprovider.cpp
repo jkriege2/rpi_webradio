@@ -22,7 +22,7 @@ int WRMPDDirectoryTreeProvider::level() const
 
 std::string WRMPDDirectoryTreeProvider::itemName(int i, const std::string &defaultName) const
 {
-    if (i<0 || i>=(long)m_list.size()) {
+    if (i>=0 && i<(long)m_list.size()) {
         return m_list[i].name;
     }
     return defaultName;
@@ -56,7 +56,7 @@ bool WRMPDDirectoryTreeProvider::hasParent() const
 
 bool WRMPDDirectoryTreeProvider::hasChildren(int i) const
 {
-    if (i<0 || i>=(long)m_list.size()) {
+    if (i>=0 && i<(long)m_list.size()) {
         return m_list[i].type==mpdtools::EntryType::Directory;
     }
     return false;
@@ -64,7 +64,7 @@ bool WRMPDDirectoryTreeProvider::hasChildren(int i) const
 
 bool WRMPDDirectoryTreeProvider::isDirectory(int i) const
 {
-    if (i<0 || i>=(long)m_list.size()) {
+    if (i>=0 && i<(long)m_list.size()) {
         return m_list[i].type==mpdtools::EntryType::Directory;
     }
     return false;
@@ -73,15 +73,18 @@ bool WRMPDDirectoryTreeProvider::isDirectory(int i) const
 std::vector<std::string> WRMPDDirectoryTreeProvider::parentNames(int maxLevel, const std::string &defaultItem) const
 {
     std::vector<std::string> res;
-    for (size_t i=m_uriSplit.size()-1; i>=0; i--) {
-        res.push_back(m_uriSplit[i]);
+    if (m_uriSplit.size()>0) {
+        for (int i=m_uriSplit.size()-1; i>=0; i--) {
+            //std::cout<<i<<"/"<<m_uriSplit.size()<<": "<<m_uriSplit.at(i)<<"\n";
+            if ((long)res.size()<maxLevel || maxLevel<0) res.push_back(m_uriSplit[i]);
+        }
     }
     return res;
 }
 
 std::string WRMPDDirectoryTreeProvider::uri(int i) const
 {
-    if (i<0 || i>=(long)m_list.size()) {
+    if (i>=0 && i<(long)m_list.size()) {
         return m_list[i].uri;
     }
     return std::string();
@@ -89,13 +92,13 @@ std::string WRMPDDirectoryTreeProvider::uri(int i) const
 
 void WRMPDDirectoryTreeProvider::cd(const std::string &uri)
 {
-    std::cout<<"WRMPDDirectoryTreeProvider::cd(uri):\n";
+    //std::cout<<"WRMPDDirectoryTreeProvider::cd("<<uri<<"):\n";
     m_uri=uri;
     m_uriSplit.clear();
     std::string c;
     for (size_t i=0; i<uri.size(); i++) {
         if (uri[i]=='/') {
-            m_uriSplit.push_back(c);
+            if (c.size()>0) m_uriSplit.push_back(c);
             c="";
         } else {
             c+=uri[i];
@@ -103,5 +106,9 @@ void WRMPDDirectoryTreeProvider::cd(const std::string &uri)
     }
     if (c.size()>0) m_uriSplit.push_back(c);
     m_list=mpdtools::lsLocal(uri);
+    /*for (auto& it: m_list) {
+        std::cout<<"  - "<<it.name<<", "<<it.uri<<"\n";
+    }
+    std::cout<<"WRMPDDirectoryTreeProvider::cd("<<uri<<") ... DONE!\n";*/
 }
 

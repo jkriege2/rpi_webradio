@@ -38,7 +38,7 @@ void CGDirectoryTreeWidget::setProvider(CGDirectoryTreeWidget::TreeProvider *r, 
 void CGDirectoryTreeWidget::downLevel()
 {
     if (m_provider) {
-        if (m_provider->downLevel(m_currentItem))  m_currentItem=0;
+        if (m_provider->downLevel(m_currentItem)) m_currentItem=0;
     }
     updateState();
 }
