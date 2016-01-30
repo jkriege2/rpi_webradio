@@ -1,5 +1,18 @@
 #include "mpd_tools.h"
 
+class mpdtools_functionguard {
+    public:
+        mpdtools_functionguard(const std::string& msg): msg(msg) {
+            std::cout<<msg<<std::endl;
+        }
+        ~mpdtools_functionguard() {
+            std::cout<<msg<<" ... DONE!\n";
+        }
+
+    private:
+        std::string msg;
+};
+
 mpdtools::mpdtools():
     m_conn(NULL),
     mpd_keepalivethread(NULL),
@@ -50,6 +63,7 @@ bool mpdtools::isPlaying()
             bool res= mpd_status_get_state(status) == MPD_STATE_PLAY;
             mpd_response_finish(inst.m_conn);
             mpd_status_free(status);
+            mpd_response_finish(inst.m_conn);
             return res;
         }
         mpd_response_finish(inst.m_conn);
@@ -69,6 +83,7 @@ float mpdtools::getElapsedTime()
             float res= mpd_status_get_elapsed_time(status);
             mpd_response_finish(inst.m_conn);
             mpd_status_free(status);
+            mpd_response_finish(inst.m_conn);
             return res;
         }
         mpd_response_finish(inst.m_conn);
@@ -93,6 +108,7 @@ float mpdtools::getTotalTime()
             float res= mpd_status_get_total_time(status);
             mpd_response_finish(inst.m_conn);
             mpd_status_free(status);
+            mpd_response_finish(inst.m_conn);
             return res;
         }
         mpd_response_finish(inst.m_conn);
@@ -111,9 +127,19 @@ std::string mpdtools::getCurrentArtist()
     return getCurrentSongInfo(MPD_TAG_ARTIST);
 }
 
+std::string mpdtools::getCurrentAlbum()
+{
+    return getCurrentSongInfo(MPD_TAG_ALBUM);
+}
+
 std::string mpdtools::getCurrentName()
 {
     return getCurrentSongInfo(MPD_TAG_NAME);
+}
+
+std::string mpdtools::getCurrentDate()
+{
+    return getCurrentSongInfo(MPD_TAG_DATE);
 }
 
 std::string mpdtools::getCurrentSongInfo(mpd_tag_type type)
@@ -198,6 +224,7 @@ void mpdtools::setRandom(bool val)
 
 void mpdtools::clearQueue()
 {
+    //mpdtools_functionguard guard("mpdtools::clearQueue()");
     mpdtools& inst=getInstance();
     std::lock_guard<std::recursive_mutex> lock(inst.mpd_mutex);
     mpd_run_clear(inst.m_conn);
@@ -228,6 +255,7 @@ void mpdtools::clearErrors()
 
 void mpdtools::pause(bool pause)
 {
+    //mpdtools_functionguard guard("mpdtools::pause("+std::to_string(pause)+")");
     mpdtools& inst=getInstance();
     std::lock_guard<std::recursive_mutex> lock(inst.mpd_mutex);
     if (inst.m_conn) {
@@ -236,8 +264,19 @@ void mpdtools::pause(bool pause)
     }
 }
 
+void mpdtools::stop()
+{
+    mpdtools& inst=getInstance();
+    std::lock_guard<std::recursive_mutex> lock(inst.mpd_mutex);
+    if (inst.m_conn) {
+        mpd_run_stop(inst.m_conn);
+    }
+}
+
 std::vector<mpdtools::DirectoryEntry> mpdtools::lsLocal(const std::string& path)
 {
+    //mpdtools_functionguard guard("mpdtools::lsLocal("+path+")");
+    clearErrors();
     std::vector<mpdtools::DirectoryEntry> res;
     mpdtools& inst=getInstance();
     std::lock_guard<std::recursive_mutex> lock(inst.mpd_mutex);
@@ -301,6 +340,7 @@ std::vector<mpdtools::DirectoryEntry> mpdtools::lsLocal(const std::string& path)
 
 std::vector<mpdtools::DirectoryEntry> mpdtools::searchSongs(const std::string &path)
 {
+    //mpdtools_functionguard guard("mpdtools::searchSongs("+path+")");
     std::vector<DirectoryEntry> list;
     searchSongs(path, list);
     return list;
@@ -308,21 +348,24 @@ std::vector<mpdtools::DirectoryEntry> mpdtools::searchSongs(const std::string &p
 
 void mpdtools::searchSongs(const std::string &path, std::vector<mpdtools::DirectoryEntry> &list)
 {
+    //mpdtools_functionguard guard("mpdtools::searchSongs("+path+", list("+std::to_string(list.size())+") )");
     std::vector<mpdtools::DirectoryEntry> listSongs=mpdtools::lsLocal(path);
     for (auto& it: listSongs) {
         if (it.type==mpdtools::EntryType::Song) {
-            listSongs.push_back(it);
+            list.push_back(it);
         }
     }
 
     for (auto& it: listSongs) {
         if (it.type==mpdtools::EntryType::Directory) {
-            searchSongs(it.uri, listSongs);
+            searchSongs(it.uri, list);
         }
     }
 }
 std::vector<mpdtools::DirectoryEntry> mpdtools::lsQueue()
 {
+    //mpdtools_functionguard guard("mpdtools::lsQueue()");
+    clearErrors();
     std::vector<mpdtools::DirectoryEntry> res;
     mpdtools& inst=getInstance();
     std::lock_guard<std::recursive_mutex> lock(inst.mpd_mutex);
@@ -354,6 +397,7 @@ std::vector<mpdtools::DirectoryEntry> mpdtools::lsQueue()
 
 void mpdtools::addSongToQueue(const std::string &uri)
 {
+    //mpdtools_functionguard guard("mpdtools::addSongToQueue("+uri+")");
     mpdtools::DirectoryEntry e;
     e.uri=uri;
     e.type=mpdtools::EntryType::Song;
@@ -364,6 +408,8 @@ void mpdtools::addSongToQueue(const std::string &uri)
 
 void mpdtools::addToQueue(const std::vector<mpdtools::DirectoryEntry> &urilist)
 {
+    //mpdtools_functionguard guard("mpdtools::addSongToQueue("+std::to_string(urilist.size())+")");
+    clearErrors();
     mpdtools& inst=getInstance();
     std::lock_guard<std::recursive_mutex> lock(inst.mpd_mutex);
     if (!inst.m_conn) return ;
@@ -377,6 +423,7 @@ void mpdtools::addToQueue(const std::vector<mpdtools::DirectoryEntry> &urilist)
 
 int mpdtools::getCurrentQueuePosition()
 {
+    //mpdtools_functionguard guard("mpdtools::getCurrentQueuePosition()");
     mpdtools& inst=getInstance();
     std::lock_guard<std::recursive_mutex> lock(inst.mpd_mutex);
     if (inst.m_conn) {
@@ -386,6 +433,7 @@ int mpdtools::getCurrentQueuePosition()
             int res= mpd_status_get_song_pos(status);
             mpd_response_finish(inst.m_conn);
             mpd_status_free(status);
+            mpd_response_finish(inst.m_conn);
             return res;
         }
         mpd_response_finish(inst.m_conn);
@@ -396,6 +444,7 @@ int mpdtools::getCurrentQueuePosition()
 
 int mpdtools::getQueueLength()
 {
+    //mpdtools_functionguard guard("mpdtools::getQueueLength()");
     mpdtools& inst=getInstance();
     std::lock_guard<std::recursive_mutex> lock(inst.mpd_mutex);
     if (inst.m_conn) {
@@ -405,6 +454,7 @@ int mpdtools::getQueueLength()
             int res= mpd_status_get_queue_length(status);
             mpd_response_finish(inst.m_conn);
             mpd_status_free(status);
+            mpd_response_finish(inst.m_conn);
             return res;
         }
         mpd_response_finish(inst.m_conn);
@@ -415,6 +465,8 @@ int mpdtools::getQueueLength()
 
 void mpdtools::play(int idx)
 {
+    //mpdtools_functionguard guard("mpdtools::play("+std::to_string(idx)+")");
+    clearErrors();
     mpdtools& inst=getInstance();
     std::lock_guard<std::recursive_mutex> lock(inst.mpd_mutex);
     if (inst.m_conn) {

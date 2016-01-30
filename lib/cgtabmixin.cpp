@@ -86,7 +86,7 @@ cgRect<int> CGTabMixin::getRemainingRect(int m_width, int m_height) const
 void CGTabMixin::setTabPropsFromPalette(CGPalette *palette)
 {
     if (palette) {
-        setTabHeight(palette->size(CGPalette::srFontSize)*7/4);
+        setTabHeight(palette->size(CGPalette::srFontSize)*6/4);
         setTabTextSpace(palette->size(CGPalette::srFontSize)/2);
         setTabFrameWidth(palette->size(CGPalette::srFrameWidth));
         setActiveTabFrameWidth(palette->size(CGPalette::srFocusedFrameWidth));

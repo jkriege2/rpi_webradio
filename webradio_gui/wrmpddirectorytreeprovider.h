@@ -17,10 +17,12 @@ class WRMPDDirectoryTreeProvider : public CGDirectoryTreeWidget::TreeProvider
         virtual bool hasParent() const;
         virtual bool hasChildren(int idx) const;
         bool isDirectory(int idx) const;
+        bool isPlaylist(int idx) const;
         virtual std::vector<std::string> parentNames(int maxLevel=-1, const std::string& defaultItem=std::string()) const;
         std::string uri(int idx) const;
-    protected:
         void cd(const std::string& uri);
+        void update();
+    protected:
         std::vector<std::string> m_uriSplit;
         std::string m_uri;
         std::vector<mpdtools::DirectoryEntry> m_list;

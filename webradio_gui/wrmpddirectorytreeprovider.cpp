@@ -70,6 +70,14 @@ bool WRMPDDirectoryTreeProvider::isDirectory(int i) const
     return false;
 }
 
+bool WRMPDDirectoryTreeProvider::isPlaylist(int i) const
+{
+    if (i>=0 && i<(long)m_list.size()) {
+        return m_list[i].type==mpdtools::EntryType::Playlist;
+    }
+    return false;
+}
+
 std::vector<std::string> WRMPDDirectoryTreeProvider::parentNames(int maxLevel, const std::string &defaultItem) const
 {
     std::vector<std::string> res;
@@ -106,9 +114,22 @@ void WRMPDDirectoryTreeProvider::cd(const std::string &uri)
     }
     if (c.size()>0) m_uriSplit.push_back(c);
     m_list=mpdtools::lsLocal(uri);
+    if (m_list.size()>0) {
+        for (long i=m_list.size()-1; i>=0; i--) {
+            if (m_list[i].type!=mpdtools::EntryType::Playlist && m_list[i].type!=mpdtools::EntryType::Directory && m_list[i].type!=mpdtools::EntryType::Song) {
+                m_list.erase(m_list.begin()+i);
+            }
+        }
+    }
     /*for (auto& it: m_list) {
         std::cout<<"  - "<<it.name<<", "<<it.uri<<"\n";
     }
     std::cout<<"WRMPDDirectoryTreeProvider::cd("<<uri<<") ... DONE!\n";*/
+    //std::cout<<"WRMPDDirectoryTreeProvider::cd("<<uri<<"): m_list.size="<<m_list.size()<<"\n";
+}
+
+void WRMPDDirectoryTreeProvider::update()
+{
+    cd(m_uri);
 }
 

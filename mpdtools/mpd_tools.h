@@ -32,18 +32,22 @@ class mpdtools {
 
         /** \brief return \c true, if mpd is playing */
         static bool isPlaying();
-        /** \brief elapsed time in seconds */
+        /** \brief elapsed time in seconds of current song */
         static float getElapsedTime();
-        /** \brief elapsed time in percent of total length */
+        /** \brief elapsed time in percent of total length of current song */
         static float getElapsedPercent();
-        /** \brief total time in seconds */
+        /** \brief total time in seconds of current song */
         static float getTotalTime();
-        /** \brief get current title */
+        /** \brief get current song's title */
         static std::string getCurrentTitle();
-        /** \brief get current author */
+        /** \brief get current song's artist */
         static std::string getCurrentArtist();
-        /** \brief get current name */
+        /** \brief get current song's album */
+        static std::string getCurrentAlbum();
+        /** \brief get current song's name */
         static std::string getCurrentName();
+        /** \brief get current song's date */
+        static std::string getCurrentDate();
         /** \brief get current song info */
         static std::string getCurrentSongInfo(enum mpd_tag_type type);
         /** \brie return the current volume */
@@ -64,6 +68,8 @@ class mpdtools {
         static void clearErrors();
         /** \brief pause playback */
         static void pause(bool pause=true);
+        /** \brief stop playback */
+        static void stop();
 
         enum class EntryType {
             Song,

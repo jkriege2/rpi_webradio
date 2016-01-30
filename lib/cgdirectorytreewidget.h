@@ -1,6 +1,6 @@
 #ifndef CGDirectoryTreeWidget_H
 #define CGDirectoryTreeWidget_H
-
+#include <deque>
 #include "cgframe.h"
 #include <vector>
 #include <string>
@@ -51,6 +51,7 @@ class CGDirectoryTreeWidget: public CGTreeBase
     protected:
 
         bool m_ownsProvider;
+        std::deque<int> m_lastCurrentIndex;
         TreeProvider* m_provider;
 };
 

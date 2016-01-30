@@ -6,6 +6,8 @@ WRMainScreen::WRMainScreen(CGWidget* parent):
     m_webradio(NULL),
     m_music(NULL)
 {
+    setFontSize(12);
+    setBold(true);
     addScreen(m_webradio=new WRRadioScreen(this), "Radio");
     addScreen(m_music=new WRMusicScreen(this), "Music");
     int idx=CGApplication::getInstance().getINI().get<int>("main.lastScreen", 0);

@@ -26,8 +26,10 @@ void CGDirectoryTreeWidget::setProvider(CGDirectoryTreeWidget::TreeProvider *r, 
     m_provider=r;
     m_ownsProvider=owns;
     if (m_provider) {
+        m_lastCurrentIndex.clear();
         m_currentItem=0;
     } else {
+        m_lastCurrentIndex.clear();
         m_currentItem=-1;
     }
     updateState();
@@ -38,7 +40,10 @@ void CGDirectoryTreeWidget::setProvider(CGDirectoryTreeWidget::TreeProvider *r, 
 void CGDirectoryTreeWidget::downLevel()
 {
     if (m_provider) {
-        if (m_provider->downLevel(m_currentItem)) m_currentItem=0;
+        if (m_provider->downLevel(m_currentItem)) {
+            m_lastCurrentIndex.push_front(m_currentItem);
+            m_currentItem=0;
+        }
     }
     updateState();
 }
@@ -47,7 +52,14 @@ void CGDirectoryTreeWidget::downLevel()
 void CGDirectoryTreeWidget::upLevel()
 {
     if (m_provider) {
-        if (m_provider->upLevel())  m_currentItem=0;
+        if (m_provider->upLevel())  {
+            if (m_lastCurrentIndex.size()>0) {
+                m_currentItem=m_lastCurrentIndex.front();
+                m_lastCurrentIndex.pop_front();
+            } else {
+                m_currentItem=0;
+            }
+        }
     }
     updateState();
 }

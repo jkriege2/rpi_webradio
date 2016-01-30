@@ -1,11 +1,13 @@
 #ifndef WRMusicScreen_H
 #define WRMusicScreen_H
 
+#include <chrono>
 #include "cgscreen.h"
 #include "cgtreewidget.h"
 #include "cglayout.h"
 #include "cglabel.h"
 #include "cgtwostatimage.h"
+#include "cgprogressbar.h"
 #include "global.h"
 #include "wrmpddirectorytreeprovider.h"
 #include "cgdirectorytreewidget.h"
@@ -25,12 +27,17 @@ class WRMusicScreen : public CGScreen
 
 
     protected:
+        std::chrono::system_clock::time_point last_paint;
         CGDirectoryTreeWidget* m_musicTree;
         CGImage* m_playState;
-        CGLabel* m_label;
+        CGLabel* m_labelArtist;
+        CGLabel* m_labelTitle;
+        CGLabel* m_labelQ;
+        CGProgressBar* m_progress;
         WRMPDDirectoryTreeProvider* m_musicProvider;
         bool m_playing;
-        int m_playingItem;
+        int m_lastQueueItem;
+
 
         void stop();
         void play(int index);

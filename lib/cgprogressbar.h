@@ -46,6 +46,22 @@ class CGProgressBar : public CGFrame
         inline void setShowText(bool val) {
             m_showText=val;
         }
+        inline bool showUserText() const {
+            return m_showUserText;
+        }
+        inline void setShowUserText(bool val) {
+            m_showUserText=val;
+        }
+        inline std::string userText() const {
+            return m_userText;
+        }
+        inline void setUserText(const std::string& val) {
+            m_userText=val;
+        }
+        inline void setUserText(const std::string& val, bool enabled) {
+            m_userText=val;
+            m_showUserText=enabled;
+        }
 
 
         virtual void paint(cairo_t *c)  override;
@@ -58,6 +74,8 @@ class CGProgressBar : public CGFrame
         float m_value;
         CGColor m_progressColor;
         bool m_showText;
+        std::string m_userText;
+        bool m_showUserText;
 };
 
 

@@ -6,6 +6,7 @@
 CGProgressBar::CGProgressBar(CGWidget *parent):
     CGFrame(parent)
 {
+    m_showUserText=false;
     m_bold=false;
     m_italic=false;
     m_fontFace="sans";
@@ -19,6 +20,7 @@ CGProgressBar::CGProgressBar(CGWidget *parent):
 CGProgressBar::CGProgressBar(int x, int y, int width, int height, CGWidget *parent):
     CGFrame(x,y,width,height,parent)
 {
+    m_showUserText=false;
     m_bold=false;
     m_italic=false;
     m_fontFace="sans";
@@ -45,15 +47,19 @@ void CGProgressBar::paint(cairo_t *c)
     cairo_fill(c);
 
     if (m_showText) {
-        drawAlignedText(c, 0, 0, m_width, m_height, progressText(), cgalCenter, cgalCenter);
+        drawAlignedText(c, -m_border,-m_border, m_width+2*m_border, m_height+2*m_border, progressText(), cgalCenter, cgalCenter);
         //cgDrawText(c, 0, 0, m_width, m_height, progressText(), m_fontFace, m_fontSize, m_italic, m_bold, m_textColor);
     }
 }
 
 std::string CGProgressBar::progressText() const
 {
-    float w=(m_value-m_min)/(m_max-m_min);
-    return cgFormat("%.0f %%", w*100.0);
+    if (m_showUserText) {
+        return m_userText;
+    } else {
+        float w=(m_value-m_min)/(m_max-m_min);
+        return cgFormat("%.0f %%", w*100.0);
+    }
 }
 
 void CGProgressBar::setPropsFromPalette(CGPalette *palette)
