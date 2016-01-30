@@ -273,6 +273,7 @@ void mpdtools::stop()
     }
 }
 
+
 std::vector<mpdtools::DirectoryEntry> mpdtools::lsLocal(const std::string& path)
 {
     //mpdtools_functionguard guard("mpdtools::lsLocal("+path+")");
@@ -419,6 +420,16 @@ void mpdtools::addToQueue(const std::vector<mpdtools::DirectoryEntry> &urilist)
     }
     mpd_command_list_end(inst.m_conn);
     mpd_response_finish(inst.m_conn);
+}
+
+
+void mpdtools::loadPlaylist(const std::string &playlist)
+{
+    clearErrors();
+    mpdtools& inst=getInstance();
+    std::lock_guard<std::recursive_mutex> lock(inst.mpd_mutex);
+    if (!inst.m_conn) return ;
+    mpd_run_load(inst.m_conn, playlist.c_str());
 }
 
 int mpdtools::getCurrentQueuePosition()

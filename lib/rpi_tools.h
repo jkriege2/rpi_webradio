@@ -59,7 +59,10 @@ void rpit_writeDigital(int pin, bool state);
 inline void rpit_writeDigital(int pin, int state) {
     rpit_writeDigital(pin, (state!=0));
 }
-
+/** \brief use a pin for software-PWM output */
+void rpit_initSoftPWM(int pin, int value=0);
+/** \brief use a pin for software-PWM output */
+void rpit_setSoftPWM(int pin, int value);
 
 /** \brief initialize a background thread that reads the CPU temperature continuously
  *
@@ -81,5 +84,20 @@ void pitft22hat_setBackgroundIntensity(float intensity_percent);
 
 /** \brief has to be called before using any port-I/O functions! */
 void rpit_initIO();
+
+/** \brief initialize the soft-blink library */
+void rpi_softblink_init();
+/** \brief deinitialize the soft-blink library */
+void rpi_softblink_deinit();
+/** \brief register a pin for soft-blinking with given amplitude, offset and period (in milliseconds). the waveform is a sine, starting at the call of this function, output range is 0..100 */
+void rpi_softblink_registerpin(int pin, float amplitude, float offset, float period_ms);
+/** \brief set a new amplitude for an already registered pin, output range is 0..100 */
+void rpi_softblink_set_amplitude(int pin, float amplitude);
+/** \brief set a new offset for an already registered pin, output range is 0..100 */
+void rpi_softblink_set_offset(int pin, float offset);
+/** \brief set a new period (milliseconds) for an already registered pin */
+void rpi_softblink_set_period(int pin, float period_ms);
+/** \brief deregister a pin from soft-blinking */
+void rpi_softblink_deregisterpin(int pin);
 
 #endif // RPI_TOOLS_H

@@ -34,13 +34,15 @@ CGApplication::CGApplication():
     m_fps(0),
     m_maxFramerate(25),
     m_mainloopDelay(10),
-    m_exename("cgapp")
+    m_exename("cgapp"),
+    m_rotated(false)
 {
     if (m_optdesc.find_nothrow("help", true)==NULL) {
         m_optdesc.add_options()
             ("help,?",            "produce help message")
             ("framebuffer,f",     boost::program_options::value<std::string>(&m_framebuffer)->default_value(m_framebuffer),   "set the framebuffer-file to use for the GUI")
             ("no-doublebuffer,s", boost::program_options::bool_switch(&m_noDoubleBuffer)->default_value(false), "don't use double-buffering")
+            ("rotated,r",         boost::program_options::bool_switch(&m_rotated)->default_value(false), "rotate screen")
             ("mainloop-delay-ms", boost::program_options::value<int>(&m_mainloopDelay)->default_value(m_mainloopDelay), "delay after paint in the main-loop (in milliseconds)")
             ("max-framerate",     boost::program_options::value<int>(&m_maxFramerate)->default_value(m_maxFramerate), "maximum framerate for GUI (actual framerate may be lower!)")
         ;
@@ -56,6 +58,12 @@ CGApplication::CGApplication():
         CGApplication* oldp=NULL;
         fs_app.compare_exchange_strong(oldp, newp);
     }
+}
+
+CGApplication::CGApplication(bool rotated):
+    CGApplication()
+{
+    m_rotated=rotated;
 }
 
 CGApplication::~CGApplication()
@@ -125,7 +133,7 @@ int CGApplication::start(CGScreen *mainScreen, bool ownsMainScreen)
         fbcairo_unbind(m_context);
         m_context=NULL;
     }
-    m_context = fbcairo_bind(m_framebuffer.c_str(), m_noDoubleBuffer?FBC_DIRECT:FBC_DOUBLEBUFFER);
+    m_context = fbcairo_bind(m_framebuffer.c_str(), m_noDoubleBuffer?FBC_DIRECT:FBC_DOUBLEBUFFER, m_rotated);
     if (m_context) {
         int xres=-1, yres=-1;
         char RGB[100];
@@ -220,7 +228,7 @@ void CGApplication::mainLoop()
     m_close_flag=false;
 
     // get cairo surface to draw onto
-    cairo_surface_t* cs=fbcairo_getSurface(m_context);
+    //cairo_surface_t* cs=fbcairo_getSurface(m_context);
 
 
     std::chrono::steady_clock::time_point tlastpaint = std::chrono::steady_clock::now();
@@ -240,10 +248,11 @@ void CGApplication::mainLoop()
         if (timespan_since_last_paint.count()>1.0/double(m_maxFramerate)) {
             std::chrono::duration<double> timespan_since_start = std::chrono::duration_cast<std::chrono::duration<double>>(t - tstart);
             fcnt++;
-            cairo_t *c=cairo_create(cs);
+            // create cairo_t object for drawing operations
+            cairo_t *c=fbcairo_create(m_context);//cairo_create(cs);
             m_fps=fcnt/timespan_since_start.count();
             paintGUI(c, m_fps);
-            cairo_destroy(c);
+            fbcairo_destroy(m_context, c);
             fbcairo_copyDoubleBuffer(m_context);
             tlastpaint = std::chrono::steady_clock::now();
             if (fcnt>=0xFFFFFF) {

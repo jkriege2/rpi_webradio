@@ -7,8 +7,10 @@
 #include <thread>
 #include <mutex>
 #include <chrono>
+#include <atomic>
 #include <unistd.h>
 #include <wiringPi.h>
+#include <softPwm.h>
 
 std::string rpit_readlineFromCommand(const char *command)
 {
@@ -74,42 +76,6 @@ float rpit_readCPUTemperatur()
     }
     //std::cout<<t<<"  => "<<num<<" => "<<atof(num.c_str())<<"\n\n\n";
     return atof(num.c_str());
-
-//    try {
-
-//        std::cout<<"t="<<t<<std::endl;
-//        std::regex rx("[0-9]+", std::regex::ECMAScript);
-//        std::smatch sm;
-//        std::cout<<"made regexp\n";
-//        if (std::regex_match(t, sm, rx)) {
-//            std::cout<<"matched "<<sm.size()<<"\n";
-//            // The first sub_match is the whole string; the next
-//            // sub_match is the first parenthesized expression.
-//            if (sm.size() > 1) {
-//                std::ssub_match base_sub_match = sm[1];
-//                std::string base = base_sub_match.str();
-//                std::cout<<"match[1]= "<<base<<"  -> "<<atof(base.c_str());
-//                return atof(base.c_str());
-//            }
-//        }
-//    } catch(const std::regex_error& e) {
-//        std::cerr<<e.what()<<std::endl;
-//        if (e.code()== std::regex_constants::error_collate) std::cerr<<"  error_collate\n";
-//        if (e.code()== std::regex_constants::error_ctype) std::cerr<<"  error_ctype\n";
-//        if (e.code()== std::regex_constants::error_escape) std::cerr<<"  error_escape\n";
-//        if (e.code()== std::regex_constants::error_backref) std::cerr<<"  error_backref\n";
-//        if (e.code()== std::regex_constants::error_brack) std::cerr<<"  error_brack\n";
-//        if (e.code()== std::regex_constants::error_paren) std::cerr<<"  error_paren\n";
-//        if (e.code()== std::regex_constants::error_brace) std::cerr<<"  error_brace\n";
-//        if (e.code()== std::regex_constants::error_badbrace) std::cerr<<"  error_badbrace\n";
-//        if (e.code()== std::regex_constants::error_range) std::cerr<<"  error_range\n";
-//        if (e.code()== std::regex_constants::error_space) std::cerr<<"  error_space\n";
-//        if (e.code()== std::regex_constants::error_badrepeat) std::cerr<<"  error_badrepeat\n";
-//        if (e.code()== std::regex_constants::error_complexity) std::cerr<<"  error_complexity\n";
-//        if (e.code()== std::regex_constants::error_stack) std::cerr<<"  error_stack\n";
-//     }
-
-//    return -1;
 
 }
 
@@ -270,4 +236,171 @@ void rpit_initIO()
         printf("running WiringLIB in user mode!\n");
         wiringPiSetupSys ();
     }
+}
+
+
+void rpit_initSoftPWM(int pin, int value)
+{
+    if (value<0) value=0;
+    if (value>100) value=100;
+    softPwmCreate(pin, value, 100);
+}
+
+
+void rpit_setSoftPWM(int pin, int value)
+{
+    if (value<0) value=0;
+    if (value>100) value=100;
+    softPwmWrite (pin, value);
+}
+
+
+
+
+
+
+
+
+
+struct rpi_softblink_data {
+    int pin;
+    float offset;
+    float amplitude;
+    float period_ms;
+    std::chrono::steady_clock::time_point start;
+    float since_start_ms(const std::chrono::steady_clock::time_point& tnow) const {
+        return std::chrono::duration_cast<std::chrono::duration<float,std::milli> >(tnow - start).count();
+    }
+};
+std::thread* rpi_softblink_thread=NULL;
+std::mutex rpi_softblink_mutex;
+std::vector<rpi_softblink_data> rpi_softblink_pins;
+std::atomic<bool> rpi_softblink_stop;
+
+void rpi_softblink_threadfunc() {
+    bool done=false;
+    while(!done) {
+        rpi_softblink_mutex.lock();
+        const std::chrono::steady_clock::time_point tnow=std::chrono::steady_clock::now();
+        for (rpi_softblink_data& it: rpi_softblink_pins) {
+            int value=it.offset+it.amplitude*cos(2.0*M_PI*it.since_start_ms(tnow)/it.period_ms);
+            if (value<0) value=0;
+            if (value>100) value=100;
+            rpit_setSoftPWM(it.pin, value);
+        }
+        rpi_softblink_mutex.unlock();
+
+        // check for DONE-signal every XXms
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+        if (rpi_softblink_stop.load()) {
+            done=true;
+        }
+        if (done) break;
+    }
+}
+
+
+void rpi_softblink_init()
+{
+    if (!rpi_softblink_thread) {
+        rpi_softblink_thread=new std::thread(rpi_softblink_threadfunc);
+    }
+}
+
+
+void rpi_softblink_deinit()
+{
+    if (rpi_softblink_thread) {
+        rpi_softblink_stop=true;
+        rpi_softblink_thread->join();
+        delete rpi_softblink_thread;
+        rpi_softblink_thread=NULL;
+    }
+}
+
+void rpi_softblink_registerpin(int pin, float amplitude, float offset, float period_ms)
+{
+    rpi_softblink_mutex.lock();
+    int idx=-1;
+    for (size_t i=0; i<rpi_softblink_pins.size(); i++) {
+        if (rpi_softblink_pins[i].pin==pin) {
+            idx=i;
+            break;
+        }
+    }
+    if (idx<0) {
+        rpi_softblink_pins.push_back(rpi_softblink_data());
+        idx=rpi_softblink_pins.size()-1;
+    }
+    rpit_initSoftPWM(pin, 0);
+    rpi_softblink_pins[idx].start=std::chrono::steady_clock::now();
+    rpi_softblink_pins[idx].pin=pin;
+    rpi_softblink_pins[idx].amplitude=amplitude;
+    rpi_softblink_pins[idx].offset=offset;
+    rpi_softblink_pins[idx].period_ms=period_ms;
+    rpi_softblink_mutex.unlock();
+}
+
+void rpi_softblink_set_amplitude(int pin, float amplitude)
+{
+    rpi_softblink_mutex.lock();
+    int idx=-1;
+    for (size_t i=0; i<rpi_softblink_pins.size(); i++) {
+        if (rpi_softblink_pins[i].pin==pin) {
+            idx=i;
+            break;
+        }
+    }
+    if (idx>=0) {
+        rpi_softblink_pins[idx].amplitude=amplitude;
+    }
+    rpi_softblink_mutex.unlock();
+}
+
+void rpi_softblink_set_offset(int pin, float offset)
+{
+    rpi_softblink_mutex.lock();
+    int idx=-1;
+    for (size_t i=0; i<rpi_softblink_pins.size(); i++) {
+        if (rpi_softblink_pins[i].pin==pin) {
+            idx=i;
+            break;
+        }
+    }
+    if (idx>=0) {
+        rpi_softblink_pins[idx].offset=offset;
+    }
+    rpi_softblink_mutex.unlock();
+}
+
+void rpi_softblink_set_period(int pin, float period_ms)
+{
+    rpi_softblink_mutex.lock();
+    int idx=-1;
+    for (size_t i=0; i<rpi_softblink_pins.size(); i++) {
+        if (rpi_softblink_pins[i].pin==pin) {
+            idx=i;
+            break;
+        }
+    }
+    if (idx>=0) {
+        rpi_softblink_pins[idx].period_ms=period_ms;
+    }
+    rpi_softblink_mutex.unlock();
+}
+
+void rpi_softblink_deregisterpin(int pin)
+{
+    rpi_softblink_mutex.lock();
+    int idx=-1;
+    for (size_t i=0; i<rpi_softblink_pins.size(); i++) {
+        if (rpi_softblink_pins[i].pin==pin) {
+            idx=i;
+            break;
+        }
+    }
+    if (idx>=0) {
+        rpi_softblink_pins.erase(rpi_softblink_pins.begin()+idx);
+    }
+    rpi_softblink_mutex.unlock();
 }

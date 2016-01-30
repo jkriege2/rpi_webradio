@@ -1,5 +1,5 @@
 #include "framebuffer_cairo_tools.h"
-
+#include <cmath>
 #include <errno.h>
 
 struct fbcairo_context {
@@ -12,6 +12,7 @@ struct fbcairo_context {
 	cairo_surface_t * surface;
 	int privateFileID;
     int mode=0;
+    bool rotated;
 };
 
 
@@ -71,7 +72,7 @@ int fb_setBitsPerPixel(int fbfd, int bits_per_pixel) {
 }
 
 
-fbcairo_context* fbcairo_bind(int fbfd, int mode) {
+fbcairo_context* fbcairo_bind(int fbfd, int mode, bool rotated) {
 	fbcairo_context* res=NULL;
 	int err;
 	if (fbfd != -1) {
@@ -85,6 +86,7 @@ fbcairo_context* fbcairo_bind(int fbfd, int mode) {
 	    res->surface=NULL;
         res->buffer=NULL;
         res->mode=mode;
+        res->rotated=rotated;
 		
 		// try to set 32-bit mode RGB32
 		fb_setBitsPerPixel(res->fbfd, 32);
@@ -138,7 +140,7 @@ fbcairo_context* fbcairo_bind(int fbfd, int mode) {
 	return res;
 }
 
-fbcairo_context* fbcairo_bind(const char* device, int mode) {
+fbcairo_context* fbcairo_bind(const char* device, int mode, bool rotated) {
 	int fbfd = 0; // framebuffer filedescriptor
 	
 	fbfd = open(device, O_RDWR);
@@ -146,7 +148,7 @@ fbcairo_context* fbcairo_bind(const char* device, int mode) {
 		fprintf(stderr, "fbcairo_bind(): cannot open framebuffer device '%s'\n", device);
 		return  NULL;
 	}
-    fbcairo_context* c=fbcairo_bind(fbfd, mode);
+    fbcairo_context* c=fbcairo_bind(fbfd, mode, rotated);
 	if (c) {
 		c->privateFileID=1;
 	}
@@ -167,7 +169,16 @@ void fbcairo_unbind(fbcairo_context* context) {
 
 int fbcairo_getInfo(fbcairo_context* context, int* xres, int* yres, int* bits_per_pixel, char* pixelformatRGB, char* pixelformatRGBX) {
 	if (context) {
-		return fb_getInfo(context->fbfd, xres, yres, bits_per_pixel, pixelformatRGB, pixelformatRGBX);
+        int xr, yr;
+        int res= fb_getInfo(context->fbfd, &xr, &yr, bits_per_pixel, pixelformatRGB, pixelformatRGBX);
+        if (context->rotated) {
+            if (xres) *xres=yr;
+            if (yres) *yres=xr;
+        } else {
+            if (xres) *xres=xr;
+            if (yres) *yres=yr;
+        }
+        return res;
 	} else {
 		fprintf(stderr, "fbcairo_getInfo(): no valid context\n");
 		return 0;
@@ -176,12 +187,32 @@ int fbcairo_getInfo(fbcairo_context* context, int* xres, int* yres, int* bits_pe
 
 cairo_t* fbcairo_create(fbcairo_context* context) {
     if (context && context->surface) {
-		return cairo_create (context->surface);
+        cairo_t* c= cairo_create (context->surface);
+        if (context->rotated) {
+            int xshift=fbcairo_getWidth(context)/2;
+            int yshift=fbcairo_getHeight(context)/2;
+            cairo_translate(c, yshift, xshift);
+            cairo_rotate(c, M_PI/2.0);
+            cairo_save(c);
+            cairo_translate(c, -xshift, -yshift);
+        }
+
+        return c;
 	} else {
 		fprintf(stderr, "fbcairo_create(): no valid context\n");
 		return  NULL;
 	}
 }
+
+void fbcairo_destroy(fbcairo_context *context, cairo_t *c)
+{
+    if (c) {
+        if (context->rotated) cairo_restore(c);
+        cairo_destroy(c);
+    }
+}
+
+
 cairo_surface_t* fbcairo_getSurface(fbcairo_context* context) {
 	if (context) {
 		return context->surface;
@@ -216,7 +247,8 @@ void fbcairo_copyDoubleBuffer(fbcairo_context *context)
 int fbcairo_getWidth(const fbcairo_context *context)
 {
     if (context) {
-        return context->vinfo.xres;
+        if (context->rotated) return context->vinfo.yres;
+        else return context->vinfo.xres;
     }
     return 0;
 }
@@ -225,7 +257,9 @@ int fbcairo_getWidth(const fbcairo_context *context)
 int fbcairo_getHeight(const fbcairo_context *context)
 {
     if (context) {
-        return context->vinfo.yres;
+        if (context->rotated) return context->vinfo.xres;
+        else return context->vinfo.yres;
     }
     return 0;
 }
+

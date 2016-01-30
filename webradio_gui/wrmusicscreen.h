@@ -33,14 +33,19 @@ class WRMusicScreen : public CGScreen
         CGLabel* m_labelArtist;
         CGLabel* m_labelTitle;
         CGLabel* m_labelQ;
+        CGLabel* m_labelRandom;
+        CGLabel* m_labelRepeat;
         CGProgressBar* m_progress;
         WRMPDDirectoryTreeProvider* m_musicProvider;
         bool m_playing;
         int m_lastQueueItem;
+        std::vector<mpdtools::DirectoryEntry> m_lastQueue;
+        std::string m_lastURI;
 
 
         void stop();
         void play(int index);
+        void playLast();
 
         virtual void onShow();
         virtual void onHide();

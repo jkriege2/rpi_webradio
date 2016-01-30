@@ -5,7 +5,7 @@
 #include <string>
 #include <sstream>
 #include <iostream>
-
+#include "rpi_tools.h"
 #include "mpd_tools.h"
 #include "cgapplication.h"
 
@@ -47,7 +47,7 @@ WRMusicScreen::WRMusicScreen(CGWidget *parent):
     //m_label2->setBackgroundColor(CGColor::ccGray25);
 
 
-    CGWidget* wibhlayQ=new CGWidget(wibvlayt);
+    CGWidget* wibhlayQ=new CGWidget(0,0,width()-32, 24, wibvlayt);
     //wibhlay->setFrameColor(CGColor("blue"));
     CGLinearLayout* hlayQ=new CGLinearLayout(wibhlayQ, cgdHorizontal);
     wibhlayQ->setLayout(hlayQ);
@@ -57,8 +57,18 @@ WRMusicScreen::WRMusicScreen(CGWidget *parent):
     m_labelQ->setFontSize(9);
     m_progress=new CGProgressBar(0,0,24,10, wibhlayQ);
     m_progress->setFontSize(9);
-    hlayQ->addWidget(m_labelQ, -2);
+    m_labelRandom=new CGLabel(0,0,20,12,wibhlayQ);
+    m_labelRandom->setText(" R");//\xE2\xA4\xA8"); // \x2931 \x2928
+    m_labelRandom->setFontSize(12);
+    m_labelRandom->setTextColor(CGColor::ccGray25);
+    m_labelRepeat=new CGLabel(0,0,20,12,wibhlayQ);
+    m_labelRepeat->setText(" \xE2\x86\xBB");//\x21BB
+    m_labelRepeat->setFontSize(14);
+    m_labelRepeat->setTextColor(CGColor::ccGray25);
+    hlayQ->addWidget(m_labelQ, -3);
     hlayQ->addWidget(m_progress, -8);
+    hlayQ->addWidget(m_labelRandom, -2);
+    hlayQ->addWidget(m_labelRepeat, -2);
 
     vlayt->addWidget(m_labelArtist, -12);
     vlayt->addWidget(m_labelTitle, -14);
@@ -105,7 +115,7 @@ void WRMusicScreen::paint(cairo_t *c)
         float tot=mpdtools::getTotalTime();
         mpdtools::hadError(true);
         sprintf(elapsed, "%02d:%02d / %02d:%02d", (int)floor(el/60), int(el)%60, (int)floor(tot/60), int(tot)%60);
-        sprintf(queue, "#%d / %d", mpdtools::getCurrentQueuePosition()+1, mpdtools::getQueueLength());
+        sprintf(queue, "# %d / %d", mpdtools::getCurrentQueuePosition()+1, mpdtools::getQueueLength());
         std::string artist=mpdtools::getCurrentArtist();
         std::string album=mpdtools::getCurrentAlbum();
         if (album.size()>0) {
@@ -123,19 +133,29 @@ void WRMusicScreen::paint(cairo_t *c)
         m_progress->setRange(0,100);
         m_progress->setValue(mpdtools::getElapsedPercent());
         m_progress->setUserText(elapsed, true);
+        rpi_softblink_set_amplitude(LED_PLAY_BUTTON, LED_PLAY_BUTTON_ON_AMPLITUDE);
+        rpi_softblink_set_offset(LED_PLAY_BUTTON, LED_PLAY_BUTTON_ON_OFFSET);
     } else {
         m_playState->setImageSymbol(CGSymbol::iPause);
         m_labelArtist->setText("---");
         m_labelTitle->setText(" ... not playing ...");
         m_progress->setRange(0,100);
         m_progress->setValue(0);
+        m_progress->setUserText("", true);
         //std::cout<<"m_label1:   "<<m_labelArtist->absX()<<", "<<m_labelArtist->absY()<<" ; "<<m_labelArtist->width()<<", "<<m_labelArtist->height()<<" / "<<m_labelArtist->parent()->absX()<<", "<<m_labelArtist->parent()->absY()<<" ; "<<m_labelArtist->parent()->width()<<", "<<m_labelArtist->parent()->height()<<"\n";
         //std::cout<<"m_label2:   "<<m_labelTitle->absX()<<", "<<m_labelTitle->absY()<<" ; "<<m_labelTitle->width()<<", "<<m_labelTitle->height()<<" / "<<m_labelTitle->parent()->absX()<<", "<<m_labelTitle->parent()->absY()<<" ; "<<m_labelTitle->parent()->width()<<", "<<m_labelTitle->parent()->height()<<"\n";
         //std::cout<<"m_labelQ:   "<<m_labelQ->absX()<<", "<<m_labelQ->absY()<<" ; "<<m_labelQ->width()<<", "<<m_labelQ->height()<<" / "<<m_labelQ->parent()->absX()<<", "<<m_labelQ->parent()->absY()<<" ; "<<m_labelQ->parent()->width()<<", "<<m_labelQ->parent()->height()<<"\n";
         //std::cout<<"m_progress: "<<m_progress->absX()<<", "<<m_progress->absY()<<" ; "<<m_progress->width()<<", "<<m_progress->height()<<" / "<<m_progress->parent()->absX()<<", "<<m_progress->parent()->absY()<<" ; "<<m_progress->parent()->width()<<", "<<m_progress->parent()->height()<<"\n";
+        rpi_softblink_set_amplitude(LED_PLAY_BUTTON, LED_PLAY_BUTTON_OFF_AMPLITUDE);
+        rpi_softblink_set_offset(LED_PLAY_BUTTON, LED_PLAY_BUTTON_OFF_OFFSET);
 
     }
-    CGScreen::paint(c)   ;
+    if (mpdtools::getRandom()) m_labelRandom->setTextColor(CGColor::ccWhite);
+    else  m_labelRandom->setTextColor(CGColor::ccGray10);
+    if (mpdtools::getRepeat()) m_labelRepeat->setTextColor(CGColor::ccWhite);
+    else  m_labelRepeat->setTextColor(CGColor::ccGray10);
+
+    CGScreen::paint(c);
     //std::cout<<"WRMusicScreen::paint size="<<size()<<"\n";
 }
 
@@ -146,30 +166,44 @@ void WRMusicScreen::event(CGEvent *e)
     std::cout<<"WRMusicScreen::event: "<<e->toString()<<", "<<clk<<", "<<rot<<"\n";
     if (clk && clk->button()==BTN_MUSIC_ENTER) {
         std::cout<<"  BTN_MUSIC_ENTER-clicked playing="<<m_playing<<"\n";
-        if (m_musicProvider->isDirectory(m_musicTree->currentItem())) {
+        if (m_musicProvider->hasChildren(m_musicTree->currentItem())) {
             m_musicTree->downLevel();
         } else {
-            mpdtools::clearQueue();
-            mpdtools::addSongToQueue(m_musicProvider->uri(m_musicTree->currentItem()));
-            mpdtools::play(0);
+            play(m_musicTree->currentItem());
         }
         clk->accept();
     } else if (clk && clk->button()==BTN_MUSIC_PLAY) {
         std::cout<<"  BTN_MUSIC_PLAY-clicked playing="<<m_playing<<"\n";
-
-        if (m_musicProvider->isDirectory(m_musicTree->currentItem())) {
-            mpdtools::clearQueue();
-            mpdtools::addToQueue(mpdtools::searchSongs(m_musicProvider->uri(m_musicTree->currentItem())));
-            mpdtools::play(0);
-        } else {
-            mpdtools::clearQueue();
-            mpdtools::addSongToQueue(m_musicProvider->uri(m_musicTree->currentItem()));
-            mpdtools::play(0);
-        }
+        play(m_musicTree->currentItem());
         clk->accept();
     } else if (clk && clk->button()==BTN_MUSIC_BACK) {
         std::cout<<"  BTN_MUSIC_BACK-clicked\n";
         m_musicTree->upLevel();
+        clk->accept();
+    } else if (clk && clk->button()==BTN_MUSIC_Q_NEXT) {
+        std::cout<<"  BTN_MUSIC_Q_NEXT-clicked\n";
+        int curr=mpdtools::getCurrentQueuePosition();
+        int len=mpdtools::getQueueLength();
+        if (curr+1<len) {
+            mpdtools::play(curr+1);
+        }
+        clk->accept();
+    } else if (clk && clk->button()==BTN_MUSIC_Q_PREV) {
+        std::cout<<"  BTN_MUSIC_Q_PREV-clicked\n";
+        int curr=mpdtools::getCurrentQueuePosition();
+        if (curr-1>=0) {
+            mpdtools::play(curr-1);
+        }
+        clk->accept();
+    } else if (clk && clk->button()==BTN_MUSIC_RANDOM) {
+        std::cout<<"  BTN_MUSIC_RANDOM-clicked\n";
+        bool curr=mpdtools::getRandom();
+        mpdtools::setRandom(!curr);
+        clk->accept();
+    } else if (clk && clk->button()==BTN_MUSIC_REPEAT) {
+        std::cout<<"  BTN_MUSIC_REPEAT-clicked\n";
+        bool curr=mpdtools::getRepeat();
+        mpdtools::setRepeat(!curr);
         clk->accept();
     } else if (rot && rot->id()==ROTARY_MUSIC_MAIN) {
         std::cout<<"  ROTARY_MUSIC_MAIN-turned "<<rot->inc()<<"\n";
@@ -183,6 +217,7 @@ void WRMusicScreen::event(CGEvent *e)
 void WRMusicScreen::stop()
 {
     m_playing=false;
+    m_lastQueue=mpdtools::lsQueue();
     m_lastQueueItem=mpdtools::getCurrentQueuePosition();
     std::cout<<"stopping ... m_lastQueueItem="<<m_lastQueueItem<<"\n";
     mpdtools::stop();
@@ -190,20 +225,56 @@ void WRMusicScreen::stop()
     m_playing=mpdtools::isPlaying();
 }
 
+void WRMusicScreen::play(int index)
+{
+    mpdtools::clearQueue();
+    std::string uri=m_musicProvider->uri(index);
+    int qsize=mpdtools::getQueueLength();
+    if (m_lastURI==uri && qsize>0) {
+        if (mpdtools::isPlaying()) {
+            stop();
+        } else {
+            playLast();
+        }
+    } else {
+        m_lastURI=uri;
+        if (m_musicProvider->isDirectory(index)) {
+            mpdtools::addToQueue(mpdtools::searchSongs(uri));
+        } else if (m_musicProvider->isPlaylist(index)) {
+            mpdtools::loadPlaylist(uri);
+        } else {
+            mpdtools::addSongToQueue(uri);
+        }
+        mpdtools::play(0);
+    }
+}
+
+void WRMusicScreen::playLast()
+{
+    if (m_lastQueueItem>=0 && m_lastQueueItem<(long)m_lastQueue.size()) {
+        mpdtools::play(m_lastQueueItem);
+    } else {
+        mpdtools::play(m_lastQueueItem=0);
+    }
+}
+
 void WRMusicScreen::onShow()
 {
     std::cout<<"WRMusicScreen::onShow()\n";
-    if (m_lastQueueItem>=0 && m_lastQueueItem<mpdtools::getQueueLength()) {
+    mpdtools::stop();
+    mpdtools::clearQueue();
+    if (m_lastQueue.size()>0) {
         std::cout<<"playing ... m_lastQueueItem="<<m_lastQueueItem<<"\n";
-        mpdtools::play(m_lastQueueItem);
-        mpdtools::clearErrors();
-        m_playing=mpdtools::isPlaying();
+        mpdtools::addToQueue(m_lastQueue);
+        playLast();
     }
+    mpdtools::clearErrors();
+    m_playing=mpdtools::isPlaying();
 }
 
 void WRMusicScreen::onHide()
 {
-    std::cout<<"WRMusicScreen::onShow()\n";
+    std::cout<<"WRMusicScreen::onHide()\n";
     stop();
 }
 

@@ -16,6 +16,7 @@ struct fbcairo_context; // forward
 /** \brief a singleton, summarizing basic features of an cairo framebuffer GUI application */
 class CGApplication {
     public:
+        explicit CGApplication(bool rotated);
         explicit CGApplication();
         virtual ~CGApplication();
 
@@ -109,6 +110,7 @@ class CGApplication {
         int m_maxFramerate;
         int m_mainloopDelay;
         std::string m_exename;
+        bool m_rotated;
 
     protected:
         /** \brief the actual main loop */

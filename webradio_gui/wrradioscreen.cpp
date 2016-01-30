@@ -8,6 +8,7 @@
 #include <sstream>
 #include <iostream>
 #include "mpd_tools.h"
+#include "rpi_tools.h"
 #include "cgapplication.h"
 
 WRRadioScreen::WRRadioScreen(CGWidget *parent):
@@ -73,9 +74,13 @@ void WRRadioScreen::paint(cairo_t *c)
         //if (txt.size()>0 && txt[txt.size()-1]!='\n') txt+="\n";
         m_label->setText(txt);
         //std::cout<<"PLAYING "<<txt<<"\n\n";
+        rpi_softblink_set_amplitude(LED_PLAY_BUTTON, LED_PLAY_BUTTON_ON_AMPLITUDE);
+        rpi_softblink_set_offset(LED_PLAY_BUTTON, LED_PLAY_BUTTON_ON_OFFSET);
     } else {
         m_playState->setImageSymbol(CGSymbol::iPause);
         m_label->setText("\n ... not playing ...\n\n");
+        rpi_softblink_set_amplitude(LED_PLAY_BUTTON, LED_PLAY_BUTTON_OFF_AMPLITUDE);
+        rpi_softblink_set_offset(LED_PLAY_BUTTON, LED_PLAY_BUTTON_OFF_OFFSET);
         //std::cout<<"NOT PLAYING\n";
     }
     CGScreen::paint(c)   ;
@@ -154,6 +159,7 @@ void WRRadioScreen::play(int idx)
 
 void WRRadioScreen::onShow()
 {
+    std::cout<<"WRRadioScreen::onShow()\n";
     int idx=CGApplication::getInstance().getINI().get<int>("radio.lastStationIdx", 0);
     play(idx);
     m_stationList->setCurrentItem(idx);
@@ -162,6 +168,7 @@ void WRRadioScreen::onShow()
 
 void WRRadioScreen::onHide()
 {
+    std::cout<<"WRRadioScreen::onHide()\n";
     stop();
 }
 

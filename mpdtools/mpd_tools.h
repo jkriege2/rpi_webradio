@@ -70,6 +70,8 @@ class mpdtools {
         static void pause(bool pause=true);
         /** \brief stop playback */
         static void stop();
+        /** \brief load a playlist for playback */
+        static void loadPlaylist(const std::string& playlist);
 
         enum class EntryType {
             Song,

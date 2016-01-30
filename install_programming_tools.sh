@@ -76,7 +76,15 @@ if [ "$FAST" = "0" ] ; then
 		apt-get install autofs
 	fi
 
+	# installiert i2c tools
+	apt-get install libi2c-dev i2c-tools 
+	# Setzt Benutzer-Rechne für Devices auf users
+	echo "KERNEL="i2cdev*", GROUP="users", MODE="0660"" > /etc/udev/rules.d/51-i2c.rules
+	# fügt Treiber hinzu
+	echo "\ni2c-dev\n" >> /etc/modules
+	echo "\ndtparam=i2c_arm=on\ndtparam=i2c1=on\n" >> /boot/config.txt
 
+	
 	cd $HOMEDIR
 	# clone and install wiringPi
 	git clone git://git.drogon.net/wiringPi

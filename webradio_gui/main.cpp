@@ -51,6 +51,14 @@ int main(int argc, char *argv[])
         rpievents_registerinput_buttonclick(BTN_BACK, BTN_BACK);
         rpievents_registerinput_buttonclick(BTN_PLAY, BTN_PLAY);
         rpievents_registerinput_buttonclick(BTN_MAIN_CHOOSE_MODE, BTN_MAIN_CHOOSE_MODE);
+        rpievents_registerinput_buttonclick(BTN_MUSIC_Q_NEXT, BTN_MUSIC_Q_NEXT);
+        rpievents_registerinput_buttonclick(BTN_MUSIC_Q_PREV, BTN_MUSIC_Q_PREV);
+        rpievents_registerinput_buttonclick(BTN_MUSIC_RANDOM, BTN_MUSIC_RANDOM);
+        rpievents_registerinput_buttonclick(BTN_MUSIC_REPEAT, BTN_MUSIC_REPEAT);
+        rpi_softblink_init();
+        rpi_softblink_registerpin(LED_PLAY_BUTTON, LED_PLAY_BUTTON_OFF_AMPLITUDE, LED_PLAY_BUTTON_OFF_OFFSET, LED_PLAY_BUTTON_PERIOD_MS);
+
+
 
 
         res= app.start(new WRMainScreen(), true);
