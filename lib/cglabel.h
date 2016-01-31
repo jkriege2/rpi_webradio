@@ -3,6 +3,7 @@
 
 #include "cgframe.h"
 #include <string>
+#include <chrono>
 #include "cgfontprops.h"
 
 /** \brief a widget that displays text */
@@ -17,7 +18,7 @@ class CGLabel: public CGFrame, public CGFontPropsWithAlignment
         explicit CGLabel(const std::string& text, CGWidget* parent=NULL);
         virtual ~CGLabel();
 
-        void setText(const std::string& text);
+        virtual void setText(const std::string& text);
         inline std::string text() const {
             return m_text;
         }
@@ -36,6 +37,36 @@ class CGLabel: public CGFrame, public CGFontPropsWithAlignment
         std::string m_text;
         float m_textOffset;
 
+
+};
+
+
+
+/** \brief a widget that displays an animated text (wandering left/right to show the full text) */
+class CGMarqueeLabel: public CGLabel {
+    public:
+        explicit CGMarqueeLabel(CGWidget* parent=NULL);
+        explicit CGMarqueeLabel(int x, int y, int width, int height, const std::string& text, CGWidget* parent=NULL);
+        explicit CGMarqueeLabel(int x, int y, int width, int height, CGWidget* parent=NULL);
+        explicit CGMarqueeLabel(const std::string& text, CGWidget* parent=NULL);
+
+        virtual void setText(const std::string& text);
+
+        inline float stepDurationMS() const {
+            return m_stepDurationMS;
+        }
+        inline void setStepDurationMS(float duration_ms) {
+            m_stepDurationMS=duration_ms;
+        }
+
+        virtual void paint(cairo_t *c)  override;
+    protected:
+        int m_stepDurationMS;
+        std::chrono::steady_clock::time_point m_start;
+        float m_lastOffset;
+        std::string m_lastCalcText;
+        int m_lastCalcWidth;
+        int m_lastDirection;
 
 };
 
