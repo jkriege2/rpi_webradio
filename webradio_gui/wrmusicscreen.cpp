@@ -36,11 +36,11 @@ WRMusicScreen::WRMusicScreen(CGWidget *parent):
     m_playState=new CGImage(0,0,28,28, wibhlay);
     m_playState->setImageSymbol(CGSymbol::iPlayAnimated);
 
-    m_labelArtist=new CGLabel(0,0,24,9,wibvlayt);
+    m_labelArtist=new CGMarqueeLabel(0,0,24,9,wibvlayt);
     m_labelArtist->setText("line 1 ...");
     m_labelArtist->setFontSize(12);
     //m_label1->setBackgroundColor(CGColor::ccGray50);
-    m_labelTitle=new CGLabel(0,0,24,14,wibvlayt);
+    m_labelTitle=new CGMarqueeLabel(0,0,24,14,wibvlayt);
     m_labelTitle->setText("line 2 ...");
     m_labelTitle->setFontSize(14);
     m_labelTitle->setBold(true);
@@ -94,7 +94,7 @@ WRMusicScreen::WRMusicScreen(CGWidget *parent):
 
 WRMusicScreen::~WRMusicScreen()
 {
-    stop();
+    onHide();
 }
 
 void WRMusicScreen::paint(cairo_t *c)
@@ -142,6 +142,7 @@ void WRMusicScreen::paint(cairo_t *c)
         m_progress->setRange(0,100);
         m_progress->setValue(0);
         m_progress->setUserText("", true);
+        m_labelQ->setText("--/--");
         //std::cout<<"m_label1:   "<<m_labelArtist->absX()<<", "<<m_labelArtist->absY()<<" ; "<<m_labelArtist->width()<<", "<<m_labelArtist->height()<<" / "<<m_labelArtist->parent()->absX()<<", "<<m_labelArtist->parent()->absY()<<" ; "<<m_labelArtist->parent()->width()<<", "<<m_labelArtist->parent()->height()<<"\n";
         //std::cout<<"m_label2:   "<<m_labelTitle->absX()<<", "<<m_labelTitle->absY()<<" ; "<<m_labelTitle->width()<<", "<<m_labelTitle->height()<<" / "<<m_labelTitle->parent()->absX()<<", "<<m_labelTitle->parent()->absY()<<" ; "<<m_labelTitle->parent()->width()<<", "<<m_labelTitle->parent()->height()<<"\n";
         //std::cout<<"m_labelQ:   "<<m_labelQ->absX()<<", "<<m_labelQ->absY()<<" ; "<<m_labelQ->width()<<", "<<m_labelQ->height()<<" / "<<m_labelQ->parent()->absX()<<", "<<m_labelQ->parent()->absY()<<" ; "<<m_labelQ->parent()->width()<<", "<<m_labelQ->parent()->height()<<"\n";
@@ -267,6 +268,9 @@ void WRMusicScreen::onShow()
         std::cout<<"playing ... m_lastQueueItem="<<m_lastQueueItem<<"\n";
         mpdtools::addToQueue(m_lastQueue);
         playLast();
+    } else {
+        m_musicProvider->cd(CGApplication::getInstance().getINI().get<std::string>("music.lastBaseURI", ""));
+        m_musicTree->setCurrentItem(CGApplication::getInstance().getINI().get<int>("music.lastTreeIndex", 0));
     }
     mpdtools::clearErrors();
     m_playing=mpdtools::isPlaying();
@@ -275,6 +279,9 @@ void WRMusicScreen::onShow()
 void WRMusicScreen::onHide()
 {
     std::cout<<"WRMusicScreen::onHide()\n";
+    CGApplication::getInstance().getINI().put<std::string>("music.lastBaseURI", m_musicProvider->getBaseURI());
+    CGApplication::getInstance().getINI().put<int>("music.lastTreeIndex", m_musicTree->currentItem());
+    CGApplication::getInstance().saveINI();
     stop();
 }
 

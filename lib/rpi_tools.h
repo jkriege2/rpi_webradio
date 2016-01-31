@@ -60,9 +60,9 @@ inline void rpit_writeDigital(int pin, int state) {
     rpit_writeDigital(pin, (state!=0));
 }
 /** \brief use a pin for software-PWM output */
-void rpit_initSoftPWM(int pin, int value=0);
+void rpit_initSoftPWM(int pin, int value=0, int maxVal=100);
 /** \brief use a pin for software-PWM output */
-void rpit_setSoftPWM(int pin, int value);
+void rpit_setSoftPWM(int pin, int value, int maxVal=100);
 
 /** \brief initialize a background thread that reads the CPU temperature continuously
  *

@@ -30,8 +30,8 @@ class WRMusicScreen : public CGScreen
         std::chrono::system_clock::time_point last_paint;
         CGDirectoryTreeWidget* m_musicTree;
         CGImage* m_playState;
-        CGLabel* m_labelArtist;
-        CGLabel* m_labelTitle;
+        CGMarqueeLabel* m_labelArtist;
+        CGMarqueeLabel* m_labelTitle;
         CGLabel* m_labelQ;
         CGLabel* m_labelRandom;
         CGLabel* m_labelRepeat;

@@ -133,3 +133,8 @@ void WRMPDDirectoryTreeProvider::update()
     cd(m_uri);
 }
 
+std::string WRMPDDirectoryTreeProvider::getBaseURI() const
+{
+    return m_uri;
+}
+

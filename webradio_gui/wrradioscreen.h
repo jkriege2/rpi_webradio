@@ -7,6 +7,7 @@
 #include "cglabel.h"
 #include "cgtwostatimage.h"
 #include "global.h"
+#include "cgprogressbar.h"
 
 /** \brief a screen for webradio */
 class WRRadioScreen : public CGScreen
@@ -28,7 +29,10 @@ class WRRadioScreen : public CGScreen
         };
         CGListWidget<radiostation>* m_stationList;
         CGImage* m_playState;
-        CGLabel* m_label;
+
+        CGMarqueeLabel* m_labelInfo;
+        CGMarqueeLabel* m_labelName;
+        CGLabel* m_labelElapsed;
 
         bool m_playing;
         int m_playingItem;

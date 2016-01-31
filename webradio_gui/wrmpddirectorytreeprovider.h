@@ -22,6 +22,7 @@ class WRMPDDirectoryTreeProvider : public CGDirectoryTreeWidget::TreeProvider
         std::string uri(int idx) const;
         void cd(const std::string& uri);
         void update();
+        std::string getBaseURI() const;
     protected:
         std::vector<std::string> m_uriSplit;
         std::string m_uri;

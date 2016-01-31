@@ -254,6 +254,17 @@ inline std::ostream& operator<< (std::ostream& stream, const cgRect<T>& r) {
 }
 
 
+struct CGTextExtent {
+    double x_bearing;
+    double y_bearing;
+    double width;
+    double height;
+    double x_advance;
+    double y_advance;
+};
+
+/** \brief calculate text extents */
+CGTextExtent cgSingleLineTextExtent(cairo_t* cr, const std::string& m_text, const std::string& m_fontFace=std::string("sans"), float m_fontSize=10.0, bool m_italic=false, bool m_bold=false);
 /** \brief draw the given text using cairo */
 void cgDrawText(cairo_t* cr, int xx, int yy, int m_width, int m_height, const std::string& m_text, const std::string& m_fontFace=std::string("sans"), float m_fontSize=10.0, bool m_italic=false, bool m_bold=false, CGColor m_textColor=CGColor::ccBlack, float m_lineSpacing=1.2, cgAlignment m_horizontalAlignment=cgalCenter, cgAlignment m_verticalAlignment=cgalCenter);
 /** \brief draw a non-filled rectangle frame */

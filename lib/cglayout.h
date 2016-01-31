@@ -18,7 +18,7 @@ class CGLayout: private boost::noncopyable
         /** \brief returns the parent widget */
         inline CGWidget* parent() const { return m_parent; }
         /** \brief layout all the widgets assigned to this layout */
-        virtual void layoutWidgets() =0;
+        virtual void layoutWidgets();
         /** \brief minimum size required to lay out all widgets, i.e. accumulated minimum size of all widgets, this does not mind the spacing!!! */
         virtual cgSize<unsigned int> minimumSizeFromWidgets() const =0;
         /** \brief minimum size required to lay out all widgets, i.e. accumulated minimum size of all widgets, this does mind the spacing!!! */
@@ -28,6 +28,8 @@ class CGLayout: private boost::noncopyable
         void setSpacing(unsigned int spacing);
         /** \brief return the spacing between widgets in pixels */
         inline unsigned int spacing() const { return m_spacing; }
+        /** \brief returns a list of all widgets managed by this class */
+        virtual std::vector<CGWidget*> managedWidgets() const=0;
     protected:
         /** \brief set the parent widget of this widget */
         virtual void setParent(CGWidget* p);
@@ -75,7 +77,7 @@ class CGLinearLayout: public CGLayout
         }
         /** \brief set how to resize the other axis (y-axis for \c m_direction==cgdHorizontal , or x-axis for \c m_direction==cgdVertical ) */
         void setOtherAxisSizeMode(OtherAxisSizeMode mode);
-
+        virtual std::vector<CGWidget*> managedWidgets() const;
     protected:
         struct layoutData {
             inline layoutData(): widget(NULL), stretch(-1) {}

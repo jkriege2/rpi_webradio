@@ -18,6 +18,21 @@ CGLayout::~CGLayout()
     if (m_parent) m_parent->setLayout(NULL, false);
 }
 
+void CGLayout::layoutWidgets()
+{
+    std::vector<CGWidget*> m_data=managedWidgets();
+    for (size_t i=0; i<m_data.size(); i++) {
+        if (m_data[i]) {
+            if (m_data[i]->parent()!=m_parent) {
+                m_data[i]->setParent(m_parent);
+            }
+            if (m_data[i]->layout()) {
+                m_data[i]->layout()->layoutWidgets();
+            }
+        }
+    }
+}
+
 void CGLayout::setParent(CGWidget *p)
 {
     //std::cout<<this<<" CGLayout::setParent("<<p<<").0 m_parent="<<m_parent<<"\n";
@@ -85,6 +100,8 @@ void CGLinearLayout::layoutWidgets()
 {
     //const auto ms=minimumSizeFromWidgets();
     //std::cout<<this<<" CGLayout::layoutWidgets().0 m_parent="<<m_parent<<"\n";
+    CGLayout::layoutWidgets();
+
     if (m_parent) {
         const auto ps=m_parent->size();
         int laysetsum=0;
@@ -185,4 +202,13 @@ void CGLinearLayout::setOtherAxisSizeMode(CGLinearLayout::OtherAxisSizeMode mode
     m_otherAxisSizeMode=mode;
     layoutWidgets();
 
+}
+
+std::vector<CGWidget *> CGLinearLayout::managedWidgets() const
+{
+    std::vector<CGWidget *> res;
+    for (auto it= m_data.begin(); it!=m_data.end(); ++it) {
+        if (it->widget) res.push_back(it->widget);
+    }
+    return res;
 }

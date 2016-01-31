@@ -518,6 +518,25 @@ bool cgOnlySpace(const std::string& text) {
 }
 
 
+CGTextExtent cgSingleLineTextExtent(cairo_t *cr, const std::string &m_text, const std::string &m_fontFace, float m_fontSize, bool m_italic, bool m_bold)
+{
+    CGTextExtent res;
+
+    cairo_text_extents_t extents;
+    cairo_select_font_face (cr, m_fontFace.c_str(), (m_italic)?CAIRO_FONT_SLANT_ITALIC:CAIRO_FONT_SLANT_NORMAL, (m_bold)?CAIRO_FONT_WEIGHT_BOLD:CAIRO_FONT_WEIGHT_NORMAL);
+    cairo_set_font_size (cr, m_fontSize);
+    cairo_text_extents(cr, m_text.c_str(), &extents);
+
+    res.x_bearing=extents.x_bearing;
+    res.y_bearing=extents.y_bearing;
+    res.width=extents.width;
+    res.height=extents.height;
+    res.x_advance=extents.x_advance;
+    res.y_advance=extents.y_advance;
+
+    return res;
+}
+
 void cgDrawText(cairo_t* cr, int xx, int yy, int m_width, int m_height, const std::string& m_text, const std::string& m_fontFace, float m_fontSize, bool m_italic, bool m_bold, CGColor m_textColor, float m_lineSpacing, cgAlignment m_horizontalAlignment, cgAlignment m_verticalAlignment)
 {
     cairo_text_extents_t extents;
@@ -816,3 +835,4 @@ std::string cgLocaleToUtf8(const std::string &str, const std::locale &loc)
 {
     return  boost::locale::conv::to_utf<char>(str, loc);
 }
+

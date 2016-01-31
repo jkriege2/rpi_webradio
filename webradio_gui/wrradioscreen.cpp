@@ -23,26 +23,59 @@ WRRadioScreen::WRRadioScreen(CGWidget *parent):
 
     m_stationList=new CGListWidget<radiostation>(this);
 
+
     CGWidget* wibhlay=new CGWidget(this);
+    //wibhlay->setFrameColor(CGColor("blue"));
     CGLinearLayout* hlay=new CGLinearLayout(wibhlay, cgdHorizontal);
     wibhlay->setLayout(hlay);
-    m_playState=new CGImage(0,0,24,24, wibhlay);
-    m_playState->setImageSymbol(CGSymbol::iPlayAnimated);
-    m_label=new CGLabel(0,0,24,24,wibhlay);
-    m_label->setText("line 1 ...\nplaying ...\nline 3 ... ");
-    m_label->setFontSize(12);
-    hlay->addWidget(m_playState, -3);
-    hlay->addWidget(new CGWidget(wibhlay), -1);
-    hlay->addWidget(m_label, -15);
 
-    vlay->addWidget(m_stationList, -4);
-    vlay->addWidget(wibhlay, -1);
+    CGWidget* wibvlayt=new CGWidget(wibhlay);
+    //wibvlayt->setFrameColor(CGColor("red"));
+    CGLinearLayout* vlayt=new CGLinearLayout(wibvlayt, cgdVertical);
+    wibvlayt->setLayout(vlayt);
+    m_playState=new CGImage(0,0,28,28, wibhlay);
+    m_playState->setImageSymbol(CGSymbol::iPlayAnimated);
+
+    m_labelInfo=new CGMarqueeLabel(0,0,24,9,wibvlayt);
+    m_labelInfo->setText("line 2 ...");
+    m_labelInfo->setFontSize(12);
+    //m_label1->setBackgroundColor(CGColor::ccGray50);
+    m_labelName=new CGMarqueeLabel(0,0,24,14,wibvlayt);
+    m_labelName->setText("line 1 ...");
+    m_labelName->setFontSize(14);
+    m_labelName->setBold(true);
+    //m_label2->setBackgroundColor(CGColor::ccGray25);
+
+
+    m_labelElapsed=new CGLabel(0,0,12,10,wibvlayt);
+    m_labelElapsed->setText("0/0");
+    m_labelElapsed->setFontSize(9);
+
+    vlayt->addWidget(m_labelName, -14);
+    vlayt->addWidget(m_labelInfo, -12);
+    vlayt->addWidget(m_labelElapsed, -8);
+    vlayt->addWidget(new CGWidget(wibvlayt), -3);
+
+    hlay->addWidget(m_playState, -5);
+    hlay->addWidget(new CGWidget(wibhlay), -1);
+    hlay->addWidget(wibvlayt, -25);
+
+    vlay->addWidget(m_stationList, -3);
+    vlay->addWidget(wibhlay, -1); // 1/5 2/10 4/20
+
+    hlay->layoutWidgets();
+    vlayt->layoutWidgets();
     hlay->layoutWidgets();
     vlay->layoutWidgets();
+
     addWebradiosFromCONF("webradio_stations.ini");
     addWebradiosFromCONF("~/.webradio_gui/webradio_stations.ini");
     addWebradiosFromCONF("/etc/webradio_stations.ini");
     addWebradiosFromCONF("~/webradio_stations.ini");
+    addWebradiosFromCONF(CGApplication::getInstance().getINI().get<std::string>("radio.stations", ""));
+    for (int i=0; i<10; i++) {
+        addWebradiosFromCONF(CGApplication::getInstance().getINI().get<std::string>("radio.stations"+std::to_string(i+1), ""));
+    }
 
     m_playing=mpdtools::isPlaying();
 }
@@ -56,33 +89,48 @@ void WRRadioScreen::paint(cairo_t *c)
 {
     if ((m_playing=mpdtools::isPlaying())) {
         m_playState->setImageSymbol(CGSymbol::iPlayAnimated);
-        std::string txt;
         mpdtools::clearErrors();
-        txt+=mpdtools::getCurrentName();
-        mpdtools::hadError(true);
-        if (txt.size()>0 && txt[txt.size()-1]!='\n') txt+="\n";
+        m_labelName->setText(mpdtools::getCurrentName());
         mpdtools::clearErrors();
-        txt+=mpdtools::getCurrentTitle();
-        mpdtools::hadError(true);
-        if (txt.size()>0 && txt[txt.size()-1]!='\n') txt+="\n";
-        char elapsed[1024];
-        mpdtools::clearErrors();
+        std::string title=mpdtools::getCurrentTitle();
+        std::string artist=mpdtools::getCurrentArtist();
+        std::string date=mpdtools::getCurrentDate();
+        std::string album=mpdtools::getCurrentAlbum();
+        std::string txt=(title.size()<=0)?std::string("???"):title;
+        if (artist.size()>0 || date.size()>0 || album.size()>0) {
+            txt+=" [";
+            if (artist.size()>0) txt+=artist;
+            if (date.size()>0) {
+                if (txt.size()>2) txt+="; ";
+                txt+=date;
+            }
+            if (album.size()>0) {
+                if (txt.size()>2) txt+="; ";
+                txt+=album;
+            }
+            txt+=" ]";
+        }
+
+        m_labelInfo->setText(txt);
+
         float el=mpdtools::getElapsedTime();
-        mpdtools::hadError(true);
-        sprintf(elapsed, "  elapsed: %02d:%02d", (int)floor(el/60), int(el)%60);
-        txt+=elapsed;
-        //if (txt.size()>0 && txt[txt.size()-1]!='\n') txt+="\n";
-        m_label->setText(txt);
+        char elapsed[1024];
+        sprintf(elapsed, "    elapsed: %02d:%02d", (int)floor(el/60), int(el)%60);
+        m_labelElapsed->setText(elapsed);
+
         //std::cout<<"PLAYING "<<txt<<"\n\n";
         rpi_softblink_set_amplitude(LED_PLAY_BUTTON, LED_PLAY_BUTTON_ON_AMPLITUDE);
         rpi_softblink_set_offset(LED_PLAY_BUTTON, LED_PLAY_BUTTON_ON_OFFSET);
     } else {
         m_playState->setImageSymbol(CGSymbol::iPause);
-        m_label->setText("\n ... not playing ...\n\n");
+        m_labelName->setText(" ... not playing ...");
+        m_labelInfo->setText("");
+        m_labelElapsed->setText("    -- / --");
         rpi_softblink_set_amplitude(LED_PLAY_BUTTON, LED_PLAY_BUTTON_OFF_AMPLITUDE);
         rpi_softblink_set_offset(LED_PLAY_BUTTON, LED_PLAY_BUTTON_OFF_OFFSET);
         //std::cout<<"NOT PLAYING\n";
     }
+    mpdtools::clearErrors();
     CGScreen::paint(c)   ;
     //std::cout<<"WRRadioScreen::paint size="<<size()<<"\n";
 }
@@ -174,6 +222,7 @@ void WRRadioScreen::onHide()
 
 void WRRadioScreen::addWebradiosFromCONF(const std::string &filename)
 {
+    if (filename.size()<=0) return;
     if (!boost::filesystem::exists(boost::filesystem::path(filename))) return;
     std::cout<<"parsing webradio-stations from '"<<filename<<"' ... \n";
     try {

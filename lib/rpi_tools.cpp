@@ -239,18 +239,18 @@ void rpit_initIO()
 }
 
 
-void rpit_initSoftPWM(int pin, int value)
+void rpit_initSoftPWM(int pin, int value, int maxVal)
 {
     if (value<0) value=0;
-    if (value>100) value=100;
-    softPwmCreate(pin, value, 100);
+    if (value>maxVal) value=maxVal;
+    softPwmCreate(pin, value, maxVal);
 }
 
 
-void rpit_setSoftPWM(int pin, int value)
+void rpit_setSoftPWM(int pin, int value, int maxVal)
 {
     if (value<0) value=0;
-    if (value>100) value=100;
+    if (value>maxVal) value=maxVal;
     softPwmWrite (pin, value);
 }
 
@@ -260,7 +260,7 @@ void rpit_setSoftPWM(int pin, int value)
 
 
 
-
+#define SOFTBLINK_FACTOR 1
 
 struct rpi_softblink_data {
     int pin;
@@ -283,10 +283,10 @@ void rpi_softblink_threadfunc() {
         rpi_softblink_mutex.lock();
         const std::chrono::steady_clock::time_point tnow=std::chrono::steady_clock::now();
         for (rpi_softblink_data& it: rpi_softblink_pins) {
-            int value=it.offset+it.amplitude*cos(2.0*M_PI*it.since_start_ms(tnow)/it.period_ms);
+            int value=float(SOFTBLINK_FACTOR)*(it.offset+it.amplitude*cos(2.0*M_PI*it.since_start_ms(tnow)/it.period_ms));
             if (value<0) value=0;
-            if (value>100) value=100;
-            rpit_setSoftPWM(it.pin, value);
+            if (value>SOFTBLINK_FACTOR*100) value=SOFTBLINK_FACTOR*100;
+            rpit_setSoftPWM(it.pin, value, SOFTBLINK_FACTOR*100);
         }
         rpi_softblink_mutex.unlock();
 
@@ -332,7 +332,7 @@ void rpi_softblink_registerpin(int pin, float amplitude, float offset, float per
         rpi_softblink_pins.push_back(rpi_softblink_data());
         idx=rpi_softblink_pins.size()-1;
     }
-    rpit_initSoftPWM(pin, 0);
+    rpit_initSoftPWM(pin, 0, SOFTBLINK_FACTOR*100);
     rpi_softblink_pins[idx].start=std::chrono::steady_clock::now();
     rpi_softblink_pins[idx].pin=pin;
     rpi_softblink_pins[idx].amplitude=amplitude;
