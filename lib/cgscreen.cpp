@@ -1,3 +1,4 @@
+#include "cgprecomp.h"
 #include "cgscreen.h"
 #include "cgtabbedmultiscreens.h"
 #include "framebuffer_cairo_tools.h"

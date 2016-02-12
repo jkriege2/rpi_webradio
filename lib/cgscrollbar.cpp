@@ -1,3 +1,4 @@
+#include "cgprecomp.h"
 #include "cgscrollbar.h"
 
 CGScrollBarMixin::CGScrollBarMixin()

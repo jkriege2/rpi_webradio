@@ -1,3 +1,4 @@
+#include "cgprecomp.h"
 #include "cgtwostatimage.h"
 
 CGTwoStateImage::CGTwoStateImage(CGWidget *parent):

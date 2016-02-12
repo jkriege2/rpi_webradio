@@ -1,3 +1,4 @@
+#include "precomp.h"
 #include "wrmusicscreen.h"
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/info_parser.hpp>

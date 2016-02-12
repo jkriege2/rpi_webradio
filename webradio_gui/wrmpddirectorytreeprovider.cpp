@@ -1,3 +1,4 @@
+#include "precomp.h"
 #include "wrmpddirectorytreeprovider.h"
 
 WRMPDDirectoryTreeProvider::WRMPDDirectoryTreeProvider(const std::string &uri)

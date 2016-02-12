@@ -1,3 +1,4 @@
+#include "cgprecomp.h"
 #include "cgtabmixin.h"
 
 CGTabMixin::CGTabMixin(TabPosition tp)

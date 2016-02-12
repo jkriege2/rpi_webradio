@@ -1,3 +1,4 @@
+#include "cgprecomp.h"
 #include "cgsymbol.h"
 #include <cmath>
 

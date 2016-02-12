@@ -37,7 +37,8 @@ SOURCES += main.cpp \
     ../lib/cgdirectorytreewidget.cpp \
     ../mpdtools/mpd_tools.cpp \
     ../wrmpddirectorytreeprovider.cpp \
-    wrmpddirectorytreeprovider.cpp
+    wrmpddirectorytreeprovider.cpp \
+    ../rpitools/rpi_tools.cpp
 
 HEADERS += \
     wrmainscreen.h \
@@ -45,7 +46,6 @@ HEADERS += \
     ../lib/cgwidget.h \
     ../lib/cgframe.h \
     ../lib/cglabel.h \
-    ../lib/rpi_tools.h \
     ../lib/cgbasics.h \
     ../lib/cgscreen.h \
     ../lib/cgeventqueue.h \
@@ -71,10 +71,15 @@ HEADERS += \
     ../mpdtools/mpd_tools.h \
     ../wrmpddirectorytreeprovider.h \
     wrmpddirectorytreeprovider.h \
-    ../lib/cgdirectorytreewidget.h
+    ../lib/cgdirectorytreewidget.h \
+    ../lib/cglib.h \
+    precomp.h \
+    ../lib/cgprecomp.h \
+    ../rpitools/rpi_tools.h
 
 DISTFILES += Makefile \
     ../lib/Makefile \
-    ../mpdtools/Makefile
+    ../mpdtools/Makefile \
+    ../rpitools/Makefile
 
 

@@ -1,5 +1,4 @@
 #include "rpi_tools.h"
-
 #include <stdlib.h>
 #include <stdio.h>
 #include <regex>
@@ -11,6 +10,7 @@
 #include <unistd.h>
 #include <wiringPi.h>
 #include <softPwm.h>
+#include <wiringPiI2C.h>
 
 std::string rpit_readlineFromCommand(const char *command)
 {
@@ -403,4 +403,168 @@ void rpi_softblink_deregisterpin(int pin)
         rpi_softblink_pins.erase(rpi_softblink_pins.begin()+idx);
     }
     rpi_softblink_mutex.unlock();
+}
+
+
+float rpi_bmp085_readPressure(int adress)
+{
+    RPI_BMP180 bmp(adress);
+    return 0;
+}
+
+// based on: https://github.com/dkorunic/rpi-home-sensors/blob/master/Adafruit_BMP085.py
+
+#define __BMP085_CONTROL           0xF4
+#define __BMP085_TEMPDATA          0xF6
+#define __BMP085_PRESSUREDATA      0xF6
+#define __BMP085_READTEMPCMD       0x2E
+#define __BMP085_READPRESSURECMD   0x34
+#define __BMP085_CAL_AC1           0xAA
+#define __BMP085_CAL_AC2           0xAC
+#define __BMP085_CAL_AC3           0xAE
+#define __BMP085_CAL_AC4           0xB0
+#define __BMP085_CAL_AC5           0xB2
+#define __BMP085_CAL_AC6           0xB4
+#define __BMP085_CAL_B1            0xB6
+#define __BMP085_CAL_B2            0xB8
+#define __BMP085_CAL_MB            0xBA
+#define __BMP085_CAL_MC            0xBC
+#define __BMP085_CAL_MD            0xBE
+// Operating Modes
+#define __BMP085_ULTRALOWPOWER     0
+#define __BMP085_STANDARD          1
+#define __BMP085_HIGHRES           2
+#define __BMP085_ULTRAHIGHRES      3
+#define RPI_BMP085_MODE __BMP085_STANDARD
+
+inline uint16_t CAST_UINT16(int16_t integ) {
+    return (*((uint16_t*)(&integ)));
+}
+
+
+RPI_BMP180::RPI_BMP180(uint8_t adress):
+    m_adress(adress)
+{
+    readCalibrationdata();
+}
+
+int RPI_BMP180::I2CReadReg16(int fd, int reg) {
+    uint16_t msb = CAST_UINT16(wiringPiI2CReadReg8(fd, reg));
+    uint16_t lsb = CAST_UINT16(wiringPiI2CReadReg8(fd, reg+1));
+    return (msb<<8)+lsb;
+}
+
+void RPI_BMP180::readCalibrationdata()
+{
+    int fd=wiringPiI2CSetup(m_adress);
+    _CAL_AC1=I2CReadReg16(fd, __BMP085_CAL_AC1);
+    _CAL_AC2=I2CReadReg16(fd, __BMP085_CAL_AC2);
+    _CAL_AC3=I2CReadReg16(fd, __BMP085_CAL_AC3);
+    _CAL_AC4=CAST_UINT16(I2CReadReg16(fd, __BMP085_CAL_AC4));
+    _CAL_AC5=CAST_UINT16(I2CReadReg16(fd, __BMP085_CAL_AC5));
+    _CAL_AC6=CAST_UINT16(I2CReadReg16(fd, __BMP085_CAL_AC6));
+    _CAL_B1=I2CReadReg16(fd, __BMP085_CAL_B1);
+    _CAL_B2=I2CReadReg16(fd, __BMP085_CAL_B2);
+    _CAL_MB=I2CReadReg16(fd, __BMP085_CAL_MB);
+    _CAL_MC=I2CReadReg16(fd, __BMP085_CAL_MC);
+    _CAL_MD=I2CReadReg16(fd, __BMP085_CAL_MD);
+
+    /*std::cout<<"\n _CAL_AC1="<<_CAL_AC1
+            <<"\n _CAL_AC2="<<_CAL_AC2
+            <<"\n _CAL_AC3="<<_CAL_AC3
+            <<"\n _CAL_AC4="<<_CAL_AC4
+            <<"\n _CAL_AC5="<<_CAL_AC5
+            <<"\n _CAL_AC6="<<_CAL_AC6
+            <<"\n _CAL_B1="<<_CAL_B1
+            <<"\n _CAL_B2="<<_CAL_B2
+            <<"\n _CAL_MB="<<_CAL_MB
+            <<"\n _CAL_MC="<<_CAL_MC
+            <<"\n _CAL_MD="<<_CAL_MD
+            <<"\n\n";*/
+}
+
+
+uint16_t RPI_BMP180::readRawTemp() {
+    //"Reads the raw (uncompensated) temperature from the sensor"
+    int fd=wiringPiI2CSetup(m_adress);
+    wiringPiI2CWriteReg8(fd, __BMP085_CONTROL, __BMP085_READTEMPCMD);
+    std::this_thread::sleep_for (std::chrono::milliseconds(5)); // Wait 5ms
+    uint16_t msb = CAST_UINT16(wiringPiI2CReadReg8(fd, __BMP085_TEMPDATA));
+    uint16_t lsb = CAST_UINT16(wiringPiI2CReadReg8(fd, __BMP085_TEMPDATA+1));
+    return (msb<<8)+lsb;
+}
+
+uint32_t RPI_BMP180::readRawPressure() {
+    // "Reads the raw (uncompensated) pressure level from the sensor"
+    int fd=wiringPiI2CSetup(m_adress);
+    wiringPiI2CWriteReg8(fd, __BMP085_CONTROL, __BMP085_READPRESSURECMD+(RPI_BMP085_MODE<<6));
+    std::this_thread::sleep_for (std::chrono::milliseconds(10+RPI_BMP085_MODE*10)); // Wait 5ms
+    CAST_UINT16(I2CReadReg16(fd, __BMP085_TEMPDATA));
+
+    uint16_t msb = CAST_UINT16(wiringPiI2CReadReg8(fd, __BMP085_PRESSUREDATA));
+    uint16_t lsb = CAST_UINT16(wiringPiI2CReadReg8(fd, __BMP085_PRESSUREDATA+1));
+    uint16_t xlsb = CAST_UINT16(wiringPiI2CReadReg8(fd, __BMP085_PRESSUREDATA+2));
+    uint32_t raw = ((msb << 16) + (lsb << 8) + xlsb) >> (8 - RPI_BMP085_MODE);
+    return raw;
+}
+
+float RPI_BMP180::readTemperature() {
+    //"Gets the compensated temperature in degrees celcius"
+
+    //# Read raw temp before aligning it with the calibration values
+    int32_t UT = readRawTemp();
+    int32_t X1 = ((UT - _CAL_AC6) * _CAL_AC5) >> 15;
+    int32_t X2 = (_CAL_MC << 11) / (X1 + _CAL_MD);
+    int32_t B5 = X1 + X2;
+    //std::cout<<"\n\nUT="<<UT<<"  X1="<<X1<<"  X2="<<X2<<"  B5="<<B5<<"\n\n";
+    return float((B5 + 8) >> 4) / 10.0;
+}
+
+float RPI_BMP180::readPressurePa() {
+    //"Gets the compensated pressure in pascal"
+    int32_t UT = 0;
+    int32_t UP = 0;
+    int32_t B3 = 0;
+    int32_t B5 = 0;
+    int32_t B6 = 0;
+    int32_t X1 = 0;
+    int32_t X2 = 0;
+    int32_t X3 = 0;
+    int32_t p = 0;
+    uint32_t B4 = 0;
+    int32_t B7 = 0;
+
+    UT = readRawTemp();
+    UP = readRawPressure();
+    //std::cout<<"\n\nUT="<<UT<<"  UP="<<UP<<"\n\n";
+
+    // True Temperature Calculations
+    X1 = ((UT - _CAL_AC6) * _CAL_AC5) >> 15;
+    X2 = (_CAL_MC << 11) / (X1 + _CAL_MD);
+    B5 = X1 + X2;
+
+    //# Pressure Calculations
+    B6 = B5 - 4000;
+    X1 = (_CAL_B2 * (B6 * B6) >> 12) >> 11;
+    X2 = (_CAL_AC2 * B6) >> 11;
+    X3 = X1 + X2;
+    B3 = (((_CAL_AC1 * 4 + X3) << RPI_BMP085_MODE) + 2) / 4;
+
+    X1 = (_CAL_AC3 * B6) >> 13;
+    X2 = (_CAL_B1 * ((B6 * B6) >> 12)) >> 16;
+    X3 = ((X1 + X2) + 2) >> 2;
+    B4 = (_CAL_AC4 * (X3 + 32768)) >> 15;
+    B7 = (UP - B3) * (50000 >> RPI_BMP085_MODE);
+
+    if (B7 < 0x80000000) {
+      p = (B7 * 2) / B4;
+    } else {
+      p = (B7 / B4) * 2;
+    }
+
+    X1 = (p >> 8) * (p >> 8);
+    X1 = (X1 * 3038) >> 16;
+    X2 = (-7357 * p) >> 16;
+
+    return p + ((X1 + X2 + 3791) >> 4);
 }

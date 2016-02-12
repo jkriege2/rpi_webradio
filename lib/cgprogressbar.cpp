@@ -1,3 +1,4 @@
+#include "cgprecomp.h"
 #include "cgprogressbar.h"
 #include "cgbasics.h"
 #include <iostream>

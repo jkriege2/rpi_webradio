@@ -1,3 +1,4 @@
+#include "cgprecomp.h"
 #include "framebuffer_cairo_tools.h"
 #include <cmath>
 #include <errno.h>

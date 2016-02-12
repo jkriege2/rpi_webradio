@@ -1,6 +1,7 @@
 #ifndef RPI_TOOLS_H
 #define RPI_TOOLS_H
 #include <string>
+#include <stdint.h>
 
 /** \brief execute the given unix command and read its output until the first '\\n' character or EOF */
 std::string rpit_readlineFromCommand(const char* command);
@@ -99,5 +100,42 @@ void rpi_softblink_set_offset(int pin, float offset);
 void rpi_softblink_set_period(int pin, float period_ms);
 /** \brief deregister a pin from soft-blinking */
 void rpi_softblink_deregisterpin(int pin);
+
+/** \brief Klasse zum Auslesen eine BMP180 Luftdruck- und Temperatur-Sensors
+ *
+ * Infos unter:
+ *   - https://www.adafruit.com/datasheets/BST-BMP180-DS000-09.pdf
+ *   - https://github.com/dkorunic/rpi-home-sensors/blob/master/Adafruit_BMP085.py
+ * .
+ * */
+class RPI_BMP180 {
+    public:
+        RPI_BMP180(uint8_t adress=0x77);
+        void readCalibrationdata();
+        float readTemperature();
+        float readPressurePa();
+    private:
+        uint8_t m_adress;
+        int16_t _CAL_AC1;
+        int16_t _CAL_AC2;
+        int16_t _CAL_AC3;
+        uint16_t _CAL_AC4;
+        uint16_t _CAL_AC5;
+        uint16_t _CAL_AC6;
+        int16_t _CAL_B1;
+        int16_t _CAL_B2;
+        int16_t _CAL_MB;
+        int16_t _CAL_MC;
+        int16_t _CAL_MD;
+        uint16_t readRawTemp();
+        uint32_t readRawPressure();
+        int I2CReadReg16(int fd, int reg);
+};
+
+
+/** \brief read the current CPU temperature */
+float rpi_bmp085_readPressure(int adress=0x77);
+
+
 
 #endif // RPI_TOOLS_H

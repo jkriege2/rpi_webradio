@@ -2,20 +2,18 @@ all: Release
 debug: Debug
 release: Release
 
-both:
-	+make Debug
-	+make Release
+both: 
+	+make Debug 
+	+make Release 
 
 LIBS=./ \
-	 ../ \
-	 ../../CImg \
-	 ../rpitools
+	 ../
 
 CC=g++ -std=c++11
 
 
-CFLAGS =  -Wall -pedantic `pkg-config --cflags cairo` -static
-LDFLAGS = -Wall -pedantic `pkg-config --libs cairo` -lwiringPi -lpthread -lboost_iostreams -lboost_program_options -lboost_filesystem -lboost_exception -lboost_system -lboost_signals -lboost_locale
+CFLAGS =  -Wall -pedantic -static
+LDFLAGS = -Wall -pedantic -lpthread -lwiringPi
 OBJDIR_DEBUG = .objs_debug
 OBJDIR_RELEASE = .objs
 OBJDIR = .objs
@@ -25,34 +23,8 @@ Debug: CC += -g -DDEBUG
 Release: CFLAGS += -O2
 Release: LDFLAGS += -s
 
-LIB_NAME=cairogui
-SRC_FILE= framebuffer_cairo_tools.cpp \
-		  cgwidget.cpp \
-		  cgframe.cpp \
-		  cglabel.cpp \
-		  cgbasics.cpp \
-		  cgscreen.cpp \
-		  cgeventqueue.cpp \
-		  cgprogressbar.cpp \
-		  cgfontprops.cpp \
-		  cgmultiscreens.cpp \
-		  cgtabbedmultiscreens.cpp \
-		  cgscrollbar.cpp \
-		  cgpalette.cpp \
-		  cgimage.cpp \
-		  rpi_cgevents.cpp \
-		  cgevents.cpp \
-		  cgtabmixin.cpp \
-		  cglayout.cpp \
-		  cgapplication.cpp \
-		  cgtwostatimage.cpp \
-		  cgsymbol.cpp \
-		  cgdirectorytreewidget.cpp \
-		  cgtreebase.cpp
-CORE_PCH_FILENAME=cgprecomp.h
-
-Release: CFLAGS += -I./${OBJDIR_RELEASE}
-Debug: CFLAGS += -I./${OBJDIR_DEBUG}
+LIB_NAME= rpitools
+SRC_FILE= rpi_tools.cpp
 
 RELEASE_LIB_NAME = lib${LIB_NAME}.a
 DEBUG_LIB_NAME = lib${LIB_NAME}_debug.a
@@ -61,7 +33,7 @@ Release: FULL_LIB_NAME = lib${LIB_NAME}.a
 
 Debug: FULL_LIB_NAME = lib${LIB_NAME}_debug.a
 
-#SRC_FILE_D =
+#SRC_FILE_D = 
 
 Release: SRC_FILE_D = $(addprefix $(OBJDIR_RELEASE)/,$(subst .cpp,.d,$(SRC_FILE)))
 
@@ -75,18 +47,8 @@ LIBS_I = $(addprefix -I,$(LIBS))
 LIBS_L = $(addprefix -L,$(LIBS))
 include ${SRC_FILE_D}
 
-Debug:	${DEBUG_LIB_NAME}
+Debug:  ${DEBUG_LIB_NAME}
 Release:  ${RELEASE_LIB_NAME}
-
-CORE_PCH=$(CORE_PCH_FILENAME).gch
-
-${OBJDIR_DEBUG}/$(CORE_PCH):
-	@mkdir -p ${OBJDIR_DEBUG}
-	$(CC) $(CFLAGS) -x c++-header $(CORE_PCH_FILENAME) -o ${OBJDIR_DEBUG}/$(CORE_PCH)
-
-${OBJDIR_RELEASE}/$(CORE_PCH):
-	@mkdir -p ${OBJDIR_RELEASE}
-	$(CC) $(CFLAGS) -x c++-header $(CORE_PCH_FILENAME) -o ${OBJDIR_RELEASE}/$(CORE_PCH)
 
 ${DEBUG_LIB_NAME}: ${SRC_FILE_O_DEBUG}
 	ar rc $@ ${SRC_FILE_O_DEBUG}
@@ -96,7 +58,7 @@ ${RELEASE_LIB_NAME}: ${SRC_FILE_O_RELEASE}
 	ar rc $@ ${SRC_FILE_O_RELEASE}
 	ranlib $@
 
-${OBJDIR_RELEASE}/%.o: ./${OBJDIR_RELEASE}/$(CORE_PCH) ./%.cpp
+${OBJDIR_RELEASE}/%.o: ./%.cpp
 	@mkdir -p ${OBJDIR_RELEASE}
 	$(CC) -c $(CFLAGS) $(LIBS_I) $*.cpp -o ${OBJDIR_RELEASE}/$*.o
 	@$(CC) -MM $(CFLAGS) $(LIBS_I) $*.cpp > ${OBJDIR_RELEASE}/$*.d
@@ -106,7 +68,7 @@ ${OBJDIR_RELEASE}/%.o: ./${OBJDIR_RELEASE}/$(CORE_PCH) ./%.cpp
 	  sed -e 's/^ *//' -e 's/$$/:/' >> ${OBJDIR_RELEASE}/$*.d
 	@rm -f ${OBJDIR_RELEASE}/$*.d.tmp
 
-${OBJDIR_DEBUG}/%.o: ./${OBJDIR_DEBUG}/$(CORE_PCH) ./%.cpp
+${OBJDIR_DEBUG}/%.o: ./%.cpp
 	@mkdir -p ${OBJDIR_DEBUG}
 	$(CC) -c $(CFLAGS) $(LIBS_I) $*.cpp -o ${OBJDIR_DEBUG}/$*.o
 	@$(CC) -MM $(CFLAGS) $(LIBS_I) $*.cpp > ${OBJDIR_DEBUG}/$*.d

@@ -3,14 +3,13 @@ debug: Debug
 release: Release
 
 LIBS=./ \
-     ../ \
-     ../../CImg
+	 ../
 
 CC=g++ -std=c++11
 
 
-CFLAGS =  -Wall -pedantic `pkg-config --cflags cairo`
-LDFLAGS = -Wall -pedantic `pkg-config --libs cairo` -lwiringPi -lpthread -lboost_iostreams -lboost_program_options -lboost_filesystem -lboost_exception -lboost_system -lboost_signals -lboost_locale -lmpdclient
+CFLAGS =  -Wall -pedantic 
+LDFLAGS = -Wall -pedantic -lpthread -lwiringPi
 
 Release: OBJDIR = .objs
 OBJDIR_DEBUG = .objs_debug
@@ -23,13 +22,9 @@ Release: LDFLAGS += -s
 Debug: CC += -g -DDEBUG
 
 
-EXECUTABLE=webradio_gui
-EXECUTABLE_DEBUG=webradio_gui_debug
-SRC_FILE= main.cpp \
-		  wrmainscreen.cpp \
-		  wrradioscreen.cpp \
-		  wrmusicscreen.cpp \
-		  wrmpddirectorytreeprovider.cpp
+EXECUTABLE=test_rpitools
+EXECUTABLE_DEBUG=test_rpitools_debug
+SRC_FILE= test_rpitools.cpp
 
 
 SRC_FILE_D = $(addprefix ${OBJDIR}/,$(subst .cpp,.d,$(SRC_FILE)))
@@ -38,13 +33,11 @@ SRC_FILE_O_RELEASE = $(addprefix ${OBJDIR_RELEASE}/,$(subst .cpp,.o,$(SRC_FILE))
 LIBS_I = $(addprefix -I,$(LIBS))
 LIBS_L = $(addprefix -L,$(LIBS))
 
-GUILIBDIR = ../lib/
-MPDTOOLSLIBDIR = ../mpdtools/
 RPITOOLSLIBDIR = ../rpitools/
-Release: LDFLAGS += -L${GUILIBDIR} -lcairogui -L${MPDTOOLSLIBDIR} -lmpdtools -L${RPITOOLSLIBDIR} -lrpitools
-Debug: LDFLAGS += -L${GUILIBDIR} -lcairogui_debug -L${MPDTOOLSLIBDIR} -lmpdtools_debug -L${RPITOOLSLIBDIR} -lrpitools_debug
+Release: LDFLAGS += -L${RPITOOLSLIBDIR} -lrpitools
+Debug: LDFLAGS += -L${RPITOOLSLIBDIR} -lrpitools_debug
 
-LIBS += ${GUILIBDIR} ${MPDTOOLSLIBDIR} ${RPITOOLSLIBDIR}
+LIBS += ${GUILIBDIR} ${RPITOOLSLIBDIR}
 
 
 -include ${SRC_FILE_D}
@@ -53,28 +46,17 @@ Debug:  ${EXECUTABLE_DEBUG}
 
 Release:  ${EXECUTABLE}
 
-${EXECUTABLE}: GUILIB_RELEASE MPDTOOLSLIB_RELEASE RPITOOLSLIB_RELEASE ${SRC_FILE_O_RELEASE}
-	cd $(GUILIBDIR); make Release -j4
+${EXECUTABLE}: RPITOOLSLIB_RELEASE ${SRC_FILE_O_RELEASE}
 	$(CC) $(CFLAGS) $(LIBS_L) -o $(EXECUTABLE) ${SRC_FILE_O_RELEASE} $(LDFLAGS)
 
-${EXECUTABLE_DEBUG}: GUILIB_DEBUG MPDTOOLSLIB_DEBUG RPITOOLSLIB_DEBUG ${SRC_FILE_O_DEBUG}
+${EXECUTABLE_DEBUG}: RPITOOLSLIB_DEBUG ${SRC_FILE_O_DEBUG}
 	$(CC) -o $(EXECUTABLE_DEBUG) $(CFLAGS) $(LIBS_L) ${SRC_FILE_O_DEBUG} $(LDFLAGS)
 
-GUILIB_DEBUG:
-	+cd $(GUILIBDIR); $(MAKE) Debug
-GUILIB_RELEASE:
-	+cd $(GUILIBDIR); $(MAKE) Release
-
-MPDTOOLSLIB_DEBUG:
-	+cd $(MPDTOOLSLIBDIR); $(MAKE) Debug
-MPDTOOLSLIB_RELEASE:
-	+cd $(MPDTOOLSLIBDIR); $(MAKE) Release
 
 RPITOOLSLIB_DEBUG:
 	+cd $(RPITOOLSLIBDIR); $(MAKE) Debug
 RPITOOLSLIB_RELEASE:
 	+cd $(RPITOOLSLIBDIR); $(MAKE) Release
-
 
 
 ${OBJDIR_RELEASE}/%.o: ./%.cpp

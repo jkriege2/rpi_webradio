@@ -1,3 +1,4 @@
+#include "cgprecomp.h"
 #include "rpi_cgevents.h"
 
 #include <stdlib.h>

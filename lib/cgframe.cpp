@@ -1,3 +1,4 @@
+#include "cgprecomp.h"
 #include "cgframe.h"
 #include <iostream>
 

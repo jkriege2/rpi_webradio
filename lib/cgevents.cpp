@@ -1,3 +1,4 @@
+#include "cgprecomp.h"
 #include "cgevents.h"
 #include "cgbasics.h"
 

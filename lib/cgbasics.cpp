@@ -1,3 +1,4 @@
+#include "cgprecomp.h"
 #include "cgbasics.h"
 #include <locale>
 #include <iomanip>

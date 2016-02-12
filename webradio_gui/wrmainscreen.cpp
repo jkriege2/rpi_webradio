@@ -1,3 +1,4 @@
+#include "precomp.h"
 #include "wrmainscreen.h"
 #include "cgapplication.h"
 

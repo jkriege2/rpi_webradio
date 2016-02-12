@@ -1,3 +1,4 @@
+#include "cgprecomp.h"
 #include "cglabel.h"
 #include <iostream>
 

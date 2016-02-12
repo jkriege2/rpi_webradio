@@ -5,7 +5,7 @@ CONFIG -= qt
 
 INCLUDEPATH += ../lib/
 
-SOURCES += main.cpp \
+SOURCES += \
     wrmainscreen.cpp \
     ../lib/framebuffer_cairo_tools.cpp \
     ../lib/cgwidget.cpp \

@@ -1,3 +1,4 @@
+#include "cgprecomp.h"
 #include "cgapplication.h"
 #include <boost/program_options.hpp>
 #include <boost/filesystem.hpp>

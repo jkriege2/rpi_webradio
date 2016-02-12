@@ -1,3 +1,4 @@
+#include "cgprecomp.h"
 #include "cgimage.h"
 
 CGImage::CGImage(CGWidget *parent):

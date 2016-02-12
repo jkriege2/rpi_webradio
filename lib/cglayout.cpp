@@ -1,3 +1,4 @@
+#include "cgprecomp.h"
 #include "cglayout.h"
 #include "cgwidget.h"
 #include "cgframe.h"

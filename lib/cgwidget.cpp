@@ -1,3 +1,4 @@
+#include "cgprecomp.h"
 #include "cgwidget.h"
 #include "cglayout.h"
 #include <iostream>

@@ -1,11 +1,8 @@
 #ifndef CGDirectoryTreeWidget_H
 #define CGDirectoryTreeWidget_H
 #include <deque>
-#include "cgframe.h"
 #include <vector>
 #include <string>
-#include "cgfontprops.h"
-#include "cgscrollbar.h"
 #include "cgtreebase.h"
 
 /** \brief a widget that displays a tree of items of type CGDirectoryTree::TreeProvider */
