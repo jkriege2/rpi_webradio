@@ -56,7 +56,7 @@ int main(int argc, char *argv[])
         rpievents_registerinput_buttonclick(BTN_MUSIC_RANDOM, BTN_MUSIC_RANDOM);
         rpievents_registerinput_buttonclick(BTN_MUSIC_REPEAT, BTN_MUSIC_REPEAT);
         rpi_softblink_init();
-        rpi_softblink_registerpin(LED_PLAY_BUTTON, LED_PLAY_BUTTON_OFF_AMPLITUDE, LED_PLAY_BUTTON_OFF_OFFSET, LED_PLAY_BUTTON_PERIOD_MS);
+        //rpi_softblink_registerpin(LED_PLAY_BUTTON, LED_PLAY_BUTTON_OFF_AMPLITUDE, LED_PLAY_BUTTON_OFF_OFFSET, LED_PLAY_BUTTON_PERIOD_MS);
 
 
 

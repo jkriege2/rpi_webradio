@@ -4,7 +4,8 @@ CONFIG -= app_bundle
 CONFIG -= qt
 
 INCLUDEPATH += ../lib/  \
-               ../mpdtools/
+               ../mpdtools/ \
+               ../rpitools/
 
 SOURCES += main.cpp \
     wrmainscreen.cpp \
