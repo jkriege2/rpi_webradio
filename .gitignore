@@ -40,3 +40,5 @@ wiringPi
 *.FCStd3
 *.FCStd1
 *.FCStd2
+/electronics/*.bak
+/electronics/*.bck
