@@ -42,3 +42,7 @@ wiringPi
 *.FCStd2
 /electronics/*.bak
 /electronics/*.bck
+/electronics/amplifier/*.bak
+/electronics/amplifier/*.bck
+*.bak
+*.bck
