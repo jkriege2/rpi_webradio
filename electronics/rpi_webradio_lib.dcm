@@ -4,4 +4,9 @@ $CMP 6418
 D TUbe 6418
 $ENDCMP
 #
+$CMP CK6418
+D Subminiature Pentode
+K 6418
+$ENDCMP
+#
 #End Doc Library
