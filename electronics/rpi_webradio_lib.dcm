@@ -1,0 +1,62 @@
+EESchema-DOCLIB  Version 2.0
+#
+$CMP 6418
+D TUbe 6418
+$ENDCMP
+#
+$CMP CK6418
+D Subminiature Pentode
+K 6418
+$ENDCMP
+#
+$CMP FRT5
+D FRT5 relay
+K relay monostable
+F https://www.elpro.org/de/index.php?controller=attachment&id_attachment=8663
+$ENDCMP
+#
+$CMP FRT5_separated
+D FRT5 relay
+K relay monostable
+F https://www.elpro.org/de/index.php?controller=attachment&id_attachment=8663
+$ENDCMP
+#
+$CMP TIANBO-HJR-4102-L
+D TIANBO HJR-4102-L, Single Pole Relay, 5mm Pitch, 3A
+K Single Pole Relay
+F https://cdn-reichelt.de/documents/datenblatt/C300/DS_HJR4102E.pdf
+$ENDCMP
+#
+$CMP screw_terminal_1x01
+D 1-pin screw terminal connector
+$ENDCMP
+#
+$CMP screw_terminal_2x01
+D 2-pin screw terminal connector
+$ENDCMP
+#
+$CMP screw_terminal_3x01
+D 3-pin screw terminal connector
+$ENDCMP
+#
+$CMP screw_terminal_4x01
+D 4-pin screw terminal connector
+$ENDCMP
+#
+$CMP screw_terminal_5x01
+D 5-pin screw terminal connector
+$ENDCMP
+#
+$CMP screw_terminal_6x01
+D 6-pin screw terminal connector
+$ENDCMP
+#
+$CMP screw_terminal_7x01
+D 7-pin screw terminal connector
+$ENDCMP
+#
+$CMP screw_terminal_8x01
+D 8-pin screw terminal connector
+$ENDCMP
+#
+#End Doc Library

@@ -362,17 +362,6 @@ F 3 "" H 5400 6150 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L FINDER-40.31 RL2
-U 1 1 57CC5421
-P 5950 5250
-F 0 "RL2" H 6400 5400 50  0000 L CNN
-F 1 "FINDER-40.31" H 6400 5300 50  0000 L CNN
-F 2 "" H 5950 5250 50  0000 C CNN
-F 3 "" H 5950 5250 50  0000 C CNN
-	1    5950 5250
-	1    0    0    1   
-$EndComp
-$Comp
 L +5V #PWR10
 U 1 1 57CC5543
 P 5400 4850
@@ -408,13 +397,13 @@ $EndComp
 $Comp
 L 2PIN_POWERTERMINAL_220V H3
 U 1 1 57CC5952
-P 6900 5250
-F 0 "H3" H 6925 5475 60  0000 C CNN
-F 1 "2PIN_POWERTERMINAL_220V" H 6750 5600 60  0001 C CNN
-F 2 "" H 6900 5250 60  0001 C CNN
-F 3 "" H 6900 5250 60  0001 C CNN
-	1    6900 5250
-	-1   0    0    -1  
+P 6450 4650
+F 0 "H3" H 6475 4875 60  0000 C CNN
+F 1 "2PIN_POWERTERMINAL_220V" H 6300 5000 60  0001 C CNN
+F 2 "" H 6450 4650 60  0001 C CNN
+F 3 "" H 6450 4650 60  0001 C CNN
+	1    6450 4650
+	0    -1   1    0   
 $EndComp
 $Comp
 L FINDER-40.52 RL1
@@ -427,8 +416,6 @@ F 3 "" H 3700 2350 50  0000 C CNN
 	1    3700 2350
 	0    -1   -1   0   
 $EndComp
-Wire Wire Line
-	6150 4950 6700 4950
 Wire Wire Line
 	5400 6150 5400 6100
 Wire Wire Line
@@ -517,10 +504,8 @@ Wire Wire Line
 	2500 1700 2350 1700
 Wire Wire Line
 	2050 1700 1900 1700
-Wire Wire Line
-	6250 5550 6700 5550
 Connection ~ 5400 5650
-Text Notes 6000 5950 0    60   ~ 12
+Text Notes 6700 5800 0    60   ~ 12
 power-switch relay for \nAMP power supply
 Text Notes 7900 5350 0    60   ~ 12
 OFF-state:\n  - RL1: off\n  - H2: no power\n\nOFF-state, SW1 pushed:\n  - RL1: off\n  - H2: powered, momentarily\n  - IC1: powered => switch on RL1\n  - U1: disconnected\n  - PB0: LOW (shutdwn NOT REQUESTED)\n\nOFF-state, after SW1 pushed = ON-state:\n  - RL1: on\n  - H2/IC1: powered permanently\n  - U1: connected via SW1\n  - PB0: LOW (shutdwn NOT REQUESTED)\n  - PB1 (IN): waiting for HIGH = RPi has booted\n    => when PB1=HIGH => switch on RL2\n\nON-state: SW1 not pushed:\n  - H2: powered permanently\n  - U1: off =>pin7=HIGH\n\nON-state: SW1 pushed:\n  - H2: powered permanently\n  - U1: on =>PA0=LOW => request shutdown (PB0=HIGH) \n    => wait for PB1=LOW (RPi shut down) => switch off RL1
@@ -582,17 +567,6 @@ Wire Wire Line
 	850  6250 850  6850
 Connection ~ 850  6750
 Connection ~ 850  5550
-$Comp
-L CONN_02X03 P3
-U 1 1 57CCB357
-P 3500 7250
-F 0 "P3" H 3500 7450 50  0000 C CNN
-F 1 "CONN_02X03" H 3500 7050 50  0000 C CNN
-F 2 "" H 3500 6050 50  0000 C CNN
-F 3 "" H 3500 6050 50  0000 C CNN
-	1    3500 7250
-	1    0    0    -1  
-$EndComp
 Wire Wire Line
 	2350 2850 2350 5400
 Wire Wire Line
@@ -612,7 +586,7 @@ Wire Wire Line
 Wire Wire Line
 	3150 6050 2950 6050
 Wire Wire Line
-	3750 7250 3850 7250
+	3500 7250 3850 7250
 Wire Wire Line
 	3850 7250 3850 6150
 Wire Wire Line
@@ -692,8 +666,57 @@ Wire Notes Line
 	10900 5450 10900 2500
 Wire Notes Line
 	10900 2500 7800 2500
+$Comp
+L FINDER-40.52 RL?
+U 1 1 57D56536
+P 5950 5250
+F 0 "RL?" H 6800 5400 50  0000 L CNN
+F 1 "FINDER-40.52" H 6800 5300 50  0000 L CNN
+F 2 "" H 5950 5250 50  0000 C CNN
+F 3 "" H 5950 5250 50  0000 C CNN
+	1    5950 5250
+	1    0    0    -1  
+$EndComp
+$Comp
+L 2PIN_POWERTERMINAL_220V H?
+U 1 1 57D5681F
+P 6350 5800
+F 0 "H?" H 6375 6025 60  0000 C CNN
+F 1 "2PIN_POWERTERMINAL_220V" H 6200 6150 60  0001 C CNN
+F 2 "" H 6350 5800 60  0001 C CNN
+F 3 "" H 6350 5800 60  0001 C CNN
+	1    6350 5800
+	0    1    -1   0   
+$EndComp
 Wire Wire Line
-	6700 4950 6700 5150
+	6250 5600 6150 5600
 Wire Wire Line
-	6700 5550 6700 5350
+	6150 5600 6150 5550
+Wire Wire Line
+	6450 5600 6550 5600
+Wire Wire Line
+	6550 5600 6550 5550
+Wire Wire Line
+	6250 4950 6250 4850
+Wire Wire Line
+	6250 4850 6350 4850
+Wire Wire Line
+	6650 4950 6650 4850
+Wire Wire Line
+	6650 4850 6550 4850
+$Comp
+L AVR-ISP-6 CON?
+U 1 1 57D57B05
+P 3400 7250
+F 0 "CON?" H 3295 7490 50  0000 C CNN
+F 1 "AVR-ISP-6" H 3135 7020 50  0000 L BNN
+F 2 "AVR-ISP-6" V 2880 7290 50  0001 C CNN
+F 3 "" H 3375 7250 50  0000 C CNN
+	1    3400 7250
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	3750 7150 3500 7150
+Wire Wire Line
+	3500 7350 3750 7350
 $EndSCHEMATC
