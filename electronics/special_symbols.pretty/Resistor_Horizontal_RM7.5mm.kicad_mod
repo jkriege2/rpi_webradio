@@ -1,5 +1,5 @@
 (module Resistor_Horizontal_RM7.5mm (layer F.Cu) (tedit 57DB8378)
-  (descr "Resistor, Axial,  RM 10mm, 1/3W")
+  (descr "Resistor, Axial,  RM 7.5mm, 1/3W")
   (tags "Resistor Axial RM 10mm 1/3W")
   (fp_text reference REF** (at 5.32892 -3.50012) (layer F.SilkS)
     (effects (font (size 1 1) (thickness 0.15)))
@@ -20,9 +20,4 @@
   (fp_line (start 6.35 0) (end 7.62 0) (layer F.SilkS) (width 0.15))
   (pad 1 thru_hole circle (at 0 0) (size 1.99898 1.99898) (drill 1.00076) (layers *.Cu *.SilkS *.Mask))
   (pad 2 thru_hole circle (at 7.62 0) (size 1.99898 1.99898) (drill 1.00076) (layers *.Cu *.SilkS *.Mask))
-  (model Resistors_ThroughHole.3dshapes/Resistor_Horizontal_RM10mm.wrl
-    (at (xyz 0.2 0 0))
-    (scale (xyz 0.4 0.4 0.4))
-    (rotate (xyz 0 0 0))
-  )
 )
