@@ -1,0 +1,163 @@
+Cmp-Mod V01 Created by PcbNew   date = 18.09.2016 20:42:43
+
+BeginCmp
+TimeStamp = 57DEE127
+Path = /57CC0AE9
+Reference = C1;
+ValeurCmp = 100nF;
+IdModule  = Capacitors_ThroughHole:C_Disc_D3_P2.5;
+EndCmp
+
+BeginCmp
+TimeStamp = 57DEE131
+Path = /57D57B05
+Reference = CON1;
+ValeurCmp = AVR-ISP-6;
+IdModule  = Pin_Headers:Pin_Header_Straight_2x03;
+EndCmp
+
+BeginCmp
+TimeStamp = 57DEE137
+Path = /57DECD80
+Reference = D1;
+ValeurCmp = D;
+IdModule  = Diodes_ThroughHole:Diode_DO-35_SOD27_Horizontal_RM10;
+EndCmp
+
+BeginCmp
+TimeStamp = 57DEE13D
+Path = /57DED00A
+Reference = D2;
+ValeurCmp = D;
+IdModule  = Diodes_ThroughHole:Diode_DO-35_SOD27_Horizontal_RM10;
+EndCmp
+
+BeginCmp
+TimeStamp = 57DEE143
+Path = /57CC90EB
+Reference = D3;
+ValeurCmp = LED;
+IdModule  = LEDs:LED-5MM;
+EndCmp
+
+BeginCmp
+TimeStamp = 57DEE155
+Path = /57CCAB9D
+Reference = IC1;
+ValeurCmp = ATTINY84-P;
+IdModule  = Housings_DIP:DIP-14_W7.62mm_LongPads;
+EndCmp
+
+BeginCmp
+TimeStamp = 57DEE15B
+Path = /57CC5032
+Reference = P1;
+ValeurCmp = CONN_01X02;
+IdModule  = Pin_Headers:Pin_Header_Straight_1x02;
+EndCmp
+
+BeginCmp
+TimeStamp = 57DEE161
+Path = /57CC042E
+Reference = P2;
+ValeurCmp = 5V=;
+IdModule  = Connect:bornier2;
+EndCmp
+
+BeginCmp
+TimeStamp = 57DEE16E
+Path = /57CC0D88
+Reference = Q1;
+ValeurCmp = BC548;
+IdModule  = TO_SOT_Packages_THT:TO-92_Molded_Narrow;
+EndCmp
+
+BeginCmp
+TimeStamp = 57DEE175
+Path = /57CC52BA
+Reference = Q2;
+ValeurCmp = BC548;
+IdModule  = TO_SOT_Packages_THT:TO-92_Molded_Narrow;
+EndCmp
+
+BeginCmp
+TimeStamp = 57DEE17B
+Path = /57CC12B6
+Reference = R1;
+ValeurCmp = 100k;
+IdModule  = Resistors_ThroughHole:Resistor_Horizontal_RM10mm;
+EndCmp
+
+BeginCmp
+TimeStamp = 57DEE181
+Path = /57CC2493
+Reference = R2;
+ValeurCmp = 1k;
+IdModule  = Resistors_ThroughHole:Resistor_Horizontal_RM10mm;
+EndCmp
+
+BeginCmp
+TimeStamp = 57DEE187
+Path = /57CC0EA0
+Reference = R3;
+ValeurCmp = 10k;
+IdModule  = Resistors_ThroughHole:Resistor_Horizontal_RM10mm;
+EndCmp
+
+BeginCmp
+TimeStamp = 57DEE18D
+Path = /57CC5244
+Reference = R4;
+ValeurCmp = 10k;
+IdModule  = Resistors_ThroughHole:Resistor_Horizontal_RM10mm;
+EndCmp
+
+BeginCmp
+TimeStamp = 57DEE193
+Path = /57CC92B7
+Reference = R5;
+ValeurCmp = 220R;
+IdModule  = Resistors_ThroughHole:Resistor_Horizontal_RM10mm;
+EndCmp
+
+BeginCmp
+TimeStamp = 57DEE19F
+Path = /57CC5D13
+Reference = RL1;
+ValeurCmp = FINDER-40.52;
+IdModule  = Relays_ThroughHole:Relay_DPDT_Schrack-RT2_RM5mm;
+EndCmp
+
+BeginCmp
+TimeStamp = 57DEE1AB
+Path = /57D56536
+Reference = RL2;
+ValeurCmp = FINDER-40.52;
+IdModule  = Relays_ThroughHole:Relay_DPDT_Schrack-RT2_RM5mm;
+EndCmp
+
+BeginCmp
+TimeStamp = 57DEE1B1
+Path = /57DEE3BF
+Reference = SW1;
+ValeurCmp = SPST;
+IdModule  = Connect:bornier2;
+EndCmp
+
+BeginCmp
+TimeStamp = 57DEE1B9
+Path = /57DED362
+Reference = U1;
+ValeurCmp = LTV-814;
+IdModule  = Housings_DIP:DIP-4_W7.62mm_LongPads;
+EndCmp
+
+BeginCmp
+TimeStamp = 57DEE167
+Path = /57DECACE
+Reference = P3;
+ValeurCmp = CONN_01X02;
+IdModule  = Pin_Headers:Pin_Header_Straight_1x02;
+EndCmp
+
+EndListe

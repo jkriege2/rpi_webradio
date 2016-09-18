@@ -1,4 +1,4 @@
-update=04.09.2016 15:30:59
+update=18.09.2016 21:31:11
 version=1
 last_client=kicad
 [pcbnew]
@@ -23,8 +23,16 @@ ModuleOutlineThickness=0.150000000000
 [cvpcb]
 version=1
 NetIExt=net
-[general]
+[schematic_editor]
 version=1
+PageLayoutDescrFile=
+PlotDirectoryName=
+SubpartIdSeparator=0
+SubpartFirstId=65
+NetFmtName=
+SpiceForceRefPrefix=0
+SpiceUseNetNumbers=0
+LabSize=60
 [eeschema]
 version=1
 LibDir=
@@ -139,13 +147,7 @@ LibName107=C:/Program Files/KiCad/share/kicad/library/Worldsemi
 LibName108=C:/Program Files/KiCad/share/kicad/library/Xicor
 LibName109=C:/Program Files/KiCad/share/kicad/library/xilinx
 LibName110=C:/Program Files/KiCad/share/kicad/library/Zilog
-[schematic_editor]
+LibName111=D:/hardware/raspberry_pi/rpi_webradio/electronics/rpi_webradio_lib
+LibName112=power_connectors
+[general]
 version=1
-PageLayoutDescrFile=
-PlotDirectoryName=
-SubpartIdSeparator=0
-SubpartFirstId=65
-NetFmtName=
-SpiceForceRefPrefix=0
-SpiceUseNetNumbers=0
-LabSize=60
