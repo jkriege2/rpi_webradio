@@ -22,6 +22,60 @@ K relay monostable
 F https://www.elpro.org/de/index.php?controller=attachment&id_attachment=8663
 $ENDCMP
 #
+$CMP IRF3205
+D 55V Single N-Channel HEXFET Power MOSFET in a TO-220AB package
+K 55V Single N-Channel HEXFET Power MOSFET
+F http://www.irf.com/product-info/datasheets/data/irf3205.pdf
+$ENDCMP
+#
+$CMP IRF4905
+D -55V Single P-Channel HEXFET Power MOSFET in a TO-220AB package
+K Single P-Channel HEXFET Power MOSFET
+F http://www.infineon.com/dgdl/irf4905.pdf?fileId=5546d462533600a4015355e32165197c
+$ENDCMP
+#
+$CMP IRLZ44N
+D 55V Single N-Channel HEXFET Power MOSFET in a TO-220AB package
+K 55V Single N-Channel HEXFET Power MOSFET
+F http://www.irf.com/product-info/datasheets/data/irlz44n.pdf
+$ENDCMP
+#
+$CMP KTY10
+D KTYxx series silicon temperature sensors
+K KTYxx series silicon temperature sensors
+F http://www.nxp.com/documents/data_sheet/KTY81_SER.pdf
+$ENDCMP
+#
+$CMP LT1492
+D LT1492 5MHz, 3V/µs, Low Power Single Supply, Dual Precision Op Amps
+K LT1492 5MHz, 3V/µs, Low Power Single Supply, Dual Precision Op Amps
+F http://cds.linear.com/docs/en/datasheet/14923f.pdf
+$ENDCMP
+#
+$CMP MCP3204
+D 2.7V 4-Channel 12-Bit A/D Converters with SPI(tm) Serial Interface 
+K 2.7V 4-Channel 12-Bit A/D Converters with SPI(tm) Serial Interface 
+F http://ww1.microchip.com/downloads/en/DeviceDoc/21298c.pdf
+$ENDCMP
+#
+$CMP MCP3208
+D 2.7V 8-Channel 12-Bit A/D Converters with SPI(tm) Serial Interface 
+K 2.7V 8-Channel 12-Bit A/D Converters with SPI(tm) Serial Interface 
+F http://ww1.microchip.com/downloads/en/DeviceDoc/21298c.pdf
+$ENDCMP
+#
+$CMP PT100
+D PT100 platinum temperature sensor
+K PT100 platinum temperature sensor
+F https://www.heraeus.com/media/media/group/doc_group/products_1/hst/sot_to/de_15/to_92_d.pdf
+$ENDCMP
+#
+$CMP PT1000
+D PT1000 platinum temperature sensor
+K PT1000 platinum temperature sensor
+F https://www.heraeus.com/media/media/group/doc_group/products_1/hst/sot_to/de_15/to_92_d.pdf
+$ENDCMP
+#
 $CMP TIANBO-HJR-4102-L
 D TIANBO HJR-4102-L, Single Pole Relay, 5mm Pitch, 3A
 K Single Pole Relay

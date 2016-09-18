@@ -81,6 +81,7 @@ LIBS:video
 LIBS:Worldsemi
 LIBS:Xicor
 LIBS:Zilog
+LIBS:motors
 LIBS:amplifier-cache
 EELAYER 25 0
 EELAYER END
@@ -201,7 +202,7 @@ U 1 1 57CB39A2
 P 8850 4850
 F 0 "R5" V 8930 4850 50  0000 C CNN
 F 1 "220k" V 8850 4850 50  0000 C CNN
-F 2 "Resistors_ThroughHole:Resistor_Vertical_RM5mm" V 8780 4850 50  0000 C CNN
+F 2 "special_symbols:Resistor_Vertical_RM5mm" V 8780 4850 50  0000 C CNN
 F 3 "" H 8850 4850 50  0000 C CNN
 	1    8850 4850
 	0    1    1    0   
@@ -1410,7 +1411,7 @@ U 1 1 57D6871D
 P 9250 11750
 F 0 "R34" V 9330 11750 50  0000 C CNN
 F 1 "2k2" V 9250 11750 50  0000 C CNN
-F 2 "Resistors_ThroughHole:Resistor_Vertical_RM5mm" V 9180 11750 50  0000 C CNN
+F 2 "special_symbols:Resistor_Vertical_RM2.5mm" V 9180 11750 50  0000 C CNN
 F 3 "" H 9250 11750 50  0000 C CNN
 	1    9250 11750
 	1    0    0    -1  
@@ -2327,7 +2328,7 @@ U 1 1 57DE8D79
 P 1200 3950
 F 0 "P5" H 1200 4150 50  0000 C CNN
 F 1 "CONN_01X03" V 1300 3950 50  0000 C CNN
-F 2 "Connect:bornier3" H 1200 3950 50  0001 C CNN
+F 2 "Connect:bornier3" H 1200 3950 50  0000 C CNN
 F 3 "" H 1200 3950 50  0000 C CNN
 	1    1200 3950
 	-1   0    0    1   

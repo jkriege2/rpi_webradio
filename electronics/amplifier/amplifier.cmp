@@ -1,4 +1,4 @@
-Cmp-Mod V01 Created by PcbNew   date = 15.09.2016 22:40:06
+Cmp-Mod V01 Created by PcbNew   date = 17.09.2016 11:09:56
 
 BeginCmp
 TimeStamp = 57DAF4AE
@@ -657,22 +657,6 @@ IdModule  = Diodes_ThroughHole:Diode_DO-35_SOD27_Horizontal_RM10;
 EndCmp
 
 BeginCmp
-TimeStamp = 57DB043D
-Path = /57D58008
-Reference = K1;
-ValeurCmp = FRT5_separated;
-IdModule  = special_symbols:Relay_DPDT_FRT5;
-EndCmp
-
-BeginCmp
-TimeStamp = 57DB044B
-Path = /57D6BA68
-Reference = K2;
-ValeurCmp = FRT5_separated;
-IdModule  = special_symbols:Relay_DPDT_FRT5;
-EndCmp
-
-BeginCmp
 TimeStamp = 57DB0451
 Path = /57D5EADB
 Reference = K4;
@@ -686,14 +670,6 @@ Path = /57D5FE72
 Reference = K5;
 ValeurCmp = screw_terminal_2x01;
 IdModule  = Connect:bornier2;
-EndCmp
-
-BeginCmp
-TimeStamp = 57DB0472
-Path = /57D8B2A5
-Reference = RL1;
-ValeurCmp = TIANBO-HJR-4102-L;
-IdModule  = special_symbols:Relay_SPDT_HJR-4102;
 EndCmp
 
 BeginCmp
@@ -809,46 +785,6 @@ IdModule  = TO_SOT_Packages_THT:TO-92_Molded_Narrow;
 EndCmp
 
 BeginCmp
-TimeStamp = 57DB07D8
-Path = /57DB247B
-Reference = RV1;
-ValeurCmp = DUAL_POT;
-IdModule  = Pin_Headers:Pin_Header_Straight_2x03;
-EndCmp
-
-BeginCmp
-TimeStamp = 57DB07E1
-Path = /57CBEF3A
-Reference = U4;
-ValeurCmp = CK6418;
-IdModule  = special_symbols:VALVE-MINI_PENTODE_LINEAR;
-EndCmp
-
-BeginCmp
-TimeStamp = 57DB07E9
-Path = /57D687FE
-Reference = U6;
-ValeurCmp = CK6418;
-IdModule  = special_symbols:VALVE-MINI_PENTODE_LINEAR;
-EndCmp
-
-BeginCmp
-TimeStamp = 57DB0847
-Path = 
-Reference = REF**;
-ValeurCmp = EuroBoard_halb_Type-I_100mmX80mm_holes;
-IdModule  = EuroBoard_Outline:EuroBoard_halb_Type-I_100mmX80mm_holes;
-EndCmp
-
-BeginCmp
-TimeStamp = 57DAF669
-Path = /57D6871D
-Reference = R34;
-ValeurCmp = 2k2;
-IdModule  = Resistors_ThroughHole:Resistor_Vertical_RM5mm;
-EndCmp
-
-BeginCmp
 TimeStamp = 57DAF5BB
 Path = /57CB39A2
 Reference = R5;
@@ -857,11 +793,67 @@ IdModule  = Resistors_ThroughHole:Resistor_Vertical_RM5mm;
 EndCmp
 
 BeginCmp
-TimeStamp = 57DB1DF2
-Path = 
-Reference = K3;
-ValeurCmp = bornier3;
+TimeStamp = 57DB1F2F
+Path = /57DE8D79
+Reference = P5;
+ValeurCmp = CONN_01X03;
 IdModule  = Connect:bornier3;
+EndCmp
+
+BeginCmp
+TimeStamp = 57DB2264
+Path = 
+Reference = REF**;
+ValeurCmp = EuroBoard160mmX100mm_holes;
+IdModule  = EuroBoard_Outline:EuroBoard160mmX100mm_holes;
+EndCmp
+
+BeginCmp
+TimeStamp = 57DAF669
+Path = /57D6871D
+Reference = R34;
+ValeurCmp = 2k2;
+IdModule  = special_symbols:Resistor_Vertical_RM2.5mm;
+EndCmp
+
+BeginCmp
+TimeStamp = 57DD14CD
+Path = /57D58008
+Reference = K1;
+ValeurCmp = FRT5_separated;
+IdModule  = special_symbols:Relay_DPDT_FRT5;
+EndCmp
+
+BeginCmp
+TimeStamp = 57DD14ED
+Path = /57D6BA68
+Reference = K2;
+ValeurCmp = FRT5_separated;
+IdModule  = special_symbols:Relay_DPDT_FRT5;
+EndCmp
+
+BeginCmp
+TimeStamp = 57DD1508
+Path = /57D8B2A5
+Reference = RL1;
+ValeurCmp = TIANBO-HJR-4102-L;
+IdModule  = special_symbols:Relay_SPDT_HJR-4102;
+EndCmp
+
+BeginCmp
+TimeStamp = 57DD151C
+Path = /57CBEF3A
+Reference = U4;
+ValeurCmp = CK6418;
+IdModule  = special_symbols:VALVE-MINI_PENTODE_LINEAR;
+EndCmp
+
+BeginCmp
+TimeStamp = 57DD1530
+Path = /57D687FE
+Reference = U6;
+ValeurCmp = CK6418;
+IdModule  = special_symbols:VALVE-MINI_PENTODE_LINEAR;
 EndCmp
 
 EndListe

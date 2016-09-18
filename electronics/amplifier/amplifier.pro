@@ -1,4 +1,4 @@
-update=15.09.2016 22:52:52
+update=17.09.2016 18:19:24
 version=1
 last_client=kicad
 [pcbnew]
@@ -23,6 +23,8 @@ ModuleOutlineThickness=0.150000000000
 [cvpcb]
 version=1
 NetIExt=net
+[general]
+version=1
 [eeschema]
 version=1
 LibDir=
@@ -138,5 +140,4 @@ LibName108=C:/Program Files/KiCad/share/kicad/library/Worldsemi
 LibName109=C:/Program Files/KiCad/share/kicad/library/Xicor
 LibName110=C:/Program Files/KiCad/share/kicad/library/xilinx
 LibName111=C:/Program Files/KiCad/share/kicad/library/Zilog
-[general]
-version=1
+LibName112=D:/hardware/KiCAD/kicad-library/library/motors
