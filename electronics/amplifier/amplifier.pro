@@ -1,4 +1,4 @@
-update=17.09.2016 18:19:24
+update=18.09.2016 18:00:12
 version=1
 last_client=kicad
 [pcbnew]
@@ -23,8 +23,6 @@ ModuleOutlineThickness=0.150000000000
 [cvpcb]
 version=1
 NetIExt=net
-[general]
-version=1
 [eeschema]
 version=1
 LibDir=
@@ -141,3 +139,15 @@ LibName109=C:/Program Files/KiCad/share/kicad/library/Xicor
 LibName110=C:/Program Files/KiCad/share/kicad/library/xilinx
 LibName111=C:/Program Files/KiCad/share/kicad/library/Zilog
 LibName112=D:/hardware/KiCAD/kicad-library/library/motors
+[schematic_editor]
+version=1
+PageLayoutDescrFile=
+PlotDirectoryName=
+SubpartIdSeparator=0
+SubpartFirstId=65
+NetFmtName=
+SpiceForceRefPrefix=0
+SpiceUseNetNumbers=0
+LabSize=60
+[general]
+version=1
