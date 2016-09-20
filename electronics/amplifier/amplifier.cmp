@@ -1,4 +1,12 @@
-Cmp-Mod V01 Created by PcbNew   date = 18.09.2016 14:24:22
+Cmp-Mod V01 Created by PcbNew   date = 20.09.2016 20:58:03
+
+BeginCmp
+TimeStamp = 57DED582
+Path = /57E0958C/57E09AC0
+Reference = R17;
+ValeurCmp = 1k5;
+IdModule  = Resistors_ThroughHole:Resistor_Horizontal_RM15mm;
+EndCmp
 
 BeginCmp
 TimeStamp = 57DAF685
@@ -153,54 +161,6 @@ IdModule  = Capacitors_ThroughHole:C_Radial_D18_L36_P7.5;
 EndCmp
 
 BeginCmp
-TimeStamp = 57DAF562
-Path = /57D65562
-Reference = D2;
-ValeurCmp = LED;
-IdModule  = LEDs:LED-5MM;
-EndCmp
-
-BeginCmp
-TimeStamp = 57DAF568
-Path = /57D65ECF
-Reference = D3;
-ValeurCmp = LED;
-IdModule  = LEDs:LED-5MM;
-EndCmp
-
-BeginCmp
-TimeStamp = 57DAF56E
-Path = /57D9301E
-Reference = P1;
-ValeurCmp = CONN_02X01;
-IdModule  = Pin_Headers:Pin_Header_Straight_2x01;
-EndCmp
-
-BeginCmp
-TimeStamp = 57DAF574
-Path = /57D9163D
-Reference = P2;
-ValeurCmp = CONN_02X01;
-IdModule  = Pin_Headers:Pin_Header_Straight_2x01;
-EndCmp
-
-BeginCmp
-TimeStamp = 57DAF579
-Path = /57D5B80D
-Reference = P3;
-ValeurCmp = CONN_01X01;
-IdModule  = Pin_Headers:Pin_Header_Straight_1x01;
-EndCmp
-
-BeginCmp
-TimeStamp = 57DAF57F
-Path = /57D91DAD
-Reference = P4;
-ValeurCmp = CONN_02X01;
-IdModule  = Pin_Headers:Pin_Header_Straight_2x01;
-EndCmp
-
-BeginCmp
 TimeStamp = 57DAF5A3
 Path = /57CB3ADB
 Reference = R1;
@@ -241,14 +201,6 @@ IdModule  = Resistors_ThroughHole:Resistor_Horizontal_RM10mm;
 EndCmp
 
 BeginCmp
-TimeStamp = 57DAF5CD
-Path = /57CBB38E
-Reference = R8;
-ValeurCmp = 22k;
-IdModule  = Resistors_ThroughHole:Resistor_Horizontal_RM10mm;
-EndCmp
-
-BeginCmp
 TimeStamp = 57DAF5D3
 Path = /57CBAE9B
 Reference = R9;
@@ -281,14 +233,6 @@ IdModule  = Resistors_ThroughHole:Resistor_Horizontal_RM10mm;
 EndCmp
 
 BeginCmp
-TimeStamp = 57DAF5EB
-Path = /57CBB160
-Reference = R13;
-ValeurCmp = 820R;
-IdModule  = Resistors_ThroughHole:Resistor_Horizontal_RM10mm;
-EndCmp
-
-BeginCmp
 TimeStamp = 57DAF5F1
 Path = /57CB83D2
 Reference = R14;
@@ -305,42 +249,10 @@ IdModule  = Resistors_ThroughHole:Resistor_Horizontal_RM10mm;
 EndCmp
 
 BeginCmp
-TimeStamp = 57DAF5FD
-Path = /57D654CE
-Reference = R16;
-ValeurCmp = 10k;
-IdModule  = Resistors_ThroughHole:Resistor_Horizontal_RM10mm;
-EndCmp
-
-BeginCmp
-TimeStamp = 57DAF603
-Path = /57D65EC2
-Reference = R17;
-ValeurCmp = 10k;
-IdModule  = Resistors_ThroughHole:Resistor_Horizontal_RM10mm;
-EndCmp
-
-BeginCmp
 TimeStamp = 57DAF609
 Path = /57D64042
 Reference = R18;
 ValeurCmp = 10k;
-IdModule  = Resistors_ThroughHole:Resistor_Horizontal_RM10mm;
-EndCmp
-
-BeginCmp
-TimeStamp = 57DAF60F
-Path = /57D656BB
-Reference = R19;
-ValeurCmp = 220R;
-IdModule  = Resistors_ThroughHole:Resistor_Horizontal_RM10mm;
-EndCmp
-
-BeginCmp
-TimeStamp = 57DAF615
-Path = /57D65ED5
-Reference = R20;
-ValeurCmp = 220R;
 IdModule  = Resistors_ThroughHole:Resistor_Horizontal_RM10mm;
 EndCmp
 
@@ -389,14 +301,6 @@ TimeStamp = 57DAF639
 Path = /57D68778
 Reference = R26;
 ValeurCmp = 1k2;
-IdModule  = Resistors_ThroughHole:Resistor_Horizontal_RM10mm;
-EndCmp
-
-BeginCmp
-TimeStamp = 57DAF63F
-Path = /57D687B5
-Reference = R27;
-ValeurCmp = 820R;
 IdModule  = Resistors_ThroughHole:Resistor_Horizontal_RM10mm;
 EndCmp
 
@@ -489,14 +393,6 @@ IdModule  = Power_Integrations:TO-220;
 EndCmp
 
 BeginCmp
-TimeStamp = 57DAF6C0
-Path = /57D6285C
-Reference = U5;
-ValeurCmp = 74HC04;
-IdModule  = Housings_DIP:DIP-14_W7.62mm_LongPads;
-EndCmp
-
-BeginCmp
 TimeStamp = 57DAF6D6
 Path = /57D686ED
 Reference = U7;
@@ -508,14 +404,6 @@ BeginCmp
 TimeStamp = 57DB004C
 Path = /57D8B0A4
 Reference = Q5;
-ValeurCmp = BC548;
-IdModule  = TO_SOT_Packages_THT:TO-92_Molded_Narrow;
-EndCmp
-
-BeginCmp
-TimeStamp = 57DB0042
-Path = /57D65EBC
-Reference = Q3;
 ValeurCmp = BC548;
 IdModule  = TO_SOT_Packages_THT:TO-92_Molded_Narrow;
 EndCmp
@@ -556,14 +444,6 @@ BeginCmp
 TimeStamp = 57DB0451
 Path = /57D5EADB
 Reference = K4;
-ValeurCmp = screw_terminal_2x01;
-IdModule  = Connect:bornier2;
-EndCmp
-
-BeginCmp
-TimeStamp = 57DB0457
-Path = /57D5FE72
-Reference = K5;
 ValeurCmp = screw_terminal_2x01;
 IdModule  = Connect:bornier2;
 EndCmp
@@ -650,7 +530,7 @@ EndCmp
 
 BeginCmp
 TimeStamp = 57DB07C7
-Path = /57D7FE09
+Path = /57E06EED
 Reference = C31;
 ValeurCmp = 100nF;
 IdModule  = Capacitors_ThroughHole:C_Disc_D7.5_P5;
@@ -665,27 +545,11 @@ IdModule  = TO_SOT_Packages_THT:TO-92_Molded_Narrow;
 EndCmp
 
 BeginCmp
-TimeStamp = 57DB07D2
-Path = /57D654C8
-Reference = Q2;
-ValeurCmp = BC548;
-IdModule  = TO_SOT_Packages_THT:TO-92_Molded_Narrow;
-EndCmp
-
-BeginCmp
 TimeStamp = 57DB1F2F
 Path = /57DE8D79
 Reference = P5;
 ValeurCmp = CONN_01X03;
 IdModule  = Connect:bornier3;
-EndCmp
-
-BeginCmp
-TimeStamp = 57DB2264
-Path = 
-Reference = REF**;
-ValeurCmp = EuroBoard160mmX100mm_holes;
-IdModule  = EuroBoard_Outline:EuroBoard160mmX100mm_holes;
 EndCmp
 
 BeginCmp
@@ -761,83 +625,147 @@ IdModule  = Capacitors_ThroughHole:C_Radial_D6.3_L11.2_P2.5;
 EndCmp
 
 BeginCmp
-TimeStamp = 57DAF703
-Path = /57D68822
-Reference = W9;
-ValeurCmp = TEST_1P;
-IdModule  = Measurement_Points:Measurement_Point_Round-TH_Small;
+TimeStamp = 57DE9F1E
+Path = /57D9301E
+Reference = P1;
+ValeurCmp = CONN_02X01;
+IdModule  = Pin_Headers:Pin_Header_Straight_2x01;
 EndCmp
 
 BeginCmp
-TimeStamp = 57DAF6DB
-Path = /57D6211C
-Reference = W1;
-ValeurCmp = TEST_1P;
-IdModule  = Measurement_Points:Measurement_Point_Round-TH_Small;
+TimeStamp = 57DE9F2F
+Path = /57E00D36
+Reference = P2;
+ValeurCmp = CONN_02X01;
+IdModule  = Pin_Headers:Pin_Header_Straight_2x01;
 EndCmp
 
 BeginCmp
-TimeStamp = 57DAF70D
-Path = /57D6883A
-Reference = W11;
-ValeurCmp = TEST_1P;
-IdModule  = Measurement_Points:Measurement_Point_Round-TH_Small;
+TimeStamp = 57DE9F40
+Path = /57E03A18
+Reference = P3;
+ValeurCmp = CONN_02X01;
+IdModule  = Pin_Headers:Pin_Header_Straight_2x01;
 EndCmp
 
 BeginCmp
-TimeStamp = 57DAF6EF
-Path = /57D62833
-Reference = W5;
-ValeurCmp = TEST_1P;
-IdModule  = Measurement_Points:Measurement_Point_Round-TH_Small;
+TimeStamp = 57DE9F51
+Path = /57E0250E
+Reference = P4;
+ValeurCmp = CONN_02X01;
+IdModule  = Pin_Headers:Pin_Header_Straight_2x01;
 EndCmp
 
 BeginCmp
-TimeStamp = 57DAF6EA
-Path = /57D62585
-Reference = W4;
-ValeurCmp = TEST_1P;
-IdModule  = Measurement_Points:Measurement_Point_Round-TH_Small;
+TimeStamp = 57DEA55B
+Path = /57E07903
+Reference = C13;
+ValeurCmp = 100µF;
+IdModule  = Capacitors_ThroughHole:C_Radial_D6.3_L11.2_P2.5;
 EndCmp
 
 BeginCmp
-TimeStamp = 57DAF6E5
-Path = /57D61E0F
-Reference = W3;
-ValeurCmp = TEST_1P;
-IdModule  = Measurement_Points:Measurement_Point_Round-TH_Small;
+TimeStamp = 57DEA56C
+Path = /57E0621E
+Reference = U5;
+ValeurCmp = LM7805CT;
+IdModule  = TO-220;
 EndCmp
 
 BeginCmp
-TimeStamp = 57DAF6E0
-Path = /57D6221B
-Reference = W2;
-ValeurCmp = TEST_1P;
-IdModule  = Measurement_Points:Measurement_Point_Round-TH_Small;
+TimeStamp = 57DAF63F
+Path = /57D687B5
+Reference = R27;
+ValeurCmp = 820R;
+IdModule  = special_symbols:Resistor_Vertical_RM2.5mm;
 EndCmp
 
 BeginCmp
-TimeStamp = 57DAF6F9
-Path = /57D68828
-Reference = W7;
-ValeurCmp = TEST_1P;
-IdModule  = Measurement_Points:Measurement_Point_Round-TH_Small;
+TimeStamp = 57DAF5EB
+Path = /57CBB160
+Reference = R13;
+ValeurCmp = 820R;
+IdModule  = special_symbols:Resistor_Vertical_RM2.5mm;
 EndCmp
 
 BeginCmp
-TimeStamp = 57DAF708
-Path = /57D68834
-Reference = W10;
-ValeurCmp = TEST_1P;
-IdModule  = Measurement_Points:Measurement_Point_Round-TH_Small;
+TimeStamp = 57DAF5CD
+Path = /57CBB38E
+Reference = R8;
+ValeurCmp = 22k;
+IdModule  = special_symbols:Resistor_Vertical_RM2.5mm;
 EndCmp
 
 BeginCmp
-TimeStamp = 57DAF6FE
-Path = /57D6882E
-Reference = W8;
-ValeurCmp = TEST_1P;
-IdModule  = Measurement_Points:Measurement_Point_Round-TH_Small;
+TimeStamp = 57DED562
+Path = /57E0958C/57E09893
+Reference = D2;
+ValeurCmp = Diode_Bridge;
+IdModule  = special_symbols:Diode_Bridge_32x5.7;
+EndCmp
+
+BeginCmp
+TimeStamp = 57DEE041
+Path = /57E0958C/57E09DAC
+Reference = C36;
+ValeurCmp = 100nF;
+IdModule  = Capacitors_ThroughHole:C_Disc_D6_P5;
+EndCmp
+
+BeginCmp
+TimeStamp = 57DEE04D
+Path = /57E0958C/57E09BF5
+Reference = D3;
+ValeurCmp = LED;
+IdModule  = LEDs:LED-5MM;
+EndCmp
+
+BeginCmp
+TimeStamp = 57DEE058
+Path = /57E0958C/57E098E4
+Reference = H1;
+ValeurCmp = screw_terminal_2x01;
+IdModule  = Connect:bornier2;
+EndCmp
+
+BeginCmp
+TimeStamp = 57DEE063
+Path = /57E0958C/57E099C7
+Reference = H2;
+ValeurCmp = screw_terminal_2x01;
+IdModule  = Connect:bornier2;
+EndCmp
+
+BeginCmp
+TimeStamp = 57DEF877
+Path = /57E0958C/57E09F07
+Reference = C35;
+ValeurCmp = 2200µF;
+IdModule  = special_symbols:C_Radial_D30_L51_P10_3pin;
+EndCmp
+
+BeginCmp
+TimeStamp = 57DEF7F0
+Path = /57E0958C/57E09EAB
+Reference = C34;
+ValeurCmp = 2200µF;
+IdModule  = special_symbols:C_Radial_D30_L51_P10_3pin;
+EndCmp
+
+BeginCmp
+TimeStamp = 57DEF769
+Path = /57E0958C/57E09E7C
+Reference = C33;
+ValeurCmp = 2200µF;
+IdModule  = special_symbols:C_Radial_D30_L51_P10_3pin;
+EndCmp
+
+BeginCmp
+TimeStamp = 57E18A6E
+Path = /57E0958C/57E09B2F
+Reference = R16;
+ValeurCmp = 1R;
+IdModule  = special_symbols:Resistor_Ceramic_Horizontal_L25mm-W6.4mm-H6.4mm-p30mm;
 EndCmp
 
 EndListe

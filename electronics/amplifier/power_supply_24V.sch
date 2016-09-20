@@ -81,7 +81,6 @@ LIBS:video
 LIBS:Worldsemi
 LIBS:Xicor
 LIBS:Zilog
-LIBS:motors
 LIBS:amplifier-cache
 EELAYER 25 0
 EELAYER END
@@ -102,8 +101,8 @@ L Diode_Bridge D2
 U 1 1 57E09893
 P 3100 3050
 F 0 "D2" H 2850 3350 50  0000 C CNN
-F 1 "Diode_Bridge" H 3450 2700 50  0000 C CNN
-F 2 "special_symbols:Diode_Bridge_32x5.7" H 3100 3050 50  0000 C CNN
+F 1 "B40C5000" H 3450 2700 50  0000 C CNN
+F 2 "special_symbols:Diode_Bridge_32x5.7" H 3100 3050 50  0001 C CNN
 F 3 "" H 3100 3050 50  0000 C CNN
 	1    3100 3050
 	0    -1   -1   0   
@@ -156,7 +155,7 @@ U 1 1 57E09AC0
 P 5250 2750
 F 0 "R17" V 5330 2750 50  0000 C CNN
 F 1 "1k5" V 5250 2750 50  0000 C CNN
-F 2 "Resistors_ThroughHole:Resistor_Horizontal_RM15mm" V 5180 2750 50  0000 C CNN
+F 2 "Resistors_ThroughHole:Resistor_Horizontal_RM15mm" V 5180 2750 50  0001 C CNN
 F 3 "" H 5250 2750 50  0000 C CNN
 	1    5250 2750
 	1    0    0    -1  
@@ -167,7 +166,7 @@ U 1 1 57E09B2F
 P 5050 2350
 F 0 "R16" V 5130 2350 50  0000 C CNN
 F 1 "1R" V 5050 2350 50  0000 C CNN
-F 2 "Resistors_ThroughHole:Resistor_Ceramic_Horizontal_L23mm-W9mm-H9mm-p30mm" V 4980 2350 50  0000 C CNN
+F 2 "special_symbols:Resistor_Ceramic_Horizontal_L25mm-W6.4mm-H6.4mm-p30mm" V 4980 2350 50  0001 C CNN
 F 3 "" H 5050 2350 50  0000 C CNN
 	1    5050 2350
 	0    1    1    0   
@@ -212,7 +211,7 @@ U 1 1 57E09E7C
 P 4150 2950
 F 0 "C33" H 4175 3050 50  0000 L CNN
 F 1 "2200µF" H 4175 2850 50  0000 L CNN
-F 2 "Capacitors_ThroughHole:C_Radial_D30_L51_P10" H 4188 2800 50  0000 C CNN
+F 2 "special_symbols:C_Radial_D30_L51_P10_3pin" H 4188 2800 50  0001 C CNN
 F 3 "" H 4150 2950 50  0000 C CNN
 	1    4150 2950
 	1    0    0    -1  
@@ -223,7 +222,7 @@ U 1 1 57E09EAB
 P 4400 2950
 F 0 "C34" H 4425 3050 50  0000 L CNN
 F 1 "2200µF" H 4425 2850 50  0000 L CNN
-F 2 "Capacitors_ThroughHole:C_Radial_D30_L51_P10" H 4438 2800 50  0000 C CNN
+F 2 "special_symbols:C_Radial_D30_L51_P10_3pin" H 4438 2800 50  0001 C CNN
 F 3 "" H 4400 2950 50  0000 C CNN
 	1    4400 2950
 	1    0    0    -1  
@@ -234,7 +233,7 @@ U 1 1 57E09F07
 P 4650 2950
 F 0 "C35" H 4675 3050 50  0000 L CNN
 F 1 "2200µF" H 4675 2850 50  0000 L CNN
-F 2 "Capacitors_ThroughHole:C_Radial_D30_L51_P10" H 4688 2800 50  0000 C CNN
+F 2 "special_symbols:C_Radial_D30_L51_P10_3pin" H 4688 2800 50  0001 C CNN
 F 3 "" H 4650 2950 50  0000 C CNN
 	1    4650 2950
 	1    0    0    -1  

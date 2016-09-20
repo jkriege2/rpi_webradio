@@ -81,7 +81,6 @@ LIBS:video
 LIBS:Worldsemi
 LIBS:Xicor
 LIBS:Zilog
-LIBS:motors
 LIBS:amplifier-cache
 EELAYER 25 0
 EELAYER END
@@ -459,7 +458,7 @@ U 1 1 57CBB160
 P 4950 6300
 F 0 "R13" V 5030 6300 50  0000 C CNN
 F 1 "820R" V 4950 6300 50  0000 C CNN
-F 2 "Resistors_ThroughHole:Resistor_Horizontal_RM10mm" V 4880 6300 50  0001 C CNN
+F 2 "special_symbols:Resistor_Vertical_RM2.5mm" V 4880 6300 50  0001 C CNN
 F 3 "" H 4950 6300 50  0000 C CNN
 	1    4950 6300
 	0    1    1    0   
@@ -481,7 +480,7 @@ U 1 1 57CBB38E
 P 4050 6800
 F 0 "R8" V 4130 6800 50  0000 C CNN
 F 1 "22k" V 4050 6800 50  0000 C CNN
-F 2 "Resistors_ThroughHole:Resistor_Horizontal_RM10mm" V 3980 6800 50  0001 C CNN
+F 2 "special_symbols:Resistor_Vertical_RM2.5mm" V 3980 6800 50  0001 C CNN
 F 3 "" H 4050 6800 50  0000 C CNN
 	1    4050 6800
 	1    0    0    -1  
@@ -1356,7 +1355,7 @@ U 1 1 57D687B5
 P 4950 13000
 F 0 "R27" V 5030 13000 50  0000 C CNN
 F 1 "820R" V 4950 13000 50  0000 C CNN
-F 2 "Resistors_ThroughHole:Resistor_Horizontal_RM10mm" V 4880 13000 50  0001 C CNN
+F 2 "special_symbols:Resistor_Vertical_RM2.5mm" V 4880 13000 50  0001 C CNN
 F 3 "" H 4950 13000 50  0000 C CNN
 	1    4950 13000
 	0    1    1    0   
@@ -1949,7 +1948,7 @@ U 1 1 57E0621E
 P 8050 7600
 F 0 "U5" H 7850 7800 50  0000 C CNN
 F 1 "LM7805CT" H 8050 7800 50  0000 L CNN
-F 2 "Power_Integrations:TO-220" H 8050 7700 50  0000 C CIN
+F 2 "TO-220" H 8050 7700 50  0001 C CIN
 F 3 "" H 8050 7600 50  0000 C CNN
 	1    8050 7600
 	-1   0    0    -1  
