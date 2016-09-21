@@ -170,7 +170,7 @@ U 1 1 57CC0D88
 P 3300 3350
 F 0 "Q1" H 3500 3425 50  0000 L CNN
 F 1 "BC548" H 3500 3350 50  0000 L CNN
-F 2 "TO_SOT_Packages_THT:TO-92_Molded_Narrow" H 3500 3275 50  0001 L CIN
+F 2 "TO_SOT_Packages_THT:TO-92_Inline_Narrow_Oval" H 3500 3275 50  0001 L CIN
 F 3 "" H 3300 3350 50  0000 L CNN
 	1    3300 3350
 	1    0    0    -1  
@@ -561,22 +561,6 @@ F 3 "" H 5950 5250 50  0000 C CNN
 	1    5950 5250
 	1    0    0    -1  
 $EndComp
-Wire Wire Line
-	6250 5600 6150 5600
-Wire Wire Line
-	6150 5600 6150 5550
-Wire Wire Line
-	6450 5600 6550 5600
-Wire Wire Line
-	6550 5600 6550 5550
-Wire Wire Line
-	6250 4950 6250 4850
-Wire Wire Line
-	6250 4850 6350 4850
-Wire Wire Line
-	6650 4950 6650 4850
-Wire Wire Line
-	6650 4850 6550 4850
 $Comp
 L AVR-ISP-6 CON1
 U 1 1 57D57B05
@@ -655,7 +639,7 @@ U 1 1 57DEE3BF
 P 4600 2150
 F 0 "SW1" H 4600 2250 50  0000 C CNN
 F 1 "SPST" H 4600 2050 50  0000 C CNN
-F 2 "Connect:bornier2" H 4600 2150 50  0001 C CNN
+F 2 "special_symbols:TerminalBlock_RND-205-00243_RM10.16mm_2pol" H 4600 2150 50  0001 C CNN
 F 3 "" H 4600 2150 50  0000 C CNN
 	1    4600 2150
 	1    0    0    -1  
@@ -685,23 +669,23 @@ $EndComp
 $Comp
 L screw_terminal_2x01 H2
 U 1 1 57DEF43E
-P 6550 4850
-F 0 "H2" H 6300 5000 50  0000 L TNN
-F 1 "screw_terminal_2x01" H 6300 5100 50  0001 L TNN
-F 2 "Connect:bornier2" H 6350 4750 60  0001 C CNN
-F 3 "" H 6350 4750 60  0001 C CNN
-	1    6550 4850
+P 6850 4850
+F 0 "H2" H 6600 5000 50  0000 L TNN
+F 1 "screw_terminal_2x01" H 6600 5100 50  0001 L TNN
+F 2 "Connect:bornier2" H 6650 4750 60  0001 C CNN
+F 3 "" H 6650 4750 60  0001 C CNN
+	1    6850 4850
 	0    1    1    0   
 $EndComp
 $Comp
 L screw_terminal_2x01 H1
 U 1 1 57DEF4F0
-P 6250 5600
-F 0 "H1" H 6000 5750 50  0000 L TNN
-F 1 "screw_terminal_2x01" H 6000 5850 50  0001 L TNN
-F 2 "Connect:bornier2" H 6050 5500 60  0001 C CNN
-F 3 "" H 6050 5500 60  0001 C CNN
-	1    6250 5600
+P 5950 5700
+F 0 "H1" H 5700 5850 50  0000 L TNN
+F 1 "screw_terminal_2x01" H 5700 5950 50  0001 L TNN
+F 2 "Connect:bornier2" H 5750 5600 60  0001 C CNN
+F 3 "" H 5750 5600 60  0001 C CNN
+	1    5950 5700
 	0    -1   -1   0   
 $EndComp
 Wire Wire Line
@@ -745,4 +729,20 @@ F 3 "" H 2500 2050 50  0000 C CNN
 $EndComp
 Wire Wire Line
 	3400 2050 2650 2050
+Wire Wire Line
+	6150 5700 6150 5550
+Wire Wire Line
+	5950 5700 5950 4800
+Wire Wire Line
+	5950 4800 6250 4800
+Wire Wire Line
+	6250 4800 6250 4950
+Wire Wire Line
+	6650 4950 6650 4850
+Wire Wire Line
+	6850 4850 6850 5600
+Wire Wire Line
+	6850 5600 6550 5600
+Wire Wire Line
+	6550 5600 6550 5550
 $EndSCHEMATC

@@ -1,4 +1,28 @@
-Cmp-Mod V01 Created by PcbNew   date = 18.09.2016 20:42:43
+Cmp-Mod V01 Created by PcbNew   date = 21.09.2016 23:25:20
+
+BeginCmp
+TimeStamp = 57DEE175
+Path = /57CC52BA
+Reference = Q2;
+ValeurCmp = BC548;
+IdModule  = TO_SOT_Packages_THT:TO-92_Molded_Narrow;
+EndCmp
+
+BeginCmp
+TimeStamp = 57DEE17B
+Path = /57CC12B6
+Reference = R1;
+ValeurCmp = 47k;
+IdModule  = Resistors_ThroughHole:Resistor_Horizontal_RM10mm;
+EndCmp
+
+BeginCmp
+TimeStamp = 57DEE2B6
+Path = /57DEECFF
+Reference = K2;
+ValeurCmp = WALLSOCKET_NOEARTH_220V;
+IdModule  = Terminal_Blocks:TerminalBlock_Pheonix_MKDS1.5-2pol;
+EndCmp
 
 BeginCmp
 TimeStamp = 57DEE127
@@ -65,30 +89,6 @@ IdModule  = Connect:bornier2;
 EndCmp
 
 BeginCmp
-TimeStamp = 57DEE16E
-Path = /57CC0D88
-Reference = Q1;
-ValeurCmp = BC548;
-IdModule  = TO_SOT_Packages_THT:TO-92_Molded_Narrow;
-EndCmp
-
-BeginCmp
-TimeStamp = 57DEE175
-Path = /57CC52BA
-Reference = Q2;
-ValeurCmp = BC548;
-IdModule  = TO_SOT_Packages_THT:TO-92_Molded_Narrow;
-EndCmp
-
-BeginCmp
-TimeStamp = 57DEE17B
-Path = /57CC12B6
-Reference = R1;
-ValeurCmp = 100k;
-IdModule  = Resistors_ThroughHole:Resistor_Horizontal_RM10mm;
-EndCmp
-
-BeginCmp
 TimeStamp = 57DEE181
 Path = /57CC2493
 Reference = R2;
@@ -137,14 +137,6 @@ IdModule  = Relays_ThroughHole:Relay_DPDT_Schrack-RT2_RM5mm;
 EndCmp
 
 BeginCmp
-TimeStamp = 57DEE1B1
-Path = /57DEE3BF
-Reference = SW1;
-ValeurCmp = SPST;
-IdModule  = Connect:bornier2;
-EndCmp
-
-BeginCmp
 TimeStamp = 57DEE1B9
 Path = /57DED362
 Reference = U1;
@@ -153,11 +145,67 @@ IdModule  = Housings_DIP:DIP-4_W7.62mm_LongPads;
 EndCmp
 
 BeginCmp
-TimeStamp = 57DEE167
-Path = /57DECACE
+TimeStamp = 57DEE2B0
+Path = /57DEDE39
+Reference = K1;
+ValeurCmp = WALLPLUG_NOEARTH_220V;
+IdModule  = Terminal_Blocks:TerminalBlock_Pheonix_MKDS1.5-2pol;
+EndCmp
+
+BeginCmp
+TimeStamp = 57DEE40E
+Path = /57DEF4F0
+Reference = H1;
+ValeurCmp = screw_terminal_2x01;
+IdModule  = Connect:bornier2;
+EndCmp
+
+BeginCmp
+TimeStamp = 57DEE414
+Path = /57DEF43E
+Reference = H2;
+ValeurCmp = screw_terminal_2x01;
+IdModule  = Connect:bornier2;
+EndCmp
+
+BeginCmp
+TimeStamp = 57DEE16E
+Path = /57CC0D88
+Reference = Q1;
+ValeurCmp = BC548;
+IdModule  = TO_SOT_Packages_THT:TO-92_Inline_Narrow_Oval;
+EndCmp
+
+BeginCmp
+TimeStamp = 57DEE9BA
+Path = /57DEFFB9
 Reference = P3;
-ValeurCmp = CONN_01X02;
-IdModule  = Pin_Headers:Pin_Header_Straight_1x02;
+ValeurCmp = CONN_01X01;
+IdModule  = Pin_Headers:Pin_Header_Straight_1x01;
+EndCmp
+
+BeginCmp
+TimeStamp = 57DEE9BF
+Path = /57DF003E
+Reference = P4;
+ValeurCmp = CONN_01X01;
+IdModule  = Pin_Headers:Pin_Header_Straight_1x01;
+EndCmp
+
+BeginCmp
+TimeStamp = 57DEEA7C
+Path = /57DF0773
+Reference = R6;
+ValeurCmp = 47k;
+IdModule  = Resistors_ThroughHole:Resistor_Horizontal_RM10mm;
+EndCmp
+
+BeginCmp
+TimeStamp = 57DEE1B1
+Path = /57DEE3BF
+Reference = SW1;
+ValeurCmp = SPST;
+IdModule  = special_symbols:TerminalBlock_RND-205-00243_RM10.16mm_2pol;
 EndCmp
 
 EndListe
