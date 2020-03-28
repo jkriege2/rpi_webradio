@@ -3,6 +3,7 @@ debug: Debug
 release: Release
 
 LIBS=../lib \
+     ../rpitools \
      ./ \
      ../ \
      ../../CImg
@@ -11,7 +12,7 @@ CC=g++ -std=c++11
 
 
 CFLAGS =  -Wall -pedantic `pkg-config --cflags cairo`
-LDFLAGS = -Wall -pedantic `pkg-config --libs cairo` -lwiringPi -lpthread
+LDFLAGS = -Wall -pedantic `pkg-config --libs cairo` -lwiringPi -lpthread -lboost_iostreams -lboost_program_options -lboost_filesystem -lboost_exception -lboost_system -lboost_signals -lboost_locale
 
 Release: OBJDIR = .objs
 OBJDIR_DEBUG = .objs_debug
@@ -36,9 +37,11 @@ LIBS_I = $(addprefix -I,$(LIBS))
 LIBS_L = $(addprefix -L,$(LIBS))
 
 GUILIBDIR = ../lib/
-Release: LDFLAGS += -L${GUILIBDIR} -lcairogui
-Debug: LDFLAGS += -L${GUILIBDIR} -lcairogui_debug
+RPITOOLSLIBDIR = ../rpitools/
+Release: LDFLAGS += -L${GUILIBDIR} -lcairogui -L${RPITOOLSLIBDIR} -lrpitools
+Debug: LDFLAGS += -L${GUILIBDIR} -lcairogui_debug -L${RPITOOLSLIBDIR} -lrpitools_debug
 
+LIBS += ${GUILIBDIR} ${RPITOOLSLIBDIR}
 
 -include ${SRC_FILE_D}
 
@@ -46,17 +49,21 @@ Debug:  ${EXECUTABLE_DEBUG}
 
 Release:  ${EXECUTABLE}
 
-${EXECUTABLE}: GUILIB_RELEASE ${SRC_FILE_O_RELEASE}
-	cd $(GUILIBDIR); make Release -j4
+${EXECUTABLE}: GUILIB_RELEASE RPITOOLSLIB_RELEASE ${SRC_FILE_O_RELEASE}
 	$(CC) $(CFLAGS) $(LIBS_L) -o $(EXECUTABLE) ${SRC_FILE_O_RELEASE} $(LDFLAGS)
 
-${EXECUTABLE_DEBUG}: GUILIB_DEBUG ${SRC_FILE_O_DEBUG}
+${EXECUTABLE_DEBUG}: GUILIB_DEBUG RPITOOLSLIB_DEBUG ${SRC_FILE_O_DEBUG}
 	$(CC) $(CFLAGS) $(LIBS_L) -o $(EXECUTABLE) ${SRC_FILE_O_DEBUG} $(LDFLAGS)
 
 GUILIB_DEBUG:
 	cd $(GUILIBDIR); make Debug -j4
 GUILIB_RELEASE:
 	cd $(GUILIBDIR); make Release -j4
+
+RPITOOLSLIB_DEBUG:
+	+cd $(RPITOOLSLIBDIR); $(MAKE) Debug
+RPITOOLSLIB_RELEASE:
+	+cd $(RPITOOLSLIBDIR); $(MAKE) Release
 
 
 ${OBJDIR_RELEASE}/%.o: ./%.cpp
