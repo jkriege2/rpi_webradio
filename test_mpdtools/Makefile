@@ -3,8 +3,7 @@ debug: Debug
 release: Release
 
 LIBS=./ \
-     ../ \
-     ../../CImg
+     ../
 
 CC=g++ -std=c++11
 
