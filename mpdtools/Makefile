@@ -7,8 +7,7 @@ both:
 	+make Release 
 
 LIBS=./ \
-     ../ \
-     ../../CImg
+     ../ 
 
 CC=g++ -std=c++11
 
