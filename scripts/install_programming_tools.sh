@@ -53,7 +53,7 @@ if [ "$FAST" = "0" ] ; then
 	
 
 	#install boost
-	apt-get install libboost-all-dev libboost-dev libboost-dbg libboost-doc
+	apt-get install libboost-all-dev libboost-dev libboost-doc
 	
 	#install cairo etc.
 	apt-get install libpixman-1-dev libcairo2 libcairo2-dev
@@ -85,20 +85,12 @@ if [ "$FAST" = "0" ] ; then
 	echo "\ndtparam=i2c_arm=on\ndtparam=i2c1=on\n" >> /boot/config.txt
 
 	
-	cd $HOMEDIR
-	# clone and install wiringPi
-	git clone git://git.drogon.net/wiringPi
-	cd wiringPi
-	./build
-	cd $CURRENTDIR
+	# installiert CImg
+	apt-get install cimg-dev cimg-doc cimg-examples
+	
+	# installiert WiringPi
+	apt-get install wiringpi
 
-
-	cd $HOMEDIR
-	# clone and install CImg
-	git clone https://github.com/dtschump/CImg.git
-	cd wiringPi
-	./build
-	cd $CURRENTDIR
 
 fi
 
@@ -142,7 +134,7 @@ MOUNT_BASEDIR=/mnt
 echo "\n\nMount network music directory [y/n]?"
 read NET_MOUNT
 if [ "$NET_MOUNT" = "y" ] ; then
-    echo "enter path:"  
+    echo "enter path (e.g. //nas/Musik):"  
 	read NET_DIR
 	echo "enter name for this collection:"  
 	read NET_NAME

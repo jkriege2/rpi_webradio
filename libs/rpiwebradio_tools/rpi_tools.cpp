@@ -5,6 +5,7 @@
 #include <iostream>
 #include <thread>
 #include <mutex>
+#include <cmath>
 #include <chrono>
 #include <atomic>
 #include <unistd.h>
@@ -151,7 +152,7 @@ void pitft22hat_setBackgroundIntensity(float intensity_percent)
         digitalWrite(18, 1);
     } else {
         pinMode(18, PWM_OUTPUT);
-        pwmWrite(18, round(I/100.0*1024.0));
+        pwmWrite(18, std::round(I/100.0*1024.0));
     }
 
 }
@@ -393,15 +394,7 @@ void rpi_softblink_deregisterpin(int pin)
 {
     rpi_softblink_mutex.lock();
     int idx=-1;
-    for (size_t i=0; i<rpi_softblink_pins.size(); i++) {
-        if (rpi_softblink_pins[i].pin==pin) {
-            idx=i;
-            break;
-        }
-    }
-    if (idx>=0) {
-        rpi_softblink_pins.erase(rpi_softblink_pins.begin()+idx);
-    }
+	rpi_softblink_pins.erase(std::remove_if(rpi_softblink_pins.begin(), rpi_softblink_pins.end(), [pin](const rpi_softblink_data& d) { return d.pin==pin; }));
     rpi_softblink_mutex.unlock();
 }
 

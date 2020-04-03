@@ -42,7 +42,7 @@
 #include <unistd.h>
 #include <atomic>
 #include <string>
-
+ 
 #include <boost/program_options/options_description.hpp>
 #include <boost/program_options/variables_map.hpp>
 #include <boost/property_tree/ptree.hpp>
@@ -56,12 +56,12 @@
 #include <wiringPi.h>
 #include <softPwm.h>
 
-//#include "cgscreen.h"
-//#include "cgwidget.h"
-//#include "cgbasics.h"
-//#include "cglayout.h"
-//#include "cgevents.h"
-//#include "cgpalette.h"
+#include "cgscreen.h"
+#include "cgwidget.h"
+#include "cgbasics.h"
+#include "cglayout.h"
+#include "cgevents.h"
+#include "cgpalette.h"
 
 #endif // CGPRECOMP_H
 
