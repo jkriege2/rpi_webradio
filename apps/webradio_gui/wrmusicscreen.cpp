@@ -13,6 +13,7 @@
 WRMusicScreen::WRMusicScreen(CGWidget *parent):
     CGScreen(parent)
 {
+	CGBlockLogger logger("WRMusicScreen::WRMusicScreen()");
     m_lastQueueItem=-1;
     last_paint = std::chrono::system_clock::now();
     //std::cout<<"WRMusicScreen::paint size="<<size()<<"\n";
@@ -95,12 +96,13 @@ WRMusicScreen::WRMusicScreen(CGWidget *parent):
 
 WRMusicScreen::~WRMusicScreen()
 {
+	CGBlockLogger logger("WRMusicScreen::~WRMusicScreen()");
     onHide();
 }
 
 void WRMusicScreen::paint(cairo_t *c)
 {
-
+	CGBlockLogger logger("WRMusicScreen::paint()");
     std::chrono::system_clock::time_point n = std::chrono::system_clock::now();
     if ((n-last_paint).count()>1) {
         last_paint=n;
@@ -163,6 +165,7 @@ void WRMusicScreen::paint(cairo_t *c)
 
 void WRMusicScreen::event(CGEvent *e)
 {
+	CGBlockLogger logger("WRMusicScreen::event("+std::string(typeid(*e).name())+")");
     CGButtonClickedEvent* clk=dynamic_cast<CGButtonClickedEvent*>(e);
     CGInputScroll* rot=dynamic_cast<CGInputScroll*>(e);
     std::cout<<"WRMusicScreen::event: "<<e->toString()<<", "<<clk<<", "<<rot<<"\n";
@@ -218,6 +221,7 @@ void WRMusicScreen::event(CGEvent *e)
 
 void WRMusicScreen::stop()
 {
+	CGBlockLogger logger("WRMusicScreen::stop()");
     m_playing=false;
     m_lastQueue=mpdtools::lsQueue();
     m_lastQueueItem=mpdtools::getCurrentQueuePosition();
@@ -229,6 +233,7 @@ void WRMusicScreen::stop()
 
 void WRMusicScreen::play(int index)
 {
+	CGBlockLogger logger("WRMusicScreen::play()");
     mpdtools::clearQueue();
     std::string uri=m_musicProvider->uri(index);
     int qsize=mpdtools::getQueueLength();
@@ -253,6 +258,7 @@ void WRMusicScreen::play(int index)
 
 void WRMusicScreen::playLast()
 {
+	CGBlockLogger logger("WRMusicScreen::playLast()");
     if (m_lastQueueItem>=0 && m_lastQueueItem<(long)m_lastQueue.size()) {
         mpdtools::play(m_lastQueueItem);
     } else {
@@ -262,7 +268,7 @@ void WRMusicScreen::playLast()
 
 void WRMusicScreen::onShow()
 {
-    std::cout<<"WRMusicScreen::onShow()\n";
+    CGBlockLogger logger("WRMusicScreen::onShow()");
     mpdtools::stop();
     mpdtools::clearQueue();
     if (m_lastQueue.size()>0) {
@@ -279,7 +285,7 @@ void WRMusicScreen::onShow()
 
 void WRMusicScreen::onHide()
 {
-    std::cout<<"WRMusicScreen::onHide()\n";
+    CGBlockLogger logger("WRMusicScreen::onHide()");
     CGApplication::getInstance().getINI().put<std::string>("music.lastBaseURI", m_musicProvider->getBaseURI());
     CGApplication::getInstance().getINI().put<int>("music.lastTreeIndex", m_musicTree->currentItem());
     CGApplication::getInstance().saveINI();
@@ -288,5 +294,6 @@ void WRMusicScreen::onHide()
 
 void WRMusicScreen::updateList()
 {
+	CGBlockLogger logger("WRMusicScreen::onHide()");
 }
 

@@ -25,6 +25,7 @@
 #include "cgsymbol.h"
 #include "cgdirectorytreewidget.h"
 #include "cgtreebase.h"
+#include "cgdebug.h"
 
 #endif // CGLIB_H
 

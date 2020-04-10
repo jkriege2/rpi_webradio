@@ -70,11 +70,20 @@ function(export_all_flags _filename)
   set(_compile_definitions "$<TARGET_PROPERTY:${_target},COMPILE_DEFINITIONS>")
   set(_compile_flags "$<TARGET_PROPERTY:${_target},COMPILE_FLAGS>")
   set(_compile_options "$<TARGET_PROPERTY:${_target},COMPILE_OPTIONS>")
+  # file with compilation options
+  set( _tar_type "$<TARGET_PROPERTY:${_target},TYPE>" )
+  set( _tar_pic "$<BOOL:$<TARGET_PROPERTY:${_target},POSITION_INDEPENDENT_CODE>>" )
+ 
+
   set(_include_directories "$<$<BOOL:${_include_directories}>:-I$<JOIN:${_include_directories},\n-I>\n>")
   set(_compile_definitions "$<$<BOOL:${_compile_definitions}>:-D$<JOIN:${_compile_definitions},\n-D>\n>")
   set(_compile_flags "$<$<BOOL:${_compile_flags}>:$<JOIN:${_compile_flags},\n>\n>")
   set(_compile_options "$<$<BOOL:${_compile_options}>:$<JOIN:${_compile_options},\n>\n>")
-  file(GENERATE OUTPUT "${_filename}" CONTENT "${_compile_definitions}${_include_directories}${_compile_flags}${_compile_options}\n")
+  set( _tar_picEXE "$<${_tar_pic}:-fPIE>$<$<NOT:${_tar_pic}>:-fno-PIE>\n" )
+  set( _tar_picLIB "$<${_tar_pic}:-fPIC>$<$<NOT:${_tar_pic}>:-fno-PIC>\n" )
+  set( _tar_pic "$<$<STREQUAL:${_tar_type},EXECUTABLE>:${_tar_picEXE}>$<$<NOT:$<STREQUAL:${_tar_type},EXECUTABLE>>:${_tar_picLIB}>" )
+  
+  file(GENERATE OUTPUT "${_filename}" CONTENT "${_compile_definitions}${_tar_pic}${_include_directories}${_compile_flags}${_compile_options}\n")
 endfunction()
 
 function(add_precompiled_header _target _input)
@@ -162,6 +171,13 @@ function(add_precompiled_header _target _input)
     set(_pch_flags_file "${_pch_binary_dir}/compile_flags.rsp")
     export_all_flags("${_pch_flags_file}")
     set(_compiler_FLAGS "@${_pch_flags_file}")
+	
+		
+	# Gather global compiler options, definitions, etc.
+	string(TOUPPER "CMAKE_CXX_FLAGS_${CMAKE_BUILD_TYPE}" CXX_FLAGS)
+	set(GLOBAL_COMPILER_FLAGS "${${CXX_FLAGS}} ${CMAKE_CXX_FLAGS}")
+	separate_arguments(GLOBAL_COMPILER_FLAGS)
+		
     add_custom_command(
       OUTPUT "${_pchfile}"
       COMMAND "${CMAKE_COMMAND}" -E copy "${_pch_header}" "${_pchfile}"
@@ -169,7 +185,7 @@ function(add_precompiled_header _target _input)
       COMMENT "Updating ${_name}")
     add_custom_command(
       OUTPUT "${_output_cxx}"
-      COMMAND "${CMAKE_CXX_COMPILER}" ${_compiler_FLAGS} -x c++-header -o "${_output_cxx}" "${_pchfile}"
+      COMMAND "${CMAKE_CXX_COMPILER}" ${_compiler_FLAGS} ${GLOBAL_COMPILER_FLAGS} -x c++-header -o "${_output_cxx}" "${_pchfile}"
       DEPENDS "${_pchfile}" "${_pch_flags_file}"
       COMMENT "Precompiling ${_name} for ${_target} (C++)")
     add_custom_command(

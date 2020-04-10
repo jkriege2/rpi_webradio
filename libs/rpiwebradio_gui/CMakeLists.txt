@@ -38,6 +38,7 @@ set(SOURCES
 	cgwidget.cpp 
 	framebuffer_cairo_tools.cpp 
 	rpi_cgevents.cpp 
+	cgdebug.cpp
 )
 
 set(HEADERS
@@ -67,6 +68,7 @@ set(HEADERS
 	cgwidget.h 
 	framebuffer_cairo_tools.h 
 	rpi_cgevents.h 
+	cgdebug.h
 )
 
 include(CMakePackageConfigHelpers)

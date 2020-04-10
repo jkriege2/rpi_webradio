@@ -52,7 +52,6 @@
 
 #include <cairo.h>
 
-
 #include <wiringPi.h>
 #include <softPwm.h>
 
@@ -62,6 +61,7 @@
 #include "cglayout.h"
 #include "cgevents.h"
 #include "cgpalette.h"
+#include "cgdebug.h"
 
 #endif // CGPRECOMP_H
 

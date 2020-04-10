@@ -11,10 +11,12 @@
 #include "mpd_tools.h"
 #include "rpi_tools.h"
 #include "cgapplication.h"
+#include "cgdebug.h"
 
 WRRadioScreen::WRRadioScreen(CGWidget *parent):
     CGScreen(parent)
 {
+	CGBlockLogger logger("WRRadioScreen::WRRadioScreen()");
     m_playingItem=-1;
     //std::cout<<"WRRadioScreen::paint size="<<size()<<"\n";
     //setBackgroundColor(CGColor::ccDarkgray);
@@ -83,11 +85,13 @@ WRRadioScreen::WRRadioScreen(CGWidget *parent):
 
 WRRadioScreen::~WRRadioScreen()
 {
+	CGBlockLogger logger("WRRadioScreen::~WRRadioScreen()");
     stop();
 }
 
 void WRRadioScreen::paint(cairo_t *c)
 {
+	CGBlockLogger logger("WRRadioScreen::paint()");
     if ((m_playing=mpdtools::isPlaying())) {
         m_playState->setImageSymbol(CGSymbol::iPlayAnimated);
         mpdtools::clearErrors();
@@ -138,6 +142,7 @@ void WRRadioScreen::paint(cairo_t *c)
 
 void WRRadioScreen::event(CGEvent *e)
 {
+	CGBlockLogger logger("WRRadioScreen::event("+std::string(typeid(*e).name())+")");
     CGButtonClickedEvent* clk=dynamic_cast<CGButtonClickedEvent*>(e);
     CGInputScroll* rot=dynamic_cast<CGInputScroll*>(e);
     std::cout<<"WRRadioScreen::event: "<<e->toString()<<", "<<clk<<", "<<rot<<"\n";
@@ -166,6 +171,7 @@ void WRRadioScreen::event(CGEvent *e)
 
 void WRRadioScreen::stop()
 {
+	CGBlockLogger logger("WRRadioScreen::stop()");
     m_playing=false;
     std::lock_guard<std::recursive_mutex> lock(mpdtools::getMPDMutex());
     if (mpdtools::getConnection()) {
@@ -179,14 +185,20 @@ void WRRadioScreen::stop()
 
 void WRRadioScreen::play(int idx)
 {
+	CGBlockLogger logger("WRRadioScreen::play()");
+	std::cout<<"WRRadioScreen::play("<<idx<<")\n";
     m_playing=true;
     std::lock_guard<std::recursive_mutex> lock(mpdtools::getMPDMutex());
     if (mpdtools::getConnection()) {
         std::cout<<"clearing playlist ...\n";
+        std::cout<<"  1: mpdtools::clearErrors()\n";
         mpdtools::clearErrors();
+        std::cout<<"  2: mpd_run_clear(mpdtools::getConnection())\n";
         mpd_run_clear(mpdtools::getConnection());
+        std::cout<<"  3: mpdtools::hadError(true)\n";
         mpdtools::hadError(true);
 
+        std::cout<<"  4: ...\n";
         if (idx>=0 && idx<(long long)m_stationList->count()) {
             m_playingItem=idx;
             CGApplication::getInstance().getINI().put<int>("radio.lastStationIdx", idx);
@@ -204,11 +216,12 @@ void WRRadioScreen::play(int idx)
             mpdtools::hadError(true);
         }
     }
+	std::cout<<"WRRadioScreen::play("<<idx<<") ... DONE\n";
 }
 
 void WRRadioScreen::onShow()
 {
-    std::cout<<"WRRadioScreen::onShow()\n";
+	CGBlockLogger logger("WRRadioScreen::onShow()");
     int idx=CGApplication::getInstance().getINI().get<int>("radio.lastStationIdx", 0);
     play(idx);
     m_stationList->setCurrentItem(idx);
@@ -217,12 +230,13 @@ void WRRadioScreen::onShow()
 
 void WRRadioScreen::onHide()
 {
-    std::cout<<"WRRadioScreen::onHide()\n";
+	CGBlockLogger logger("WRRadioScreen::onHide()");
     stop();
 }
 
 void WRRadioScreen::addWebradiosFromCONF(const std::string &filename)
 {
+	CGBlockLogger logger("WRRadioScreen::addWebradiosFromCONF("+filename+")");
     if (filename.size()<=0) return;
     if (!boost::filesystem::exists(boost::filesystem::path(filename))) return;
     std::cout<<"parsing webradio-stations from '"<<filename<<"' ... \n";
